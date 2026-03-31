@@ -1,0 +1,72 @@
+# OS
+.DS_Store
+Thumbs.db
+desktop.ini
+
+# IDEs
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+.vs/
+
+# Build outputs
+build/
+dist/
+out/
+bin/
+obj/
+
+# Dependencies
+node_modules/
+vendor/
+packages/
+
+# Godot (if used)
+.godot/
+*.import
+export_presets.cfg
+
+# Unity (if used)
+Library/
+Temp/
+Logs/
+UserSettings/
+MemoryCaptures/
+Recordings/
+*.csproj
+*.sln
+*.pidb
+*.unityproj
+
+# Compiled
+*.o
+*.so
+*.dll
+*.exe
+*.pdb
+
+# Env
+.env
+.env.local
+*.local
+
+# Logs
+*.log
+logs/
+
+# Archives
+*.zip
+*.tar.gz
+*.rar
+
+# LLM models (too large for git)
+models/
+*.gguf
+*.bin
+*.onnx
+
+# Temp
+tmp/
+temp/

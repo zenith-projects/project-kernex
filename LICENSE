@@ -1,0 +1,116 @@
+PROJECT KERNEX - Proprietary License
+Copyright (c) 2026 Vinícius Oliveira Gouveia / ZENITH PROJECTS DESENVOLVIMENTO DE SOFTWARE LTDA. All rights reserved.
+
+================================================================================
+                          TERMS AND CONDITIONS
+================================================================================
+
+1. DEFINITIONS
+
+   "Software" refers to all source code, assets, documentation, game design
+   documents, and any other files contained in this repository.
+
+   "Owner" refers to Vinícius Oliveira Gouveia / ZENITH PROJECTS DESENVOLVIMENTO DE SOFTWARE LTDA, the sole copyright
+   holder of this Software.
+
+   "Contributor" refers to any individual who submits modifications, additions,
+   or improvements to this Software via pull requests, patches, or any other
+   means.
+
+2. GRANT OF LIMITED ACCESS
+
+   The Owner grants a limited, non-exclusive, non-transferable, revocable
+   license to view and contribute to the Software under the following
+   conditions:
+
+   a) You MAY view, study, and read the source code for the purpose of
+      understanding and contributing to the project.
+
+   b) You MAY submit contributions (pull requests, bug reports, suggestions)
+      to this repository.
+
+   c) You MAY compile and run the Software locally solely for the purpose of
+      testing your contributions before submitting them.
+
+3. RESTRICTIONS
+
+   Unless explicitly authorized in writing by the Owner:
+
+   a) You MAY NOT distribute, sublicense, sell, lease, or otherwise transfer
+      the Software or any portion thereof.
+
+   b) You MAY NOT create derivative works based on the Software.
+
+   c) You MAY NOT fork this repository for any purpose other than submitting
+      contributions back to the original repository. Any fork must be
+      temporary and used solely for creating pull requests. Permanent forks,
+      or forks used for independent development, are expressly prohibited.
+
+   d) You MAY NOT use the Software, in whole or in part, in any commercial
+      product or service.
+
+   e) You MAY NOT use the Software, in whole or in part, to train machine
+      learning models, artificial intelligence systems, or similar
+      technologies without explicit written consent from the Owner.
+
+   f) You MAY NOT remove, alter, or obscure any copyright notices, license
+      terms, or attribution requirements included in the Software.
+
+   g) You MAY NOT publish, host, mirror, or make available copies of this
+      Software on any platform, server, or distribution channel.
+
+4. CONTRIBUTIONS
+
+   By submitting a contribution to this repository, the Contributor:
+
+   a) Irrevocably assigns all intellectual property rights (including but not
+      limited to copyright, patent rights, and trade secrets) in their
+      contribution to the Owner, as further detailed in the Contributor
+      License Agreement (CLA).
+
+   b) Warrants that the contribution is their original work and does not
+      infringe on any third-party intellectual property rights.
+
+   c) Acknowledges that the Owner has sole discretion over whether to accept,
+      modify, or reject any contribution.
+
+   d) Understands that accepted contributions will be credited in the game's
+      credits section (the "Monolith of Contributors").
+
+5. NO WARRANTY
+
+   THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS
+   OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+   FITNESS FOR A PARTICULAR PURPOSE, AND NONINFRINGEMENT.
+
+6. LIMITATION OF LIABILITY
+
+   IN NO EVENT SHALL THE OWNER BE LIABLE FOR ANY CLAIM, DAMAGES, OR OTHER
+   LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT, OR OTHERWISE, ARISING
+   FROM, OUT OF, OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER
+   DEALINGS IN THE SOFTWARE.
+
+7. TERMINATION
+
+   a) This license is effective until terminated. The Owner may terminate
+      this license at any time, for any reason, with or without notice.
+
+   b) Upon termination, all rights granted under this license cease
+      immediately. You must destroy all copies of the Software in your
+      possession.
+
+8. COMMERCIAL PUBLICATION
+
+   The Software is intended for commercial publication on platforms including
+   but not limited to Steam. Only the Owner has the right to publish,
+   distribute, or sell the final product.
+
+9. GOVERNING LAW
+
+   This license shall be governed by and construed in accordance with the
+   laws of Brasil, Estado de Sergipe, without regard to its conflict of law
+   provisions.
+
+================================================================================
+
+For questions about this license, contact: zenithprojects.dev@gmail.com
