@@ -607,18 +607,20 @@ Every point in the Constellation is one of these node types:
 
 ### 13.3 All 16 Clusters
 
+Each cluster contains **stat nodes** (passive bonuses), **capability nodes** (new features), and **blueprint nodes** (module unlocks). Blueprint nodes reference modules from [MODULES.md](MODULES.md).
+
 ---
 
 #### PRODUCTION — Mining & Refining
 
 *How you get and process raw materials.*
 
-| Depth | Notable Nodes | Unlocks |
-|-------|--------------|---------|
-| Inner | Improved Drills, Faster Smelting | +% mining yield, +% refinery speed |
-| Mid | Catalytic Processing, Byproduct Recovery | New refinery recipes, waste → resources |
-| Outer | Molecular Assembly, Deep Core Mining | Tier 3 materials, planet mining |
-| **Keystone** | **Quantum Synthesis** | Transmute any material into any other (at a cost) |
+| Depth | Stat/Capability Nodes | Module Blueprints Unlocked |
+|-------|----------------------|---------------------------|
+| Inner | +20% mining yield, +15% refinery speed | Improved Drill, Gas Collector |
+| Mid | Byproduct recovery, rare ore extraction, -30% energy cost | Deep Core Extractor, Plasma Cutter, Planet Drill |
+| Outer | Tier 3 materials, planet mining, transmutation | Molecular Disassembler, Cryo Radiator |
+| **Keystone** | **Quantum Synthesis** — transmute any material | Quantum Harvester (Legendary) |
 
 *Bridges to:* ENGINEERING, DEFENSE, LOGISTICS
 
@@ -626,14 +628,14 @@ Every point in the Constellation is one of these node types:
 
 #### DEFENSE — Shields, Armor & Repair
 
-*How your station survives.*
+*How your station and ships survive.*
 
-| Depth | Notable Nodes | Unlocks |
-|-------|--------------|---------|
-| Inner | Reinforced Bulkheads, Shield Mk2 | +% hull HP, +% shield capacity |
-| Mid | Adaptive Shields, Nano-Armor, Auto-Repair | Resistance shifting, self-repair, repair drones |
-| Outer | Phase Shields, Living Hull, Restoration Matrix | Energy absorption, organic regen, full rebuild |
-| **Keystone** | **Fortress Protocol** | Citadel Mode — temporary invulnerability |
+| Depth | Stat/Capability Nodes | Module Blueprints Unlocked |
+|-------|----------------------|---------------------------|
+| Inner | +25% hull HP, +40% shield capacity | Reinforced Shield, Reinforced Plating, Shield Generator Mk2 |
+| Mid | Resistance shifting, self-repair, 85% auto-repair | Adaptive Shield, Nano-Armor, Shield Generator Mk3 |
+| Outer | Energy absorption, organic regen, full rebuild | Phase Shield, Quantum Barrier, Fortress Shield |
+| **Keystone** | **Fortress Protocol** — Citadel Mode | Phase Shield Array (Legendary), Living Hull (Legendary) |
 
 *Bridges to:* PRODUCTION, OFFENSE, ENGINEERING
 
@@ -643,12 +645,12 @@ Every point in the Constellation is one of these node types:
 
 *How your station fights back.*
 
-| Depth | Notable Nodes | Unlocks |
-|-------|--------------|---------|
-| Inner | Laser Turrets, Point Defense | Basic turret blueprints, +% turret damage |
-| Mid | Missile Systems, EMP Turrets, Railguns | Splash, disable shields, armor piercing |
-| Outer | Plasma Artillery, Minefield Network, Gauss Platform | Heavy damage, area denial, long range |
-| **Keystone** | **Orbital Ion Cannon** | Single devastating beam from orbit |
+| Depth | Stat/Capability Nodes | Module Blueprints Unlocked |
+|-------|----------------------|---------------------------|
+| Inner | +15% turret damage, tracking improvement | Laser Turret, Missile Battery |
+| Mid | Splash damage, shield disable, armor piercing | Gauss Turret, EMP Tower, Minefield Deployer |
+| Outer | Heavy damage, area denial, long range | Plasma Artillery, Railgun Platform |
+| **Keystone** | **Orbital Ion Cannon** — devastating beam | Ion Cannon (Legendary), Gravity Well Generator (Epic) |
 
 *Bridges to:* DEFENSE, WEAPONS, DRONES
 
@@ -658,12 +660,12 @@ Every point in the Constellation is one of these node types:
 
 *What ships you can build and how fleets behave.*
 
-| Depth | Notable Nodes | Unlocks |
-|-------|--------------|---------|
-| Inner | Fighter Doctrine, Fleet Commands | Fighter blueprint, basic formations |
-| Mid | Cruiser Hull, Battleship Engineering | Cruiser/Battleship blueprints, fleet capacity |
-| Outer | Destroyer Program, Carrier Design, Dreadnought | Heavy ships, mobile drone platform |
-| **Keystone** | **Titan-Class** | Mobile station that deploys its own fleet |
+| Depth | Stat/Capability Nodes | Module Blueprints Unlocked |
+|-------|----------------------|---------------------------|
+| Inner | Fighter Doctrine, basic formations, +20% fleet speed | (Fighter class ships — crafted in Shipyard) |
+| Mid | Cruiser/Battleship hulls, fleet capacity +50%, formation commands | Afterburner, Compact Fission reactor |
+| Outer | Destroyer/Carrier/Dreadnought programs, fleet-wide buffs | Ship Fusion Core, Micro Antimatter reactor |
+| **Keystone** | **Titan-Class** — mobile station with own fleet | (Titan class ship — endgame Shipyard) |
 
 *Bridges to:* WEAPONS, DRONES, NAVIGATION
 
@@ -673,12 +675,12 @@ Every point in the Constellation is one of these node types:
 
 *What goes on your ships.*
 
-| Depth | Notable Nodes | Unlocks |
-|-------|--------------|---------|
-| Inner | Laser Arrays Mk2, Missile Pods | Ship weapon blueprints, +% damage |
-| Mid | Beam Weapons, Torpedo Systems, Flak Cannons | New weapon types, AoE, tracking |
-| Outer | Plasma Lances, Singularity Torpedoes, EMP Bombs | Heavy ship weapons, shield bypass |
-| **Keystone** | **Weapon Overcharge Matrix** | All ship weapons deal +50% damage, risk of overheating |
+| Depth | Stat/Capability Nodes | Module Blueprints Unlocked |
+|-------|----------------------|---------------------------|
+| Inner | +15% ship weapon damage, tracking improvement | Pulse Laser, Missile Pod |
+| Mid | AoE, armor piercing, beam technology | Beam Cannon, Torpedo Launcher, Flak Battery |
+| Outer | Shield bypass, multi-target pierce, heavy ordnance | Plasma Lance, Railgun, EMP Projector |
+| **Keystone** | **Weapon Overcharge Matrix** — +50% damage, overheat risk | Singularity Torpedo (Legendary), Void Beam (Legendary) |
 
 *Bridges to:* FLEET, OFFENSE, STEALTH
 
@@ -688,12 +690,12 @@ Every point in the Constellation is one of these node types:
 
 *Drone types, swarm AI, and automation.*
 
-| Depth | Notable Nodes | Unlocks |
-|-------|--------------|---------|
-| Inner | Mining Drones Mk2, Combat Drones | Improved drone blueprints |
-| Mid | Swarm Coordination, Heavy Drones, Scout Probes | Swarm AI, equipment slots, auto-explore |
-| Outer | Hive Mind, Assault Drones, Deep Space Probes | 100+ swarm, boarding, self-replicating |
-| **Keystone** | **Nano Swarm** | Nanobots that mine, fight, repair, and scout simultaneously |
+| Depth | Stat/Capability Nodes | Module Blueprints Unlocked |
+|-------|----------------------|---------------------------|
+| Inner | +30% mining speed, combat drone unlock | Mining Drone Mk2 blueprint, Combat Drone blueprint |
+| Mid | Swarm coordination, equipment slots, auto-explore | Heavy Drone blueprint, Scout Drone blueprint |
+| Outer | 100+ swarm, boarding, self-replicating probes | Assault Drone blueprint, Deep Space Probe blueprint |
+| **Keystone** | **Nano Swarm** — mine, fight, repair, scout simultaneously | Nano Swarm blueprint (Legendary) |
 
 *Bridges to:* FLEET, OFFENSE, AUTOMATION
 
@@ -703,12 +705,12 @@ Every point in the Constellation is one of these node types:
 
 *How you find new things in the void.*
 
-| Depth | Notable Nodes | Unlocks |
-|-------|--------------|---------|
-| Inner | Long-Range Sensors, Sector Analysis | +% scan range, archetype reveal |
-| Mid | Probe Networks, Anomaly Detection | Auto-scout, find hidden anomalies |
-| Outer | Deep Scan, Signal Decoder, Void Cartography | Full sector intel, alien signals, void mapping |
-| **Keystone** | **Omniscience Array** | See all sectors in your constellation without scanning |
+| Depth | Stat/Capability Nodes | Module Blueprints Unlocked |
+|-------|----------------------|---------------------------|
+| Inner | +50% scan range, archetype reveal | Sensor Array, Signal Booster |
+| Mid | Auto-scout probes, anomaly detection | Deep Scanner, Probe Drone blueprint |
+| Outer | Full sector intel, alien signals, void mapping | Omnisensor |
+| **Keystone** | **Omniscience Array** — see entire constellation | Omnisensor (Epic) |
 
 *Bridges to:* NAVIGATION, ANOMALY SCIENCE, STEALTH
 
@@ -718,12 +720,12 @@ Every point in the Constellation is one of these node types:
 
 *How fast and far you go.*
 
-| Depth | Notable Nodes | Unlocks |
-|-------|--------------|---------|
-| Inner | Ion Drives, Fuel Efficiency | +% speed, -% fuel cost |
-| Mid | Hyperspace Drive, Warp Calibration | Inter-system travel, accuracy |
-| Outer | Jump Gates, Wormhole Navigation | Permanent portals, temporary shortcuts |
-| **Keystone** | **Wormhole Generator** | Create passages anywhere in the galaxy |
+| Depth | Stat/Capability Nodes | Module Blueprints Unlocked |
+|-------|----------------------|---------------------------|
+| Inner | +30% speed, -20% fuel cost | Ion Drive |
+| Mid | Inter-system travel, warp accuracy | Fusion Drive, Hyperspace Module |
+| Outer | Permanent portals, temporary shortcuts | Warp Drive, Jump Drive |
+| **Keystone** | **Wormhole Generator** — passages anywhere | Void Shift Engine (Legendary) |
 
 *Bridges to:* FLEET, EXPLORATION, COLONIZATION
 
@@ -733,14 +735,14 @@ Every point in the Constellation is one of these node types:
 
 *KIRA's 10 evolution levels and capabilities.*
 
-| Depth | Notable Nodes | KIRA Levels |
-|-------|--------------|-------------|
-| Inner | Core Repair, Boot Sequence | 1-2 (Booting, Functional) |
-| Mid | Neural Pathways, Pattern Recognition | 3-4 (Aware, Adaptive) |
-| Outer | Cognitive Framework, Personality Matrix | 5-7 (Analytical, Autonomous, Strategic) |
-| **Keystone** | **Quantum Consciousness** | 8-9 (Transcendent, Ascended) |
+| Depth | Stat/Capability Nodes | Module Blueprints Unlocked |
+|-------|----------------------|---------------------------|
+| Inner | KIRA Levels 1-2 (Booting, Functional) | AI Core Fragment, Neural Network Card |
+| Mid | KIRA Levels 3-5 (Aware, Adaptive, Analytical) | Memory Bank, Cognitive Accelerator, Personality Core |
+| Outer | KIRA Levels 6-7 (Autonomous, Strategic) | Strategic Module, Empathy Chip |
+| **Keystone** | **Quantum Consciousness** — Levels 8-9 | Quantum Mind (Legendary) |
 
-Each node also requires **KIRA Data Fragments** from anomalies.
+Each node also requires **KIRA Data Fragments** from anomalies (cannot be crafted).
 
 *Bridges to:* AUTOMATION, ANOMALY SCIENCE, COMMUNICATIONS
 
@@ -750,12 +752,12 @@ Each node also requires **KIRA Data Fragments** from anomalies.
 
 *The terminal power system, independent from KIRA.*
 
-| Depth | Notable Nodes | Unlocks |
-|-------|--------------|---------|
-| Inner | Command Aliases, Piping System | Terminal QoL, chain commands |
-| Mid | Script Engine (.vsh), Cron Scheduler | Write scripts, schedule tasks |
-| Outer | Event Hooks, Monitoring Dashboard, Script Library | Reactive scripts, real-time dashboards |
-| **Keystone** | **Self-Evolving Scripts** | Scripts that optimize themselves over time (with KIRA) |
+| Depth | Stat/Capability Nodes | Module Blueprints Unlocked |
+|-------|----------------------|---------------------------|
+| Inner | Command aliases, piping, terminal QoL | Script Processor |
+| Mid | .vsh scripting, cron scheduler, 5 parallel scripts | Cron Engine, Parallel Executor |
+| Outer | Event hooks, reactive scripts, dashboards | Event Reactor, Pipeline Controller |
+| **Keystone** | **Self-Evolving Scripts** — scripts optimize themselves | Quantum Scheduler (Legendary) |
 
 *Bridges to:* KIRA, DRONES, LOGISTICS
 
@@ -765,12 +767,12 @@ Each node also requires **KIRA Data Fragments** from anomalies.
 
 *Power generation, build speed, and station structure.*
 
-| Depth | Notable Nodes | Unlocks |
-|-------|--------------|---------|
-| Inner | Modular Construction, Solar Mk2 | -% build time, +% energy |
-| Mid | Fusion Reactor, Parallel Queues | Major energy boost, build multiple things |
-| Outer | Quantum Reactors, Nanite Assembly, Megastructures | Massive energy, instant build, orbital rings |
-| **Keystone** | **Dyson Collector** | Harvest energy directly from the local star |
+| Depth | Stat/Capability Nodes | Module Blueprints Unlocked |
+|-------|----------------------|---------------------------|
+| Inner | -20% build time, +30% energy output | Fission Reactor, RTG Unit, Heat Sink Array |
+| Mid | Parallel build queues, major energy boost | Fusion Reactor, Phase-Change Cooler, Advanced Processor |
+| Outer | Massive energy, instant build, megastructures | Antimatter Reactor, Quantum Reactor |
+| **Keystone** | **Dyson Collector** — harvest star energy | Dyson Collector (Legendary), Plasma Radiator (Epic) |
 
 *Bridges to:* PRODUCTION, DEFENSE, LOGISTICS
 
@@ -780,12 +782,12 @@ Each node also requires **KIRA Data Fragments** from anomalies.
 
 *How you make money and trade resources.*
 
-| Depth | Notable Nodes | Unlocks |
-|-------|--------------|---------|
-| Inner | Trade Beacon, Price Tracking | NPC traders, market visibility |
-| Mid | Trade Routes, Market Analysis, Speculation | Auto-trade, profit optimization |
-| Outer | Commerce Hub, Monopoly Control, Banking | Trade node, supply control, lending |
-| **Keystone** | **Galactic Exchange** | Universal market, manipulate supply/demand galaxy-wide |
+| Depth | Stat/Capability Nodes | Module Blueprints Unlocked |
+|-------|----------------------|---------------------------|
+| Inner | NPC traders, market visibility, +15% profit | (Trading capability — no module, it's a feature) |
+| Mid | Auto-trade routes, market analysis, speculation | Expanded Hold, Compressed Storage |
+| Outer | Commerce hub, monopoly control, banking | Quantum Container |
+| **Keystone** | **Galactic Exchange** — universal market | (Galaxy-wide trading feature) |
 
 *Bridges to:* LOGISTICS, COLONIZATION, COMMUNICATIONS
 
@@ -795,12 +797,12 @@ Each node also requires **KIRA Data Fragments** from anomalies.
 
 *Hiding, spying, and information warfare.*
 
-| Depth | Notable Nodes | Unlocks |
-|-------|--------------|---------|
-| Inner | Sensor Dampening, ECM Suite | -% energy signature, scanner jamming |
-| Mid | Cloaking Field, Spy Probes, Counter-Intel | Hide ships, spy on enemies, detect spies |
-| Outer | Phase Cloak, Data Theft, Mirror Network | Invisible station, steal blueprints, see enemy vision |
-| **Keystone** | **Phantom Station** | Your station appears in multiple locations simultaneously |
+| Depth | Stat/Capability Nodes | Module Blueprints Unlocked |
+|-------|----------------------|---------------------------|
+| Inner | -30% energy signature, scanner jamming | Sensor Dampener, ECM Pod |
+| Mid | Ship cloaking, spy probes, counter-intel | Cloaking Device, Decoy Generator, Signal Spoofer |
+| Outer | Station invisibility, blueprint theft, vision hack | Active Cloak |
+| **Keystone** | **Phantom Station** — appear in multiple locations | Phase Cloak (Legendary) |
 
 *Bridges to:* WEAPONS, EXPLORATION, KIRA
 
@@ -810,12 +812,12 @@ Each node also requires **KIRA Data Fragments** from anomalies.
 
 *Moving and storing resources efficiently.*
 
-| Depth | Notable Nodes | Unlocks |
-|-------|--------------|---------|
-| Inner | Expanded Storage, Cargo Shuttles | +% capacity, basic transport |
-| Mid | Warehouse Network, Fast Freight, Auto-Balancing | Shared storage, speed, smart distribution |
-| Outer | Orbital Depots, Warp Freight, Just-In-Time | Massive storage, instant transport, zero waste |
-| **Keystone** | **Self-Optimizing Pipeline** | KIRA-managed supply chain, zero human intervention needed |
+| Depth | Stat/Capability Nodes | Module Blueprints Unlocked |
+|-------|----------------------|---------------------------|
+| Inner | +50% storage capacity, basic transport | Station Warehouse, Cargo Shuttles |
+| Mid | Shared storage, fast freight, auto-balancing | Compressed Storage, Basic Cargo Hold upgrades |
+| Outer | Orbital depots, warp freight, zero-waste production | Orbital Depot, Quantum Container |
+| **Keystone** | **Self-Optimizing Pipeline** — KIRA manages supply | Dimensional Vault (Legendary) |
 
 *Bridges to:* PRODUCTION, ENGINEERING, AUTOMATION, ECONOMY
 
@@ -825,12 +827,12 @@ Each node also requires **KIRA Data Fragments** from anomalies.
 
 *Building outposts and claiming space.*
 
-| Depth | Notable Nodes | Unlocks |
-|-------|--------------|---------|
-| Inner | Outpost Module, Colony Ship | Basic outpost blueprint, deploy stations |
-| Mid | Industrial Colony, Military Outpost, Sovereignty Hub | Specialized outposts, territory claims |
-| Outer | Forge World, Fortress World, Capital System | Mega-production, impenetrable base, system control |
-| **Keystone** | **Empire Core** | Your territory generates passive bonuses galaxy-wide |
+| Depth | Stat/Capability Nodes | Module Blueprints Unlocked |
+|-------|----------------------|---------------------------|
+| Inner | Deploy basic outposts | Outpost Core |
+| Mid | Specialized outposts, territory claims | Colony Hub, Industrial Module, Military Module |
+| Outer | Mega-production, impenetrable base, system control | Sovereignty Beacon, Warp Gate |
+| **Keystone** | **Empire Core** — passive bonuses galaxy-wide | Dyson Forge (Legendary) |
 
 *Bridges to:* NAVIGATION, ECONOMY, COMMUNICATIONS
 
@@ -840,12 +842,12 @@ Each node also requires **KIRA Data Fragments** from anomalies.
 
 *Researching anomalies, alien artifacts, and void phenomena.*
 
-| Depth | Notable Nodes | Unlocks |
-|-------|--------------|---------|
-| Inner | Anomaly Sampling, Artifact Analysis | Harvest anomaly resources, study artifacts |
-| Mid | Alien Signal Decoder, Void Energy Tap, Relic Restoration | Decode signals, tap void energy, restore ancient tech |
-| Outer | Xenotech Integration, Void Harmonics, Ancient Archives | Use alien tech in your station, void power, lost knowledge |
-| **Keystone** | **Precursor Technology** | Unlock alien modules — fundamentally different from human tech |
+| Depth | Stat/Capability Nodes | Module Blueprints Unlocked |
+|-------|----------------------|---------------------------|
+| Inner | Harvest anomaly resources, study artifacts | (Anomaly harvesting capability) |
+| Mid | Decode signals, tap void energy, restore ancient tech | Void Cooler, Gravity Well Generator |
+| Outer | Use alien tech in station, void power, lost knowledge | Void Siphon, Alien Power Cell |
+| **Keystone** | **Precursor Technology** — alien modules | Void Beam (Legendary), Living Hull (Legendary), Void Shift Engine (Legendary) |
 
 *Bridges to:* EXPLORATION, KIRA, ENGINEERING
 
@@ -855,12 +857,12 @@ Each node also requires **KIRA Data Fragments** from anomalies.
 
 *Comms range, encryption, and multiplayer coordination.*
 
-| Depth | Notable Nodes | Unlocks |
-|-------|--------------|---------|
-| Inner | Extended Comms, Signal Booster | +% comms range, clearer signals |
-| Mid | Encrypted Channels, Alliance Network, Beacon Grid | Secure comms, alliance features, sector beacons |
-| Outer | SubSpace Relay, Galactic Broadcast, Signal Warfare | Instant galaxy comms, propaganda, jamming |
-| **Keystone** | **Quantum Entanglement Comms** | Zero-latency communication anywhere, unblockable |
+| Depth | Stat/Capability Nodes | Module Blueprints Unlocked |
+|-------|----------------------|---------------------------|
+| Inner | +50% comms range, clearer signals | Signal Booster |
+| Mid | Secure comms, alliance features, sector beacons | Encrypted Channel, Alliance Beacon |
+| Outer | Instant galaxy comms, propaganda, jamming | SubSpace Relay, Propaganda Array |
+| **Keystone** | **Quantum Entanglement Comms** — unblockable | Quantum Link (Legendary) |
 
 *Bridges to:* KIRA, ECONOMY, COLONIZATION, STEALTH
 
@@ -920,60 +922,17 @@ Bridges are special nodes that sit between two clusters. Researching a bridge no
 
 ### 13.6 Module System
 
-Modules are the items you actually USE. The Constellation unlocks blueprints; you still need to **craft or buy** the module.
+Modules are the items you actually USE. The Constellation unlocks blueprints; you still need to **craft or buy** the module. Every cluster contains blueprint nodes for modules related to that domain.
 
-#### Module Rarity
+**Full module catalog with 100+ modules, slot tables, rarity, levels, and design notes: [MODULES.md](MODULES.md)**
 
-| Rarity | Color | Source | Power Level |
-|--------|-------|--------|-------------|
-| **Common** | White | Pre-researched (starter) or basic Constellation nodes | Baseline |
-| **Uncommon** | Green | Mid-depth Constellation nodes, crafting | +20-40% over Common |
-| **Rare** | Blue | Outer Constellation nodes, anomaly drops | +50-80% over Common |
-| **Epic** | Purple | Keystone unlocks, deep void anomalies | +100-150% over Common |
-| **Legendary** | Gold | Cross-branch synergies, boss drops, alien tech | Unique effects, game-changing |
+Quick summary:
 
-#### Module Levels (1-16)
-
-Every module can be upgraded from level 1 to 16 by consuming materials:
-
-| Level Range | Cost | Effect |
-|-------------|------|--------|
-| 1-4 | Common materials | Small stat increases per level |
-| 5-8 | Uncommon materials | Moderate stat increases, visual change at 5 |
-| 9-12 | Rare materials | Large stat increases, visual change at 9 |
-| 13-15 | Epic materials + chance of failure | Major stat increases, visual change at 13 |
-| 16 | Legendary materials + guaranteed success | Maximum power, unique visual, glow effect |
-
-**Failure at 13-15:** Module doesn't break — it just doesn't upgrade. Materials are lost. KIRA at higher levels reduces failure chance. Level 16 always succeeds but costs legendary materials.
-
-#### Module Categories
-
-| Category | Slot | Examples |
-|----------|------|---------|
-| **Ship Weapons** | Ship weapon slots | Laser Array, Missile Pod, Beam Cannon, Plasma Lance |
-| **Ship Shields** | Ship shield slot | Deflector, Phase Shield, Adaptive Barrier |
-| **Ship Engines** | Ship engine slot | Ion Drive, Hyperspace Module, Afterburner |
-| **Ship Modules** | Ship utility slots | Cloaking Device, ECM Jammer, Repair Beam, Tractor Beam |
-| **Station Turrets** | Station turret slots | Point Defense, Missile Battery, Railgun, Plasma Artillery |
-| **Station Shields** | Station shield slot | Shield Generator Mk1-5, Phase Shield Array |
-| **Station Modules** | Station module slots | Refinery, Storage, Lab, Reactor, Shipyard |
-| **Drone Modules** | Drone equipment slots | Mining Laser, Combat AI, Scout Sensor, Cargo Expander |
-| **Ammunition** | Consumable | x1 Standard, x2 Enhanced, x3 Superior, x4 Elite |
-
-#### Starter Modules (Pre-Researched)
-
-New players start with these blueprints unlocked so the game is immediately playable:
-
-- Basic Laser Array (ship weapon, Common)
-- Basic Deflector (ship shield, Common)
-- Chemical Drive (ship engine, Common)
-- Point Defense Turret (station turret, Common)
-- Shield Generator Mk1 (station shield, Common)
-- Basic Refinery (station module, Common)
-- Basic Storage Silo (station module, Common)
-- Solar Array (station module, Common)
-- Mining Drone Mk1 (drone, Common)
-- Standard Ammo x1 (ammunition, Common)
+- **13 categories:** Energy, Thermal, Weapons, Defense, Propulsion, Mining, Cargo, Tech, Automation, KIRA, Stealth, Communications, Colonization
+- **5 rarities:** Common (white) → Uncommon (green) → Rare (blue) → Epic (purple) → Legendary (gold)
+- **16 upgrade levels:** Materials scale from Common (1-4) to Legendary (16). Failure chance at 13-15, mitigated by KIRA.
+- **10 starter modules** pre-researched so the game is immediately playable
+- **Ship slots:** Fighter (7) to Titan (25). **Station slots:** Outpost (8) to Nexus (55). **Drone slots:** 2-5 by type.
 
 ---
 
