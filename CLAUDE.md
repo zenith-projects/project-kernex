@@ -84,36 +84,104 @@ Map (Node2D)
 
 ## Project Structure
 
+Inspired by the proven v2 architecture from project-space-lanes.
+
 ```
 project-kernex/
 ├── project.godot
 ├── ProjectKernex.csproj
-├── scenes/
-│   ├── core/              # Core game scenes (main, game loop)
-│   ├── station/           # Station modules, buildings
-│   ├── fleet/             # Ships, drones, combat
-│   ├── world/             # Sectors, chunks, map
-│   ├── ui/                # HUD, menus, panels
-│   ├── terminal/          # Terminal emulator overlay
-│   ├── components/        # Reusable component scenes
-│   └── vfx/               # Visual effects, particles
-├── scripts/
-│   ├── autoload/          # Singletons (GameManager, AudioManager, etc.)
-│   ├── components/        # Component scripts
-│   ├── resources/         # Custom Resource classes
-│   ├── systems/           # Game systems (resource, combat, threat, etc.)
-│   ├── terminal/          # Terminal/vsh engine
-│   └── ai/                # KIRA AI system
-├── assets/
-│   ├── audio/
-│   ├── textures/
-│   ├── fonts/
-│   └── shaders/
-├── resources/
-│   ├── themes/            # UI themes (.tres)
-│   └── data/              # Game data resources (.tres)
-└── tests/
+├── ProjectKernex.sln
+│
+├── Assets/                    ← Raw assets only, no logic
+│   ├── Audio/
+│   │   ├── Music/             ← BGM by context (combat/, ambient/, menu/)
+│   │   ├── SFX/
+│   │   │   ├── Definitive/    ← Final sounds
+│   │   │   └── Placeholder/   ← WIP sounds
+│   │   └── Voice/             ← KIRA voice lines
+│   ├── Fonts/
+│   ├── Materials/
+│   ├── Particles/
+│   ├── Shaders/               ← Global reusable shaders
+│   ├── Textures/              ← Organized by category
+│   │   ├── Ships/
+│   │   ├── Station/
+│   │   ├── Environment/
+│   │   ├── UI/
+│   │   ├── Effects/
+│   │   └── Icons/
+│   └── Themes/                ← Global UI theme (.tres)
+│
+├── Autoloads/                 ← Global singletons
+│   ├── GameState.cs           ← Run state, resources, phase
+│   ├── EventBus.cs            ← Pure signal relay (all systems communicate through here)
+│   ├── OriginShift.cs         ← Origin shift management
+│   ├── EntityRegistry.cs      ← Source of truth for all world entities
+│   ├── SfxManager.cs          ← Audio pooling
+│   └── MusicManager.cs        ← Context-based music
+│
+├── Components/                ← Reusable behavior units (scene + script, same folder)
+│   ├── Core/                  ← HealthComponent, MovementComponent, HitboxComponent
+│   ├── Combat/                ← TargetingComponent, WeaponComponent, ShieldComponent
+│   ├── Station/               ← BuildingComponent, RefineryComponent, DefenseComponent
+│   ├── World/                 ← ChunkLoader, SectorField, StarLayer
+│   ├── Ships/                 ← Thruster, RCS, Banking, DamageSystem, CameraFollow
+│   ├── Visuals/               ← VFX, particles, shaders per component
+│   └── HUD/                   ← Minimap, WorldMap, SpeedMeter, DebugPanel, etc.
+│
+├── Nodes/                     ← Entities and compositions used inside Screens
+│   ├── Ships/                 ← PlayerShip, EnemyShip, Drone entities
+│   ├── Station/               ← StationBase, Modules, Turrets
+│   ├── Environment/           ← Asteroids, Derelicts, Anomalies
+│   ├── Projectiles/           ← Laser, Missile, etc.
+│   └── UI/                    ← Cards, Menus, Panels, Terminal overlay
+│
+├── Screens/                   ← Full independent scenes (game states)
+│   ├── Root/                  ← Main scene, screen transitions
+│   ├── MainMenu/
+│   ├── Game/                  ← Main game orchestrator
+│   ├── Terminal/              ← Terminal/vsh screen (overlay or fullscreen)
+│   └── DevTools/              ← Debug/dev tools
+│
+├── Core/                      ← Pure C# types — NO Godot scenes
+│   ├── Interfaces/            ← IShip, IStation, IDamageable, IAutomatable
+│   ├── Coordinates/           ← CellAddress, SectorAddress, QuadrantAddress, CoordConvert
+│   ├── Enums/                 ← FactionType, ResourceType, ThreatLevel, etc.
+│   ├── Constants/             ← GameConstants.cs (compile-time)
+│   └── Utils/                 ← MathUtil, ListUtils
+│
+├── Systems/                   ← Game logic + behavior strategies
+│   ├── Resources/             ← ResourceSystem, RefinerySystem, ProductionChain
+│   ├── Combat/                ← CombatSystem, FleetSystem, RapidFireResolver
+│   ├── Threat/                ← ThreatSystem, SignatureCalculator, DefenseResolver
+│   ├── Exploration/           ← SectorGenerator, AnomalySystem, FogOfWar
+│   ├── Terminal/              ← CommandParser, ScriptEngine, CronScheduler
+│   ├── AI/                    ← KiraEngine, LlmBridge, DialogueSystem
+│   ├── Building/              ← BuildSystem, UpgradeSystem, TechTree
+│   └── Progression/           ← ResearchSystem, StationTierSystem
+│
+├── Resources/                 ← .tres data files + C# Resource class definitions
+│   ├── Ships/                 ← ShipDefinition .tres files
+│   ├── Buildings/             ← BuildingDefinition .tres files
+│   ├── Research/              ← TechDefinition .tres files
+│   ├── Enemies/               ← EnemyDefinition .tres files
+│   ├── Balance/               ← BalanceConfig.tres (runtime-tunable via DevTools)
+│   └── World/                 ← SectorArchetype .tres files
+│
+└── Tests/                     ← Test scenes for isolated component testing
 ```
+
+### Folder Rules
+| Folder | Contains | Rule |
+|--------|----------|------|
+| **Assets** | Raw files (images, audio, fonts, shaders) | No logic, no scripts |
+| **Autoloads** | Global singletons | Max 5-6. Thin coordinators, not gameplay owners |
+| **Components** | Reusable behavior (`.tscn` + `.cs` in same folder) | Instanced as children of entities |
+| **Nodes** | Entities, UI compositions | Used inside Screens. Compose from Components |
+| **Screens** | Full game states | Independent scenes (MainMenu, Game, etc.) |
+| **Core** | Interfaces, structs, enums, constants | Pure C#, no Godot scenes |
+| **Systems** | Game logic, behavior strategies + factories | Strategy pattern for extensibility |
+| **Resources** | `.tres` data + C# Resource class definitions | Side by side. Inspector-configurable |
 
 ## Naming Conventions
 
