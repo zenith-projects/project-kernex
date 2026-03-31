@@ -2,199 +2,187 @@
 
 > *You are the root user of the void.*
 
-**PROJECT KERNEX** is an isometric space game where you build stations, command fleets, automate production chains, and conquer territory in a procedurally generated infinite universe. Play with mouse and keyboard like any normal game — or open the in-game terminal for scripting and automation. Your AI companion KIRA runs locally and writes scripts for you, so everyone has access to automation power regardless of coding skill.
+**PROJECT KERNEX** is an isometric space game where you build stations, command fleets, automate production chains, and conquer territory in a procedurally generated infinite universe. An in-game terminal lets power users script automation, while the local AI companion **KIRA** writes those scripts for everyone else — so non-programmers get the same power as devs.
 
 Built with AI assistance. Built by the community.
 
 ---
 
-## 🎮 About the Game
+## About the Game
 
-You awaken as the sole operator of **Station XARA-7**, a derelict outpost on the edge of known space. Mine resources, refine materials, build your fleet, and expand into the void — while threats scale with your ambition.
+You awaken as the sole operator of **Station XARA-7**, a derelict outpost on the edge of known space. A broken AI named KIRA flickers to life in your terminal. Mine resources, refine materials, build your fleet, research through a massive tech web, and expand into the void — while threats scale with your ambition.
 
 ### Core Pillars
 
-**Isometric Space Gameplay** — Build and manage your station in a real-time isometric world. Mine asteroids, deploy fleets, defend your base, and explore an infinite procedurally generated universe using mouse, keyboard, and UI.
-
-**In-Game Terminal (vsh)** — An optional power tool inside the game. Chain commands, write scripts, schedule automation. Not required to play, but gives a massive edge to those who use it.
-
-**AI Companion (KIRA)** — A local LLM running on your machine. KIRA lives in the terminal, writes automation scripts on request, provides strategic advice, and evolves through **10 stages** — from corrupted boot logs to a fully sentient AI that can run your entire station. Non-programmers ask KIRA; programmers code manually — same result, no disadvantage.
-
-**Deep Production Chains** — Branching, interdependent resource processing inspired by Factorio. Circuit Boards need both Silicon Wafers AND Copper Wire. Bottleneck identification is a core skill.
-
-**Fleet Combat** — Real-time isometric combat with fleet composition depth inspired by OGame/Dark Orbit. Hard counters, rapid-fire mechanics, and drone formations. Composition beats numbers.
-
-**Defend Your Station** — Layered defense inspired by Clash of Clans. Different threat types need different countermeasures. Station activity attracts threats — growth has a cost.
-
-**Infinite Universe** — Procedurally generated from a single seed. Billions of sectors to explore. Chunked coordinates eliminate floating-point precision issues at any distance.
+| Pillar | Description |
+|--------|-------------|
+| **Isometric Space** | Real-time isometric world. Mine, build, fight, explore with mouse + keyboard + UI. |
+| **Terminal (vsh)** | Optional in-game shell. Script automation, chain commands, schedule cron jobs. Not required — but powerful. |
+| **KIRA (Local AI)** | Local LLM on your machine. 10 evolution levels. Writes scripts for non-devs. The equalizer. |
+| **The Constellation** | PoE-style research web. 16 interconnected clusters, 18 bridges. No locks — unlock everything. |
+| **100+ Modules** | 13 categories, 5 rarities, 16 upgrade levels. Unlocked through the Constellation, then crafted. |
+| **Fleet Combat** | Real-time with hard counters (OGame/Dark Orbit). Composition beats numbers. Drone formations. |
+| **Station Defense** | Layered defense (CoC). Activity attracts threats (Factorio). Growth has a cost. |
+| **Production Chains** | Branching, interdependent (Factorio). Circuit Board = Wafer + Wire. Bottlenecks matter. |
+| **Infinite Universe** | Seed-based procedural generation. Chunked coordinates with origin shift. Billions of sectors. |
+| **Three Factions** | HELIX (industrial), NOVA (military), VOID (explorers). Clan warfare. Territory sovereignty. |
+| **Offline → MMO** | Ships as single-player. Transitions to online after MVPs. No pay-to-win. |
 
 ### Planned Features
 
-- 🌍 Isometric infinite procedural universe
-- ⚔️ Real-time fleet combat with hard counters and drone systems
-- 🏗️ Station building with defense layout strategy
+- 🌍 Infinite procedural universe with origin shift (no floating-point issues at any distance)
+- ⚔️ Real-time fleet combat with rapid-fire hard counters and drone formations
+- 🏗️ Station building with defense layout strategy and module adjacency
 - ⛏️ Branching production chains with interdependencies
-- 🌳 Radial tech tree — 8 branches, 5 tiers each, expanding from center
-- 🖥️ In-game terminal emulator (`vsh`) for power users
-- 🤖 Local AI companion (KIRA) — 10 evolution levels, writes scripts and automates for you
+- 🌳 The Constellation — 16-cluster research web with 18 bridge connections
+- 🔧 100+ modules across 13 categories (energy, weapons, defense, KIRA, stealth...)
+- 🖥️ In-game terminal (`vsh`) with scripting, piping, cron jobs
+- 🤖 KIRA — 10-level local AI that writes scripts, manages stations, reveals story
 - 🛡️ Activity-threat feedback loop (growth attracts danger)
-- 🏛️ Three-faction system with clan warfare
-- 🌐 Offline-first → MMO transition (future)
+- 🏛️ Three factions with clan wars and territory sovereignty
+- 🌐 Offline-first → MMO transition
 
 ---
 
-## 🏗️ Project Status
+## Project Status
 
-> **Pre-production** — Currently in game design and prototyping phase.
+> **Phase 0 — Foundation** `CURRENT`
 
-This project is in active development. We're defining core mechanics, building prototypes, and establishing the technical foundation. Check the [roadmap](docs/ROADMAP.md) for planned milestones.
+Game design complete (15 design docs). Godot 4.6 Mono project initialized. CI/CD with 10 PR checks. Branch protection active. Next: Terminal + KIRA (Phase 1).
+
+Check the [roadmap](docs/ROADMAP.md) for all phases and MVPs.
 
 ---
 
-## 🤝 Contributing
+## Game Design Documentation
 
-This project is **community-driven**. Anyone on the internet can contribute — no permission needed.
+All design docs live in [`docs/game-design/`](docs/game-design/INDEX.md):
 
-**Important:** This is NOT an open-source project. The code is publicly visible to enable collaboration, but all rights are reserved. Please read:
+| Document | What It Covers |
+|----------|---------------|
+| [Overview](docs/game-design/OVERVIEW.md) | Vision, concept, art direction, monetization, design principles |
+| [Gameplay](docs/game-design/GAMEPLAY.md) | Core loop: scan → collect → refine → build → defend → expand |
+| [Combat](docs/game-design/COMBAT.md) | Fleet combat, drones, PvE, PvP |
+| [Resources](docs/game-design/RESOURCES.md) | Three-tier economy, production chains |
+| [Station](docs/game-design/STATION.md) | Building system, tiers, module layout |
+| [Threats](docs/game-design/THREATS.md) | Activity-threat loop, defense resolution |
+| [Terminal](docs/game-design/TERMINAL.md) | vsh terminal, scripting, automation |
+| [KIRA](docs/game-design/KIRA.md) | 10 evolution levels, LLM integration |
+| [Factions](docs/game-design/FACTIONS.md) | Three factions, clans, territory control |
+| [Exploration](docs/game-design/EXPLORATION.md) | Infinite universe, procedural gen, anomalies |
+| [Architecture](docs/game-design/ARCHITECTURE.md) | Chunked coords, offline-first, MMO architecture |
+| [Constellation](docs/game-design/CONSTELLATION.md) | Research web (16 clusters, 18 bridges) |
+| [Modules](docs/game-design/MODULES.md) | 100+ modules, rarity, levels, slots |
+| [Commands](docs/game-design/COMMANDS.md) | Terminal commands reference |
 
-- [CONTRIBUTING.md](CONTRIBUTING.md) — Full contribution guide
+---
+
+## Contributing
+
+Anyone on the internet can contribute — no permission needed. Fork, code, open a PR.
+
+- [CONTRIBUTING.md](CONTRIBUTING.md) — Full guide (two paths: fork or direct)
 - [CLA.md](CLA.md) — Contributor License Agreement (required)
-- [LICENSE](LICENSE) — Project license (proprietary)
+- [LICENSE](LICENSE) — Proprietary (code visible, all rights reserved)
 
-### Quick Start (External Contributors)
+### Quick Start
 
 ```bash
-# 1. Fork this repo on GitHub
-# 2. Clone your fork
+# Fork this repo, then:
 git clone https://github.com/YOUR-USERNAME/project-kernex.git
 cd project-kernex
-
-# 3. Set up upstream
 git remote add upstream https://github.com/zenith-projects/project-kernex.git
-
-# 4. Create a branch from develop
 git fetch upstream
 git checkout -b feature/your-feature upstream/develop
-
-# 5. Code, commit (conventional commits), push to your fork
-git push origin feature/your-feature
-
-# 6. Open a PR targeting develop on this repo
-```
-
-### Quick Start (Team Members)
-
-```bash
-git clone https://github.com/zenith-projects/project-kernex.git
-cd project-kernex
-git checkout develop && git pull
-git checkout -b feature/your-feature
-# Code, commit, push, open PR targeting develop
+# Code, commit, push to your fork, open PR targeting develop
 ```
 
 ### Rules
 
 | Rule | Detail |
 |------|--------|
-| **PRs required** | Direct pushes to `main`/`develop` are blocked |
+| **PRs required** | Direct pushes to `main`/`develop` blocked |
+| **10 CI checks must pass** | Build, commit format, no GDScript, file size, CLA, secrets, PR template |
 | **Rebase only** | No merge commits — linear history |
-| **1 approval required** | A maintainer must approve before merge |
-| **C# only** | GDScript is strictly prohibited |
+| **1 admin approval** | Required before merge |
+| **C# only** | GDScript strictly prohibited |
 | **Conventional commits** | `type(scope): description` |
-| **CLA required** | Must agree to CLA in every PR |
 
 ---
 
-## 📁 Project Structure
+## Tech Stack
+
+| Component | Choice |
+|-----------|--------|
+| **Engine** | Godot 4.6+ Mono |
+| **Language** | C# (.NET 8+) — GDScript prohibited |
+| **Architecture** | Composition mandatory, Command/Event pattern |
+| **Rendering** | Isometric 2D with chunked coordinates + origin shift |
+| **World Gen** | Seed-based deterministic procedural generation |
+| **AI** | Local LLM (llama.cpp, 7B quantized) + scripted fallback |
+| **CI/CD** | GitHub Actions (10 required checks per PR) |
+
+---
+
+## Project Structure
 
 ```
 project-kernex/
-├── docs/                    # Game design documents, guides, lore
-│   ├── ROADMAP.md           # Development roadmap
-│   ├── GAME_DESIGN.md       # Core game design document
-│   ├── SETUP.md             # Development environment setup
-│   ├── COMMANDS.md          # In-game terminal commands reference
-│   ├── ART_STYLE.md         # Visual style guide
-│   └── AUDIO_GUIDE.md       # Audio guidelines
-├── src/                     # Source code
-│   ├── core/                # Core game engine
-│   ├── terminal/            # Terminal emulator and shell
-│   ├── ai/                  # AI companion system (KIRA)
-│   ├── resources/           # Resource management systems
-│   ├── world/               # Procedural generation
-│   └── ui/                  # User interface
-├── assets/                  # Game assets
-│   ├── audio/               # Sound effects and music
-│   ├── textures/            # Visual assets
-│   ├── fonts/               # Terminal and UI fonts
-│   └── data/                # Game data files (JSON/YAML)
-├── tests/                   # Test suites
-├── tools/                   # Development tools and scripts
-├── LICENSE                  # Proprietary license
-├── CLA.md                   # Contributor License Agreement
-├── CONTRIBUTING.md          # Contribution guidelines
-├── CODE_OF_CONDUCT.md       # Community guidelines
-└── README.md                # This file
+├── project.godot                  Godot project root
+├── Project Kernex.csproj/.sln     .NET project (IDE opens this)
+├── src/                           All game code and assets
+│   ├── Assets/                    Audio, fonts, models, shaders, textures, themes
+│   ├── Autoloads/                 Global singletons (GameState, EventBus, OriginShift)
+│   ├── Components/                Reusable behavior (tscn + cs, same folder)
+│   ├── Nodes/                     Entities (ships, drones, station, environment, UI)
+│   ├── Screens/                   Game states (Root, MainMenu, Game, DevTools)
+│   ├── Core/                      Pure C# (interfaces, coordinates, enums, constants)
+│   ├── Systems/                   Game logic (production, combat, threat, AI, terminal)
+│   ├── Resources/                 .tres data + C# Resource definitions
+│   └── Tests/                     Isolated test scenes
+├── .claude/                       Agents and skills (auto-detected)
+├── .github/                       PR templates, CI workflows (10 checks)
+├── docs/                          Roadmap, setup, game-design/ (15 docs)
+├── CLAUDE.md                      Project conventions
+├── CONTRIBUTING.md                Contribution guide
+├── CLA.md                         Contributor License Agreement
+└── LICENSE                        Proprietary license
 ```
 
 ---
 
-## 🛠️ Tech Stack
+## License
 
-> **Under evaluation** — Leading candidates:
+**Proprietary software.** Source visible for community contribution, all rights reserved.
 
-- **Engine:** Godot 4.6+ Mono
-- **Language:** C# (.NET 8+) — GDScript strictly prohibited
-- **Architecture:** Composition mandatory, Command/Event pattern, offline-first → MMO-ready
-- **Rendering:** Isometric 2D/3D with chunked coordinate system
-- **World Gen:** Seed-based deterministic procedural generation
-- **AI:** Local LLM (llama.cpp, 7B quantized) + scripted fallback
-- **Audio:** TBD
-- **Build:** CI/CD with GitHub Actions
-
-Community input on tech stack decisions is welcome — see the related issue in the [Issues](../../issues) tab.
-
----
-
-## 📜 License
-
-This project is **proprietary software**. The source code is publicly visible to enable community contribution, but **all rights are reserved** by the project owner.
-
-- ❌ No redistribution
-- ❌ No permanent forks
-- ❌ No commercial use
-- ❌ No derivative works
-- ✅ Viewing and studying the code
-- ✅ Contributing via Pull Requests
+- ❌ No redistribution, permanent forks, commercial use, or derivatives
+- ✅ Viewing, studying, and contributing via Pull Requests
 
 See [LICENSE](LICENSE) for full terms.
 
 ---
 
-## 🏛️ Credits — The Monolith of Contributors
+## The Monolith of Contributors
 
-Every person who contributes to PROJECT KERNEX will be immortalized in the **Monolith of Contributors** — a credits monument displayed at the end of the game.
+Every contributor is immortalized in the **Monolith of Contributors** — a credits monument in the game.
 
-Your name. Your legacy. Carved in the void forever.
-
-*See [CONTRIBUTING.md](CONTRIBUTING.md) for contribution tiers and recognition details.*
-
----
-
-## ⚠️ AI Disclosure
-
-This project is developed **with AI assistance**. AI tools (such as GitHub Copilot, Claude, ChatGPT, and others) are used for:
-
-- Code generation and review
-- Game design brainstorming
-- Documentation drafting
-- Asset prototyping
-
-All AI-generated content is reviewed, curated, and modified by human contributors. Contributors must disclose when submitting AI-generated work.
+| Tier | Criteria |
+|------|----------|
+| **Architect** | Major systems, core features, sustained contribution |
+| **Engineer** | Significant features, important bug fixes |
+| **Technician** | Bug fixes, improvements, QoL |
+| **Operator** | Documentation, testing, issue triage |
+| **Scout** | First-time contributors, small fixes |
 
 ---
 
-## 📬 Contact
+## AI Disclosure
+
+This project uses AI tools (Claude, Copilot, ChatGPT) for code generation, game design, documentation, and asset prototyping. All AI content is reviewed by humans. Contributors must disclose AI usage in PRs.
+
+---
+
+## Contact
 
 - **Maintainer:** Matrix2100
 - **Email:** zenithprojects.dev@gmail.com

@@ -7,240 +7,197 @@
 
 ## Phase 0 — Foundation 🏗️ `CURRENT`
 
-**Goal:** Establish project structure, game design, community infrastructure, and technical architecture.
+**Goal:** Project structure, game design, community infrastructure, and technical architecture.
 
 - [x] Define core game concept
 - [x] Create repository structure
 - [x] Write LICENSE, CLA, CONTRIBUTING guidelines
-- [x] Draft Game Design Document (v0.2)
+- [x] Game design documentation (15 docs across all systems)
 - [x] Research reference games (Dark Orbit, OGame, Factorio, CoC, NMS, Star Citizen)
-- [x] Choose game engine and tech stack — **Godot 4.6+ Mono (C# / .NET 8+)**
+- [x] Choose game engine — Godot 4.6+ Mono (C# / .NET 8+)
+- [x] Set up CI/CD pipeline (10 PR checks)
+- [x] Branch protection rules (rebase only, approval required)
+- [x] Claude Code agents and skills for the project
 - [ ] Define command/event architecture (offline-first → online-ready)
-- [ ] Set up development environment documentation
-- [ ] Set up CI/CD pipeline
 - [ ] Create Discord server for community
 - [ ] Define art style guide (isometric)
-- [ ] Define audio guidelines
 
 ---
 
-## Phase 1 — Core Engine & Isometric World 🌍
+## Phase 1 — Terminal & KIRA (Core Innovation) 🖥️🤖
+
+**Goal:** Build the terminal and KIRA first — they are the core innovation and differentiate the game from everything else. Even before the isometric world exists, the terminal + KIRA should be functional and impressive.
+
+- [ ] Terminal emulator overlay (toggleable, resizable panel)
+- [ ] Command parser and execution engine
+- [ ] Core commands: `help`, `status`, `clear`, `log`, `kira`
+- [ ] Piping system (`|`) and command chaining
+- [ ] Aliases (`alias mine="drone deploy --type mining"`)
+- [ ] Basic `.vsh` scripting (loops, conditionals, variables)
+- [ ] Cron jobs (scheduled task execution)
+- [ ] KIRA scripted dialogue engine (Levels 0-2: Corrupted → Booting → Functional)
+- [ ] KIRA game state context injection
+- [ ] Local LLM integration prototype (llama.cpp, 7B quantized)
+- [ ] KIRA writes `.vsh` scripts on player request
+- [ ] Hardware detection and automatic fallback (LLM vs scripted)
+
+**MVP 1:** Terminal works, KIRA responds, player can type commands and KIRA writes scripts. The core innovation is playable.
+
+---
+
+## Phase 2 — Core Engine & Isometric World 🌍
 
 **Goal:** Isometric renderer, chunked coordinate system, and basic player interaction.
 
 - [ ] Isometric tile rendering engine
-- [ ] Chunked coordinate system (64-bit sector ID + 32-bit local offset)
-- [ ] Camera system (pan, zoom, multi-level zoom: station → sector → system → galaxy)
+- [ ] 3-level chunked coordinate system (Cell / Sector / Quadrant with origin shift)
+- [ ] Camera system (pan, zoom, multi-level: station → sector → system → galaxy)
 - [ ] Chunk manager (load/unload around camera, spatial hash map)
-- [ ] Basic player entity in isometric space
+- [ ] Entity registry (source of truth for all entities, live + off-screen)
+- [ ] Basic player ship in isometric space
 - [ ] Mouse + keyboard input handling
 - [ ] Basic UI framework (HUD, panels, tooltips)
-- [ ] Scene management (menus, gameplay, transitions)
+- [ ] Terminal integration with isometric view (commands trigger visual feedback)
 
-**MVP 1:** Player can navigate an isometric space environment with camera controls.
+**MVP 2:** Player navigates an infinite isometric space with origin shift. Terminal commands affect the world.
 
 ---
 
-## Phase 2 — Station Core 🏠
+## Phase 3 — Station Core 🏠
 
-**Goal:** Build the base — station modules, resources, and the building loop.
+**Goal:** Station building, resources, and production chains.
 
 - [ ] Three-resource economy (Metallum, Crystallis, Deuterium)
-- [ ] Resource data model (types, quantities, storage, overflow decay)
 - [ ] Building-as-levels system (upgrade, not duplicate)
-- [ ] Core buildings: Extractors, Refineries, Solar Array, Storage
-- [ ] Module placement on station grid (adjacency system)
-- [ ] Build/upgrade UI (requirements, timers, costs)
+- [ ] Core station modules: Extractors, Refineries, Solar Array, Storage
+- [ ] Module placement on station grid (adjacency bonuses)
 - [ ] Power system (generation, consumption, balance)
-- [ ] Basic production chain (ore → alloy → component)
-- [ ] Branching production interdependencies (Circuit Board = Wafer + Wire)
+- [ ] Branching production chains (Circuit Board = Wafer + Wire)
+- [ ] Module rarity system (Common → Legendary)
+- [ ] Module upgrade system (levels 1-16)
+- [ ] KIRA Level 3 (Aware) — proactive alerts, basic optimization tips
 
-**MVP 2:** Player builds a station, mines resources, processes production chains.
+**MVP 3:** Player builds a station, mines resources, processes production chains. Modules can be crafted and upgraded.
 
 ---
 
-## Phase 3 — Fleet & Combat ⚔️
+## Phase 4 — Fleet & Combat ⚔️
 
 **Goal:** Ships, drones, and real-time isometric combat.
 
-- [ ] Ship data model (classes, equipment slots, stats)
-- [ ] Fleet composition system with hard counters (rapid-fire mechanic)
-- [ ] Ship building in Shipyard (queued construction)
-- [ ] Basic ship movement and navigation in isometric space
-- [ ] Lock-on targeting and auto-fire combat
+- [ ] Ship classes (Fighter → Cruiser → Battleship → Destroyer → Carrier)
+- [ ] Fleet composition with rapid-fire hard counters
+- [ ] Ship module slots (weapons, shields, armor, engine, power, utility)
 - [ ] Combat drones (orbiting flagship, equipment slots, formations)
-- [ ] PvE enemies: pirates, rogue AI, alien creatures
+- [ ] Lock-on targeting and auto-fire combat
+- [ ] PvE enemies (pirates, rogue AI, alien creatures)
 - [ ] Loot drops and cargo collection
-- [ ] Equipment system (weapons, shields, generators, ammo types)
-- [ ] Equipment upgrade path (levels 1-16)
+- [ ] KIRA Level 4 (Adaptive) — fleet composition advice
 
-**MVP 3:** Player builds a fleet and fights enemies in real-time isometric combat.
+**MVP 4:** Player builds a fleet and fights enemies in real-time. Fleet composition matters.
 
 ---
 
-## Phase 4 — Defense & Threats 🛡️
+## Phase 5 — Defense & Threats 🛡️
 
-**Goal:** Station defense, the activity-threat feedback loop, and attack/defense gameplay.
+**Goal:** Station defense and the activity-threat feedback loop.
 
-- [ ] Threat system: activity generates energy signature → attracts threats
-- [ ] Environmental threats (asteroids, radiation storms, solar flares)
-- [ ] Hostile threats (pirate raids, rogue AI attacks)
-- [ ] Defense structures: turrets (point, splash, anti-air), shields, traps
-- [ ] Defense placement affecting coverage (kill zones, blind spots)
-- [ ] Bulkhead system (damage isolation between modules)
+- [ ] Activity → energy signature → attracts threats
+- [ ] Defense modules: turrets, shields, traps, bulkheads
+- [ ] Thermal system (radiators, overheating mechanic)
 - [ ] 70% auto-repair after attacks
-- [ ] Threat cooldown after major attacks
-- [ ] Post-attack event log
-- [ ] Early warning system (sensor array, preparation window)
+- [ ] Post-attack event logs (reviewable via terminal)
+- [ ] KIRA Level 5 (Analytical) — threat analysis, defense suggestions
 
-**MVP 4:** Station is attacked, player defends with layered defenses, reviews attack logs.
+**MVP 5:** Station gets attacked, player defends with layered systems, KIRA analyzes the results.
 
 ---
 
-## Phase 5 — Exploration & Procedural World 🗺️
+## Phase 6 — Exploration & Procedural Universe 🗺️
 
-**Goal:** Infinite procedurally generated universe with exploration mechanics.
+**Goal:** Infinite universe with procedural generation and anomalies.
 
 - [ ] Seed-based deterministic sector generation
 - [ ] Galaxy → Region → Constellation → System → Sector hierarchy
-- [ ] Hex grid sector map (isometric-friendly)
-- [ ] Fog of war (unknown → scanned → explored)
-- [ ] Intel decay over time
+- [ ] Fog of war with intel decay
 - [ ] Sector archetypes (resource-rich, hazardous, derelict, deep void)
-- [ ] Anomaly system (data caches, derelict ships, void rifts, ancient structures)
-- [ ] Hyperspace lanes between systems (strategic chokepoints)
-- [ ] Multi-zoom galaxy map (sector → system → galaxy views)
-- [ ] Scout drones for remote exploration
+- [ ] Anomaly system (data caches, derelict ships, void rifts, KIRA fragments)
+- [ ] Hyperspace lanes (strategic chokepoints)
+- [ ] KIRA Level 6 (Autonomous) — independent exploration, KIRA Data Fragment discovery
 
-**MVP 5:** Player explores an infinite universe, discovers anomalies, finds rare resources in deep sectors.
-
----
-
-## Phase 6 — Terminal & Automation 🖥️
-
-**Goal:** In-game terminal (vsh) and scripting system as the power-user layer.
-
-- [ ] Terminal emulator overlay (toggleable, resizable)
-- [ ] Command parser and execution engine
-- [ ] Core commands: `help`, `status`, `scan`, `drone`, `refinery`, `build`, `defense`, `map`, `log`
-- [ ] Piping system (`|`) and command chaining
-- [ ] Aliases (`alias mine="drone deploy --type mining"`)
-- [ ] `.vsh` scripting language (loops, conditionals, variables)
-- [ ] Cron jobs (scheduled automation)
-- [ ] `watch` command (real-time monitoring)
-- [ ] Script editor (in-game)
-- [ ] Command output ↔ isometric view sync (commands trigger visual feedback)
-
-**MVP 6:** Power users can automate their entire station through terminal scripts.
+**MVP 6:** Player explores an infinite universe, discovers anomalies, finds rare resources and KIRA fragments.
 
 ---
 
-## Phase 7 — KIRA AI 🤖
+## Phase 7 — The Constellation (Research Web) 🌳
 
-**Goal:** Local LLM companion that equalizes automation access for all players.
+**Goal:** The full PoE-style research web with 16 clusters and module unlocks.
 
-- [ ] KIRA dialogue engine (scripted fallback for low-spec hardware)
-- [ ] Local LLM integration (llama.cpp or similar, 7B quantized model)
-- [ ] Game state context injection into LLM prompts
-- [ ] KIRA evolution stages (0-4) with unlock progression
-- [ ] KIRA writes `.vsh` scripts on player request
-- [ ] Proactive alerts and suggestions based on game state
-- [ ] KIRA personality system (evolves with stages)
-- [ ] Story fragments delivered through KIRA dialogue
-- [ ] Hardware detection and automatic fallback (LLM vs scripted)
+- [ ] Constellation UI (radial web, zoom, pan, node selection)
+- [ ] 16 clusters with Inner / Mid / Outer / Keystone depths
+- [ ] 18 bridge nodes connecting adjacent clusters
+- [ ] Blueprint nodes unlock module crafting recipes
+- [ ] Research consumes refined products
+- [ ] Cross-cluster synergies
+- [ ] KIRA Level 7 (Strategic) — suggests optimal research paths
 
-**MVP 7:** Non-dev player asks KIRA "automate mining in sector 7" and KIRA writes, deploys, and monitors the script.
+**MVP 7:** Player researches through the Constellation, unlocks module blueprints, and crafts new equipment.
 
 ---
 
-## Phase 8 — Tech Tree & Progression 📊
+## Phase 8 — Factions & Narrative 🏛️
 
-**Goal:** Research system, equipment progression, and station tiers.
+**Goal:** Three-faction system, lore, and KIRA's story arc.
 
-- [ ] Tech tree with prerequisites (Energy → Computing → Materials → Combat → Utility)
-- [ ] Research consumes refined products (forces working production chains)
-- [ ] Station tier progression (Outpost → Station → Complex → Hub → Nexus)
-- [ ] Ship class unlocks through research
-- [ ] Propulsion tech (Chemical → Ion → Hyperspace drives)
-- [ ] Combat tech (+10% damage/shields/armor per level)
-- [ ] Mutually exclusive research paths (encourage different playstyles)
-
----
-
-## Phase 9 — Factions & Lore 🏛️
-
-**Goal:** Three-faction system, narrative, and world-building.
-
-- [ ] Faction selection at game start (HELIX, NOVA, VOID)
-- [ ] Faction-specific starting locations, bonuses, and aesthetics
+- [ ] Faction selection (HELIX, NOVA, VOID) with bonuses and aesthetics
 - [ ] Lore entries discoverable through exploration
-- [ ] KIRA story arc (fragments across evolution stages)
+- [ ] KIRA story arc (fragments across Levels 0-9)
 - [ ] 50+ unique anomaly events
-- [ ] Crew logs, ancient messages, data caches with narrative
+- [ ] KIRA Levels 8-9 (Transcendent → Ascended) — story conclusion
 - [ ] Tutorial / onboarding flow
 
 ---
 
-## Phase 10 — Polish & Release 🎨
+## Phase 9 — Polish & Release 🎨
 
-**Goal:** Game feel, content, and Steam launch preparation.
+**Goal:** Game feel, content, and Steam launch.
 
-- [ ] Sound design (ambient space, station ops, combat, KIRA voice)
-- [ ] Music (atmospheric, procedurally layered by game state)
+- [ ] Sound design (ambient, station ops, combat, KIRA voice)
+- [ ] Music (atmospheric, procedurally layered)
 - [ ] Visual polish (particles, lighting, UI animations)
-- [ ] Full isometric art pass (station modules, ships, environments)
+- [ ] Full isometric art pass
 - [ ] Achievement system
 - [ ] Monolith of Contributors (credits)
 - [ ] Steam integration (achievements, cloud saves)
 - [ ] Playtesting and balancing
-- [ ] Steam store page, trailer, press kit
 - [ ] **Steam Early Access Release**
 
 ---
 
-## Phase 11 — Online MVP 🌐
+## Phase 10 — Online MVP 🌐
 
-**Goal:** First multiplayer features — transition from offline to online.
+**Goal:** First multiplayer features — offline to online transition.
 
 - [ ] Server infrastructure (connection server, game state service)
-- [ ] Player authentication (OAuth)
-- [ ] Persistent world state database (stations, territory, discoveries)
-- [ ] Inter-player communication (comms system)
+- [ ] Player authentication
+- [ ] Persistent world state (stations, territory, discoveries)
 - [ ] Resource trading between players
-- [ ] Per-system instancing (each system = instance)
 - [ ] Basic PvP (raiding, fleet combat, bashing limits)
-- [ ] Shield/cooldown system after attacks
 
 ---
 
-## Phase 12 — MMO Features 🌍
+## Phase 11 — MMO & Endgame 🌍
 
-**Goal:** Full MMO experience — territory, clans, warfare.
+**Goal:** Full MMO — territory, clans, warfare, endgame content.
 
-- [ ] Clan system (creation, management, chat, tags)
-- [ ] Alliance system (NAP, trade agreements, full alliance)
-- [ ] Territory sovereignty (claim, maintain, contest sectors)
-- [ ] Activity Defense Multiplier (active occupation strengthens defense)
-- [ ] Clan Wars (preparation → execution cycle)
-- [ ] Alliance Combat System (combined fleets)
-- [ ] Global faction map (territory visualization)
-- [ ] Shared script repository (`vpm` — void package manager)
-- [ ] Leaderboards (individual, clan, faction)
-- [ ] Server meshing for high player density
-
----
-
-## Phase 13 — Endgame & Expansion 🚀
-
-**Goal:** Deep endgame content and continued development.
-
-- [ ] Void Gates (instanced wave-based PvE, exclusive rewards)
-- [ ] Unknown Entities (endgame threat from deep void)
-- [ ] Ancient alien technology research
-- [ ] Capital ships (massive fleet flagships)
-- [ ] Cross-region warfare events
-- [ ] Expansion DLCs (new regions, lore, mechanics)
-- [ ] Community-driven events and content
+- [ ] Clan and alliance system
+- [ ] Territory sovereignty (claim, maintain, contest)
+- [ ] Clan Wars and Alliance Combat System
+- [ ] Void Gates (instanced wave-based PvE)
+- [ ] Unknown Entities (endgame threats)
+- [ ] Shared script repository (`vpm`)
+- [ ] Server meshing for scale
+- [ ] Expansion DLCs
 
 ---
 
