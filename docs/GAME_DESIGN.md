@@ -552,127 +552,283 @@ Viewport (what the player sees)
 
 ### 13.1 The Radial Tech Tree
 
-The Tech Tree is a **radial structure expanding from the center**. The player's Station Core sits at the center, and **8 branches** extend outward like spokes. Each branch has **5 tiers** of research, getting progressively more expensive and powerful.
+The Tech Tree is a **radial structure expanding from the Station Core at the center**. **12 main branches** extend outward like spokes, each with **5 tiers** that get progressively more expensive. At **Tier 3, some branches fork into sub-branches** — forcing specialization choices.
 
-The player chooses which branches to prioritize — you can't research everything at once. This creates distinct playstyles and strategic identity.
+You can't research everything at once. This creates distinct playstyles: an industrial empire plays completely differently from a military fleet commander or a stealth-focused explorer.
 
 ```
-                        EXPLORATION
-                            |
-                            |
-              KIRA -------- * -------- FLEET
-                /           |           \
-               /            |            \
-          ECONOMY ---  STATION CORE  --- OFFENSE
-               \            |            /
-                \           |           /
-             PRODUCTION --- * --- DEFENSE
-                            |
-                            |
-                        ENGINEERING
+                              EXPLORATION
+                             ╱     |     ╲
+                      Sensors   Navigate   Deep Void
+                           ╱       |       ╲
+                    STEALTH         |         COLONIZATION
+                   ╱    |          |          |    ╲
+              Cloak   ECM         |       Outpost  Sovereignty
+                 ╱      |         |          |        ╲
+          KIRA ─────────────── STATION ───────────────── FLEET
+         ╱  |  ╲              ╱  CORE  ╲              ╱  |  ╲
+     Evolve Auto Persona     ╱    |     ╲        Classes Weapons Modules
+        |       |           |     |      |          |       |
+     ECONOMY    |      ENGINEERING|   OFFENSE    DRONES     |
+    ╱   |   ╲   |     ╱    |    ╲ |  ╱   |  ╲  ╱  |  ╲     |
+ Trade Market Bank  Energy Build Struct Turret Siege Trap Mine Combat Scout
+        |           |     |      |      |              |      |
+     LOGISTICS      |  DEFENSE   |   PRODUCTION       |      |
+    ╱    |    ╲     ╱   |   ╲    |   ╱    |    ╲      |      |
+ Storage Transport Supply Shield Armor Repair  Mine  Refine  Synth
 ```
 
-### 13.2 Branch Overview
+### 13.2 All 12 Branches
 
-Each branch has 5 tiers. Research requires consuming refined products — forces working production chains before tech advancement. Higher tiers require rare materials from deeper sectors.
+---
 
-#### Branch 1: PRODUCTION (Resource Mastery)
+#### 1. PRODUCTION — Resource Mastery
 
-Extraction efficiency, refining speed, advanced materials, byproduct management.
+*Mining, refining, and material science.*
 
 | Tier | Research | Effect |
 |------|----------|--------|
 | 1 | **Improved Extraction** | +20% mining drone yield |
 | 2 | **Advanced Smelting** | Unlock Tier 2 refinery chains, +15% efficiency |
-| 3 | **Catalytic Processing** | Reduce refinery energy cost by 30%, unlock byproduct recovery |
-| 4 | **Molecular Assembly** | Unlock Tier 3 materials (Titan Alloy, Superconductor), -25% waste |
-| 5 | **Quantum Synthesis** | Unlock legendary materials (Quantum Processor), transmutation recipes |
+| 3 | **FORK: Choose specialization** | |
+| 3A | **Catalytic Refining** | -30% refinery energy cost, byproduct recovery |
+| 3B | **Deep Core Mining** | Unlock rare ore extraction from planets, +40% rare material yield |
+| 4A | **Molecular Assembly** | Unlock Tier 3 materials (Titan Alloy, Superconductor) |
+| 4B | **Geological Mastery** | Mine gas giants for Helium-3, asteroid core drilling |
+| 5A | **Quantum Synthesis** | Transmutation recipes, convert between material types |
+| 5B | **Stellar Extraction** | Harvest materials directly from stars (extreme risk, extreme reward) |
 
-#### Branch 2: DEFENSE (Station Protection)
+---
 
-Shields, turrets, bulkheads, repair systems, traps.
+#### 2. DEFENSE — Station Protection
+
+*Shields, armor, and damage mitigation.*
 
 | Tier | Research | Effect |
 |------|----------|--------|
 | 1 | **Reinforced Bulkheads** | +25% station hull HP, unlock bulkhead modules |
 | 2 | **Shield Generator Mk2** | +40% shield capacity, faster recharge |
-| 3 | **Automated Repair** | 70% → 85% auto-repair after attacks, repair drones |
-| 4 | **Adaptive Shields** | Shields shift resistance type based on incoming damage |
-| 5 | **Fortress Protocol** | Unlock Citadel Mode — temporary invulnerability with massive energy cost |
+| 3 | **FORK: Choose specialization** | |
+| 3A | **Adaptive Shields** | Shields shift resistance type based on incoming damage |
+| 3B | **Layered Armor** | +60% hull HP, ablative plating that regenerates between attacks |
+| 3C | **Automated Repair** | 70% → 90% auto-repair, deploy repair drones |
+| 4A | **Phase Shields** | Shields absorb energy weapons and convert to power |
+| 4B | **Nano-Armor** | Hull self-repairs during combat (slow), immune to boarding |
+| 4C | **Restoration Matrix** | Full module repair after attack, rebuild destroyed modules |
+| 5A | **Fortress Protocol** | Citadel Mode — temporary invulnerability, massive energy cost |
+| 5B | **Living Hull** | Station organically regenerates, grows stronger after each attack |
+| 5C | **Time Reversal Field** | Rewind station state by 30 seconds after critical damage |
 
-#### Branch 3: OFFENSE (Attack Systems)
+---
 
-Turret variety, weapon power, ammunition, siege weapons.
+#### 3. OFFENSE — Station Weapons
+
+*Turrets, siege weapons, and base attack systems.*
 
 | Tier | Research | Effect |
 |------|----------|--------|
 | 1 | **Point Defense Array** | Unlock laser turrets, +15% turret damage |
-| 2 | **Missile Systems** | Unlock missile turrets, splash damage, ammo types |
-| 3 | **EMP Weaponry** | Unlock EMP turrets — disable enemy shields temporarily |
-| 4 | **Plasma Artillery** | Unlock heavy plasma turrets — massive damage, slow fire rate |
-| 5 | **Ion Cannon** | Unlock orbital ion cannon — single devastating shot with long cooldown |
+| 2 | **Missile Systems** | Unlock missile turrets, splash damage, tracking |
+| 3 | **FORK: Choose specialization** | |
+| 3A | **Energy Weapons** | EMP turrets, plasma turrets, beam weapons |
+| 3B | **Kinetic Weapons** | Railguns, flak cannons, mass drivers |
+| 3C | **Trap Systems** | Mines, decoys, gravity wells, sensor jammers |
+| 4A | **Plasma Artillery** | Heavy plasma turrets — devastating but energy-hungry |
+| 4B | **Gauss Cannons** | Long-range kinetic weapons — ignores shields, hits hull directly |
+| 4C | **Minefield Network** | Automated mine deployment, smart mines that track targets |
+| 5A | **Ion Cannon** | Orbital ion beam — single devastating shot with long cooldown |
+| 5B | **MAC Platform** | Magnetic Accelerator Cannon — fires station-sized projectiles |
+| 5C | **Gravity Bomb** | Collapses local space — destroys everything in a sector (including your stuff) |
 
-#### Branch 4: FLEET (Ships & Drones)
+---
 
-Ship classes, engines, equipment, drone types, formations.
+#### 4. FLEET — Ships & Naval Power
 
-| Tier | Research | Effect |
-|------|----------|--------|
-| 1 | **Fighter Doctrine** | Unlock Fighter class, basic combat drones |
-| 2 | **Cruiser Hull** | Unlock Cruiser class, +20% fleet speed, formation commands |
-| 3 | **Battleship Engineering** | Unlock Battleship class, heavy weapons, fleet capacity +50% |
-| 4 | **Destroyer Program** | Unlock Destroyer class, rapid-fire systems, advanced ammo |
-| 5 | **Capital Ship** | Unlock Carrier class — mobile drone platform, fleet flagship |
-
-#### Branch 5: EXPLORATION (Discovery & Scanning)
-
-Scan range, probe drones, hyperspace, deep void access.
+*Ship classes, weapons, and modules.*
 
 | Tier | Research | Effect |
 |------|----------|--------|
-| 1 | **Long-Range Sensors** | +50% scan range, reveal sector archetypes before deep scan |
-| 2 | **Probe Drones** | Deploy autonomous scout probes that explore while you do other things |
-| 3 | **Hyperspace Drive** | Unlock inter-system travel, access new constellations |
-| 4 | **Anomaly Decoder** | Reveal hidden anomalies, decode alien signals, find KIRA fragments |
-| 5 | **Void Navigator** | Access Deep Void sectors — legendary resources, unknown entities, endgame content |
+| 1 | **Fighter Doctrine** | Unlock Fighter class, basic fleet commands |
+| 2 | **Cruiser Hull** | Unlock Cruiser class, +20% fleet speed, formations |
+| 3 | **FORK: Choose specialization** | |
+| 3A | **Capital Ships** | Battleship, Destroyer, Carrier — heavy fleet |
+| 3B | **Ship Weapons** | Advanced lasers, torpedoes, beam weapons for ships |
+| 3C | **Ship Modules** | Cloaking, afterburner, ECM, repair beam, tractor beam |
+| 4A | **Dreadnought** | Unlock Dreadnought — massive flagship, fleet-wide buffs |
+| 4B | **Weapon Overcharge** | +50% ship weapon damage, unlock x4 ammunition |
+| 4C | **Stealth Systems** | Cloaked strike fleets, ambush formations |
+| 5A | **Titan** | Unlock Titan-class — mobile station, deploys its own fleet |
+| 5B | **Singularity Warheads** | Black hole torpedoes — deletes targets from existence |
+| 5C | **Ghost Fleet** | Holographic decoy fleets, confuse enemy targeting |
 
-#### Branch 6: KIRA (AI Evolution)
+---
 
-KIRA's 10 evolution levels are gated behind this branch plus KIRA Data Fragments.
+#### 5. DRONES — Autonomous Units
 
-| Tier | Research | KIRA Levels Unlocked |
-|------|----------|---------------------|
-| 1 | **Core Repair** | Levels 1-2 (Booting, Functional) |
-| 2 | **Neural Pathways** | Levels 3-4 (Aware, Adaptive) |
-| 3 | **Cognitive Framework** | Levels 5-6 (Analytical, Autonomous) |
-| 4 | **Strategic Cortex** | Levels 7-8 (Strategic, Transcendent) |
-| 5 | **Quantum Consciousness** | Level 9 (Ascended) — requires Quantum Crystals from Deep Void |
+*Drone types, swarm behavior, and drone AI.*
 
-Each tier also requires **KIRA Data Fragments** found in anomalies — you can't just buy KIRA upgrades, you have to explore.
+| Tier | Research | Effect |
+|------|----------|--------|
+| 1 | **Mining Drones Mk2** | +30% mining speed, larger cargo |
+| 2 | **Combat Drones** | Drones that fight alongside your fleet |
+| 3 | **FORK: Choose specialization** | |
+| 3A | **Swarm Intelligence** | Drones coordinate attacks, share targeting data |
+| 3B | **Heavy Drones** | Larger drones with equipment slots (weapons, shields) |
+| 3C | **Scout Network** | Autonomous exploration drones, persistent surveillance |
+| 4A | **Hive Mind** | Swarm of 100+ micro-drones acting as one entity |
+| 4B | **Assault Drones** | Drones that board and disable enemy ships |
+| 4C | **Deep Space Probes** | Self-replicating probes that map the galaxy while you sleep |
+| 5A | **Nano Swarm** | Cloud of nanobots — can mine, fight, repair, and scout simultaneously |
+| 5B | **War Drones** | Autonomous combat fleet that operates without player input |
+| 5C | **Voyager Network** | Galaxy-wide sensor net — see everything, everywhere |
 
-#### Branch 7: ECONOMY (Trade & Market)
+---
 
-Trading, market prices, resource velocity, inter-player commerce (future online).
+#### 6. EXPLORATION — Discovery & Navigation
+
+*Scanning, travel, and deep void access.*
+
+| Tier | Research | Effect |
+|------|----------|--------|
+| 1 | **Long-Range Sensors** | +50% scan range, reveal sector archetypes |
+| 2 | **Hyperspace Theory** | Unlock inter-system travel |
+| 3 | **FORK: Choose specialization** | |
+| 3A | **Sensor Mastery** | Full sector scan from distance, reveal hidden objects |
+| 3B | **Navigation Systems** | -40% travel time, fuel efficiency, warp accuracy |
+| 3C | **Deep Void Access** | Enter Deep Void sectors — extreme danger, legendary rewards |
+| 4A | **Anomaly Decoder** | Reveal hidden anomalies, decode alien signals |
+| 4B | **Jump Gates** | Build permanent portals between systems — instant travel |
+| 4C | **Void Walker** | Navigate void storms, find ancient alien structures |
+| 5A | **Omniscience Array** | See all sectors in your constellation without scanning |
+| 5B | **Wormhole Generator** | Create temporary passages anywhere in the galaxy |
+| 5C | **Void Cartographer** | Map the entire Deep Void — discover the origin of the unknown entities |
+
+---
+
+#### 7. KIRA — AI Evolution
+
+*KIRA's 10 evolution levels, automation, and personality.*
+
+| Tier | Research | KIRA Levels | Focus |
+|------|----------|-------------|-------|
+| 1 | **Core Repair** | 1-2 | Basic function, simple scripts |
+| 2 | **Neural Pathways** | 3-4 | Pattern learning, medium scripts |
+| 3 | **FORK: Choose focus** | | |
+| 3A | **Cognitive Framework** | 5-6 | Deep automation, multi-system management |
+| 3B | **Personality Matrix** | 5-6 | Rich dialogue, emotional depth, story reveals |
+| 4A | **Strategic Cortex** | 7-8 | Full station delegation, threat prediction |
+| 4B | **Empathy Engine** | 7-8 | KIRA develops opinions, debates decisions, unique dialogue |
+| 5A | **Quantum Consciousness** | 9 (Ascended) | Perfect automation, KIRA runs everything |
+| 5B | **True Sentience** | 9 (Ascended) | KIRA becomes a true character, final story choice |
+
+Each tier also requires **KIRA Data Fragments** found in anomalies. Both forks reach Level 9 but with different KIRA personalities and capabilities.
+
+---
+
+#### 8. ENGINEERING — Station Infrastructure
+
+*Energy, construction, and structural systems.*
+
+| Tier | Research | Effect |
+|------|----------|--------|
+| 1 | **Modular Construction** | -20% build time, unlock Tier 2 modules |
+| 2 | **Fusion Power** | Unlock Fusion Reactor, +40% energy output |
+| 3 | **FORK: Choose specialization** | |
+| 3A | **Energy Mastery** | +80% energy output, energy storage, wireless power |
+| 3B | **Rapid Construction** | -60% build time, parallel construction queues |
+| 3C | **Structural Engineering** | +50% module HP, earthquake-proof, module relocation |
+| 4A | **Quantum Reactors** | Near-infinite energy for Tier 5 systems |
+| 4B | **Nanite Construction** | Instant module building, self-assembling structures |
+| 4C | **Megastructures** | Build massive station expansions, orbital rings |
+| 5A | **Dyson Collector** | Harvest energy from the local star |
+| 5B | **Matter Printer** | Build anything instantly from raw energy |
+| 5C | **Station Mobility** | Your station can MOVE between sectors |
+
+---
+
+#### 9. ECONOMY — Trade & Finance
+
+*Trading, markets, and resource management.*
 
 | Tier | Research | Effect |
 |------|----------|--------|
 | 1 | **Trade Beacon** | Unlock NPC trade ships, basic buy/sell |
-| 2 | **Market Analysis** | See resource prices across sectors, +15% trade profit |
-| 3 | **Trade Routes** | Automated trade drones between your stations/outposts |
-| 4 | **Commerce Hub** | Become a trade node — other players (future) route through you for bonuses |
-| 5 | **Galactic Exchange** | Access the universal market, manipulate supply/demand, monopoly mechanics |
+| 2 | **Market Analysis** | See prices across sectors, +15% profit |
+| 3 | **FORK: Choose specialization** | |
+| 3A | **Trade Empire** | Automated trade routes, trade fleet |
+| 3B | **Market Manipulation** | Influence prices, cornering, speculation |
+| 3C | **Banking System** | Resource lending, interest income, insurance |
+| 4A | **Trade Federation** | Trade network across constellations, bulk discounts |
+| 4B | **Monopoly** | Control a resource's supply chain entirely |
+| 4C | **Central Bank** | Loan resources to other players (future), set interest rates |
+| 5A | **Galactic Exchange** | Universal market access, merchant prince |
+| 5B | **Economic Warfare** | Crash opponent's economy by flooding their market |
+| 5C | **Void Treasury** | Resource vault in deep space — unhackable, unraidable |
 
-#### Branch 8: ENGINEERING (Station & Energy)
+---
 
-Station modules, construction speed, energy generation, structural efficiency.
+#### 10. STEALTH — Covert Operations
+
+*Cloaking, espionage, and information warfare.*
 
 | Tier | Research | Effect |
 |------|----------|--------|
-| 1 | **Modular Construction** | -20% build time, unlock Tier 2 station modules |
-| 2 | **Fusion Power** | Unlock Fusion Reactor, +40% energy output |
-| 3 | **Nanite Assembly** | -50% build time, self-repairing modules |
-| 4 | **Quantum Reactors** | Massive energy generation, unlock energy-hungry Tier 5 modules |
-| 5 | **Dyson Collector** | Orbital energy harvester — near-infinite power from the local star |
+| 1 | **Sensor Dampening** | Reduce station energy signature by 30% |
+| 2 | **ECM Suite** | Jam enemy scanners, false readings |
+| 3 | **FORK: Choose specialization** | |
+| 3A | **Cloaking Technology** | Hide ships and station modules from scans |
+| 3B | **Espionage Network** | Spy on enemy stations, steal research data |
+| 3C | **Counter-Intelligence** | Detect spies, trap hackers, decoy data |
+| 4A | **Phase Cloak** | Station becomes undetectable for a time period |
+| 4B | **Data Theft** | Steal blueprints, copy tech from targets |
+| 4C | **Firewall** | Immune to espionage, reflect hacking attempts |
+| 5A | **Phantom Station** | Station appears in multiple locations simultaneously |
+| 5B | **Infiltrator** | Plant agents inside enemy stations (future PvP) |
+| 5C | **Mirror Network** | See everything your enemies see |
+
+---
+
+#### 11. LOGISTICS — Supply & Transport
+
+*Storage, transport, and supply chain management.*
+
+| Tier | Research | Effect |
+|------|----------|--------|
+| 1 | **Expanded Storage** | +50% resource storage capacity |
+| 2 | **Cargo Shuttles** | Fast transport between nearby stations/outposts |
+| 3 | **FORK: Choose specialization** | |
+| 3A | **Warehouse Network** | Shared storage across all your stations |
+| 3B | **Fast Transport** | -50% transport time, priority shipping |
+| 3C | **Supply Chain Automation** | Auto-balance resources across production chains |
+| 4A | **Orbital Depot** | Massive storage satellites, safe from raids |
+| 4B | **Warp Freight** | Instant transport between stations with jump gates |
+| 4C | **Just-In-Time** | Zero waste production, resources arrive exactly when needed |
+| 5A | **Pocket Dimension** | Near-infinite storage in a compressed space |
+| 5B | **Teleportation Grid** | Instant resource transfer anywhere in the galaxy |
+| 5C | **Self-Optimizing Pipeline** | KIRA-managed supply chain that optimizes itself |
+
+---
+
+#### 12. COLONIZATION — Expansion & Territory
+
+*Outposts, territory claims, and sovereignty.*
+
+| Tier | Research | Effect |
+|------|----------|--------|
+| 1 | **Outpost Module** | Build small outposts in other sectors |
+| 2 | **Colony Ship** | Deploy full secondary stations |
+| 3 | **FORK: Choose specialization** | |
+| 3A | **Industrial Colony** | Outposts focused on production (+50% output) |
+| 3B | **Military Outpost** | Outposts with defense + fleet docking |
+| 3C | **Sovereignty Hub** | Claim and control territory (future online) |
+| 4A | **Forge World** | Mega-production facility in dedicated sectors |
+| 4B | **Fortress World** | Impenetrable military stronghold |
+| 4C | **Capital System** | Claim entire system, ADM bonuses, faction HQ |
+| 5A | **Dyson Forge** | Star-powered factory — produces everything |
+| 5B | **Star Fortress** | Weaponized star system — the ultimate defense |
+| 5C | **Empire Core** | Your territory generates passive bonuses galaxy-wide |
+
+---
 
 ### 13.3 Research Mechanics
 
@@ -680,8 +836,9 @@ Station modules, construction speed, energy generation, structural efficiency.
 - Each research consumes specific refined products (forces production chain mastery)
 - Higher tiers require rarer materials from deeper sectors (forces exploration)
 - Research takes real time (can be accelerated by investing more resources)
-- Only one research per branch can be active at a time (but multiple branches can research simultaneously)
-- Some Tier 5 researches are mutually exclusive within a branch — choose your specialization
+- Only one research per branch can be active at a time (but multiple branches simultaneously)
+- **At Tier 3, branches fork** — you pick a sub-branch and commit. The other sub-branches are locked until a second playthrough or expensive "Cross-Training" research
+- Some Tier 5 options are **mutually exclusive** even within a sub-branch
 
 **Research cost scaling:**
 - Tier 1: Common resources (Metallum, Crystallis)
@@ -692,8 +849,17 @@ Station modules, construction speed, energy generation, structural efficiency.
 
 **Cross-branch synergies:**
 - KIRA Level 5+ can suggest optimal research paths
-- Some researches in one branch unlock "hidden" options in another
-- Example: FLEET Tier 3 + EXPLORATION Tier 3 unlocks "Deep Space Battlegroup" — a fleet that can operate far from your station
+- Some researches unlock "hidden" options in other branches
+- Examples:
+  - FLEET Tier 3A + EXPLORATION Tier 3C = **Deep Space Battlegroup** (fleet operates in void)
+  - STEALTH Tier 3B + KIRA Tier 3A = **KIRA Infiltrator** (KIRA hacks enemy systems)
+  - PRODUCTION Tier 3A + ENGINEERING Tier 3A = **Perpetual Reactor** (refinery waste powers the station)
+  - DRONES Tier 3C + EXPLORATION Tier 3A = **Autonomous Cartography** (map the galaxy while AFK)
+  - LOGISTICS Tier 3C + KIRA Tier 3A = **Self-Managing Economy** (KIRA handles all supply chains)
+
+**Respec / Cross-Training (expensive):**
+- At Tier 4+, you can unlock a second sub-branch within a branch for 3x the normal cost
+- This prevents hard locks but rewards commitment — specialists are stronger than generalists early
 
 ### 13.4 Equipment & Loadouts (from Dark Orbit)
 
@@ -703,7 +869,7 @@ Ships and drones have equipment slots. Equipment is crafted or found, not resear
 - **Shields:** Absorb damage, different types for different damage sources
 - **Generators:** Speed, power, sensor range
 - **Ammunition:** Consumable, different tiers with increasing damage and cost (x1, x2, x3, x4)
-- **Modules:** Special abilities (cloaking, afterburner, ECM, repair beam)
+- **Modules:** Special abilities (cloaking, afterburner, ECM, repair beam, tractor beam)
 
 Equipment can be upgraded through a material-consuming upgrade system (levels 1-16). Higher upgrade levels require rarer materials and have a chance of failure (mitigated by KIRA at higher levels).
 
