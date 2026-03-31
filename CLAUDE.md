@@ -224,19 +224,57 @@ Layer 9: Drones (enemy)
 Layer 10: UI interaction zones
 ```
 
-## Commit Convention
+## Commit & Branch Convention
 
-Follow [Conventional Commits](https://www.conventionalcommits.org/):
+Full reference: `.claude/skills/github/SKILL.md`
+
+### Branch Naming
 ```
-feat: add asteroid mining drill mechanic
-fix: correct resource calculation overflow
-docs: update terminal command reference
-art: add new space station hull textures
-audio: add ambient engine hum sound effect
-refactor: extract resource pipeline logic
-test: add unit tests for refinery system
-perf: optimize chunk loading with spatial hash
+feature/chunk-system       fix/origin-shift-jitter      docs/update-roadmap
+art/station-textures       perf/chunk-loading            refactor/extract-chain
 ```
+Always branch from `develop`. Never push directly to `main` or `develop`.
+
+### Commit Format
+```
+type(scope): imperative description (max 72 chars)
+
+Optional body: explain WHY, not WHAT.
+
+Closes #123
+```
+
+### Types
+| Type | Use |
+|------|-----|
+| `feat` | New feature |
+| `fix` | Bug fix |
+| `docs` | Documentation |
+| `refactor` | Code restructure, no behavior change |
+| `perf` | Performance improvement |
+| `test` | Tests |
+| `art` | Visual assets |
+| `audio` | Audio assets |
+| `chore` | Build, CI, tooling |
+| `style` | Formatting only |
+
+### Scopes (optional, use when clearly one system)
+`combat`, `station`, `world`, `production`, `terminal`, `kira`, `ui`, `exploration`, `faction`, `economy`, `progression`, `network`
+
+### Examples
+```
+feat(world): implement 3-level chunk system with origin shift
+fix(combat): prevent double-damage on rapid-fire overflow
+perf(world): reduce chunk load time by 60% with spatial hash
+docs: update game design with faction system
+refactor(production): extract chain resolver into own class
+```
+
+### PR Convention
+- Title follows same commit format: `type(scope): description`
+- Always target `develop`
+- Fill every section of `.github/PULL_REQUEST_TEMPLATE.md`
+- Use `gh pr create --base develop` to create PRs
 
 ## Key Technical Decisions
 
