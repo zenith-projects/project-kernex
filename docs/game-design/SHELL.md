@@ -1,12 +1,12 @@
-# PROJECT KERNEX — The Terminal (vsh)
+# PROJECT KERNEX — The Shell (vsh)
 
 ---
 
-## The Terminal (vsh) — The Innovation Layer
+## The Shell (vsh) — The Innovation Layer
 
 ### Philosophy
 
-The terminal is NOT required to play. It is an in-game power tool that gives an optimization edge. Everything the terminal can do, the UI can also do — but the terminal can chain, script, and automate in ways the UI cannot.
+The shell is NOT required to play. It is an in-game power tool that gives an optimization edge. Everything the shell can do, the UI can also do — but the shell can chain, script, and automate in ways the UI cannot.
 
 ### Commands
 

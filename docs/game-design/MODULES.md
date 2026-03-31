@@ -239,7 +239,7 @@ Drone Equipment Slots and Ship Utility Slots.
 
 ## 9. AUTOMATION — Scripting & Control
 
-*Modules that enhance the terminal and automation systems.*
+*Modules that enhance the shell and automation systems.*
 
 | Module | Rarity | Source Cluster | Effect | Notes |
 |--------|--------|---------------|--------|-------|

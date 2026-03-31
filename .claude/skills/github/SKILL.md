@@ -75,7 +75,7 @@ Use when the change is clearly scoped to one system:
 | `station` | Station building, modules, defense |
 | `world` | Chunks, sectors, origin shift, procedural gen |
 | `production` | Resources, refinery, production chains |
-| `terminal` | vsh terminal, commands, scripting |
+| `shell` | vsh shell, commands, scripting |
 | `kira` | KIRA AI system |
 | `ui` | HUD, menus, panels |
 | `exploration` | Scanning, fog of war, anomalies |

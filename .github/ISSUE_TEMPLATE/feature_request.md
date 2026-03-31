@@ -20,7 +20,7 @@ assignees: ''
 
 ## Game Design Impact
 <!-- How does this fit into the game's core pillars? -->
-<!-- Terminal-first? Automation-friendly? Resource pipeline? -->
+<!-- Shell-first? Automation-friendly? Resource pipeline? -->
 
 ## Additional Context
 <!-- Mockups, references, examples from other games, etc. -->

@@ -1,6 +1,6 @@
-# PROJECT KERNEX — Terminal Commands Reference
+# PROJECT KERNEX — Shell Commands Reference
 
-> *Reference for all in-game `vsh` terminal commands.*
+> *Reference for all in-game `vsh` shell commands.*
 > *This is a design document — commands will be implemented incrementally.*
 
 ---
@@ -13,7 +13,7 @@
 | `man <cmd>` | Detailed manual for a command | `man scan` |
 | `status` | Station overview | `status` |
 | `log` | View event log | `log --last 20` |
-| `clear` | Clear terminal screen | `clear` |
+| `clear` | Clear shell screen | `clear` |
 | `map` | Display sector map | `map --zoom 2` |
 | `whoami` | Display operator info | `whoami` |
 | `uptime` | Station uptime | `uptime` |

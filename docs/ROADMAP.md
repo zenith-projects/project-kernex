@@ -24,11 +24,11 @@
 
 ---
 
-## Phase 1 — Terminal & KIRA (Core Innovation) 🖥️🤖
+## Phase 1 — Shell & KIRA (Core Innovation) 🖥️🤖
 
-**Goal:** Build the terminal and KIRA first — they are the core innovation and differentiate the game from everything else. Even before the isometric world exists, the terminal + KIRA should be functional and impressive.
+**Goal:** Build the shell and KIRA first — they are the core innovation and differentiate the game from everything else. Even before the isometric world exists, the shell + KIRA should be functional and impressive.
 
-- [ ] Terminal emulator overlay (toggleable, resizable panel)
+- [ ] Shell emulator overlay (toggleable, resizable panel)
 - [ ] Command parser and execution engine
 - [ ] Core commands: `help`, `status`, `clear`, `log`, `kira`
 - [ ] Piping system (`|`) and command chaining
@@ -41,7 +41,7 @@
 - [ ] KIRA writes `.vsh` scripts on player request
 - [ ] Hardware detection and automatic fallback (LLM vs scripted)
 
-**MVP 1:** Terminal works, KIRA responds, player can type commands and KIRA writes scripts. The core innovation is playable.
+**MVP 1:** Shell works, KIRA responds, player can type commands and KIRA writes scripts. The core innovation is playable.
 
 ---
 
@@ -57,9 +57,9 @@
 - [ ] Basic player ship in isometric space
 - [ ] Mouse + keyboard input handling
 - [ ] Basic UI framework (HUD, panels, tooltips)
-- [ ] Terminal integration with isometric view (commands trigger visual feedback)
+- [ ] Shell integration with isometric view (commands trigger visual feedback)
 
-**MVP 2:** Player navigates an infinite isometric space with origin shift. Terminal commands affect the world.
+**MVP 2:** Player navigates an infinite isometric space with origin shift. Shell commands affect the world.
 
 ---
 
@@ -106,7 +106,7 @@
 - [ ] Defense modules: turrets, shields, traps, bulkheads
 - [ ] Thermal system (radiators, overheating mechanic)
 - [ ] 70% auto-repair after attacks
-- [ ] Post-attack event logs (reviewable via terminal)
+- [ ] Post-attack event logs (reviewable via shell)
 - [ ] KIRA Level 5 (Analytical) — threat analysis, defense suggestions
 
 **MVP 5:** Station gets attacked, player defends with layered systems, KIRA analyzes the results.

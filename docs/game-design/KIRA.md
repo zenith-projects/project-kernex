@@ -6,17 +6,17 @@
 
 ### Overview
 
-KIRA (Kernex Intelligence for Resource Administration) is a **local LLM** running on the player's machine. She lives in the terminal and is the bridge between casual players and automation power. KIRA evolves through **10 stages**, each unlocked through the KIRA branch of the Tech Tree.
+KIRA (Kernex Intelligence for Resource Administration) is a **local LLM** running on the player's machine. She lives in the shell and is the bridge between casual players and automation power. KIRA evolves through **10 stages**, each unlocked through the KIRA branch of the Tech Tree.
 
 ### The Equalizer
 
 | Player Type | How They Automate | Result |
 |------------|------------------|--------|
-| Developer | Opens terminal, writes `.vsh` script manually | Full automation |
+| Developer | Opens shell, writes `.vsh` script manually | Full automation |
 | Non-developer | Asks KIRA: "automate mining in sector 7" | KIRA writes and deploys the script |
 | Hybrid | Writes basic script, asks KIRA to optimize it | Refined automation |
 
-There is no disadvantage for non-programmers. KIRA democratizes the terminal's power.
+There is no disadvantage for non-programmers. KIRA democratizes the shell's power.
 
 ### Evolution Stages (10 Levels)
 
@@ -24,7 +24,7 @@ KIRA's evolution is a core progression arc. Each level unlocks new capabilities,
 
 | Level | Name | Capabilities | Story |
 |-------|------|-------------|-------|
-| 0 | **Corrupted** | Garbled text, random errors, occasional valid status readouts. Terminal flickers. | Player discovers KIRA exists — broken, fragmented boot logs |
+| 0 | **Corrupted** | Garbled text, random errors, occasional valid status readouts. Shell flickers. | Player discovers KIRA exists — broken, fragmented boot logs |
 | 1 | **Booting** | Basic status queries work. Responses are terse, mechanical, sometimes wrong. | KIRA recognizes the player. First coherent sentence. |
 | 2 | **Functional** | Clear responses, simple suggestions, can write basic single-command aliases. | KIRA explains what happened to the station. First lore dump. |
 | 3 | **Aware** | Learns player patterns, proactive alerts ("power low"), basic `.vsh` scripts (5-10 lines). | KIRA starts having opinions. Questions her own nature. |
@@ -39,10 +39,10 @@ KIRA's evolution is a core progression arc. Each level unlocks new capabilities,
 
 **Each level unlocks:**
 - New automation capabilities (scripts, cron, autonomous actions)
-- New terminal commands
+- New shell commands
 - New dialogue / personality traits
 - Story fragments and lore
-- A visual change in the terminal (color, effects, KIRA's "presence")
+- A visual change in the shell (color, effects, KIRA's "presence")
 
 ### Implementation
 

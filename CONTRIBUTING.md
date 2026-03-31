@@ -118,7 +118,7 @@ type(scope): description in imperative mood
 
 ### Scopes (optional)
 
-`combat`, `station`, `world`, `production`, `terminal`, `kira`, `ui`, `exploration`, `faction`, `economy`, `progression`
+`combat`, `station`, `world`, `production`, `shell`, `kira`, `ui`, `exploration`, `faction`, `economy`, `progression`
 
 ### Examples
 
@@ -182,7 +182,7 @@ docs: update game design with faction system
 | **Gameplay & Systems** | Game mechanics, combat, resources, automation, progression |
 | **Art & Assets** | Textures, models, UI elements, VFX, shaders |
 | **Audio** | SFX, ambient audio, music (must be original or properly licensed) |
-| **Writing & Lore** | In-game text, terminal messages, KIRA dialogue, lore entries |
+| **Writing & Lore** | In-game text, shell messages, KIRA dialogue, lore entries |
 | **Testing** | Unit tests, integration tests, bug reports |
 | **Documentation** | README, guides, code comments, wiki |
 

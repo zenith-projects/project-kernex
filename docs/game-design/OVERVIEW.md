@@ -11,7 +11,7 @@
 | **Platform** | PC (Steam) |
 | **Engine** | Godot 4.6+ Mono (C# / .NET 8+) |
 | **Perspective** | Isometric 2D/3D |
-| **Controls** | Mouse + Keyboard + UI (standard), Terminal (optional power tool) |
+| **Controls** | Mouse + Keyboard + UI (standard), Shell (optional power tool) |
 | **Players** | Single-player (offline-first) → MMO (future) |
 | **Target Audience** | Gamers who enjoy Dark Orbit, OGame, Factorio, Clash of Clans; devs who want deeper automation |
 
@@ -34,10 +34,10 @@ PROJECT KERNEX is an isometric space game set in a procedurally generated infini
 | Layer | Who Uses It | How It Works |
 |-------|-------------|-------------|
 | **Normal Gameplay** | Everyone | Mouse + keyboard, click UI, drag-and-drop, hotkeys. Full game is playable this way. |
-| **Terminal (vsh)** | Power users | In-game shell for scripting, automation, piping commands, cron jobs. Gives an optimization edge. |
-| **KIRA (Local AI)** | Everyone | Local LLM companion that lives in the terminal. Non-devs ask KIRA to write scripts. Devs code manually. Same result — no disadvantage for non-programmers. |
+| **Shell (vsh)** | Power users | In-game shell for scripting, automation, piping commands, cron jobs. Gives an optimization edge. |
+| **KIRA (Local AI)** | Everyone | Local LLM companion that lives in the shell. Non-devs ask KIRA to write scripts. Devs code manually. Same result — no disadvantage for non-programmers. |
 
-The terminal is not required to play. It is a power-user tool. KIRA is the equalizer — she writes scripts and automations for players who ask, making the terminal's power accessible to everyone regardless of programming skill.
+The shell is not required to play. It is a power-user tool. KIRA is the equalizer — she writes scripts and automations for players who ask, making the shell's power accessible to everyone regardless of programming skill.
 
 ---
 
@@ -46,9 +46,9 @@ The terminal is not required to play. It is a power-user tool. KIRA is the equal
 ### Visual Style
 
 - **Primary:** Isometric space — dark backgrounds, glowing station modules, particle effects for mining/combat
-- **Secondary:** Terminal overlay with classic CLI aesthetic (green/amber text on dark)
+- **Secondary:** Shell overlay with classic CLI aesthetic (green/amber text on dark)
 - **Inspiration:** Dark Orbit (space combat feel), Factorio (production chain visualization), FTL (station interior), Dwarf Fortress (depth from simplicity)
-- **Color Palette:** Deep blacks and dark blues (space), amber/orange (station lights, UI), cyan (shields, scanning), red (alerts, enemies), green (terminal, KIRA)
+- **Color Palette:** Deep blacks and dark blues (space), amber/orange (station lights, UI), cyan (shields, scanning), red (alerts, enemies), green (shell, KIRA)
 
 ### Zoom Levels
 

@@ -2,7 +2,7 @@
 
 > *You are the root user of the void.*
 
-**PROJECT KERNEX** is an isometric space game where you build stations, command fleets, automate production chains, and conquer territory in a procedurally generated infinite universe. An in-game terminal lets power users script automation, while the local AI companion **KIRA** writes those scripts for everyone else — so non-programmers get the same power as devs.
+**PROJECT KERNEX** is an isometric space game where you build stations, command fleets, automate production chains, and conquer territory in a procedurally generated infinite universe. An in-game shell lets power users script automation, while the local AI companion **KIRA** writes those scripts for everyone else — so non-programmers get the same power as devs.
 
 Built with AI assistance. Built by the community.
 
@@ -10,14 +10,14 @@ Built with AI assistance. Built by the community.
 
 ## About the Game
 
-You awaken as the sole operator of **Station XARA-7**, a derelict outpost on the edge of known space. A broken AI named KIRA flickers to life in your terminal. Mine resources, refine materials, build your fleet, research through a massive tech web, and expand into the void — while threats scale with your ambition.
+You awaken as the sole operator of **Station XARA-7**, a derelict outpost on the edge of known space. A broken AI named KIRA flickers to life in your shell. Mine resources, refine materials, build your fleet, research through a massive tech web, and expand into the void — while threats scale with your ambition.
 
 ### Core Pillars
 
 | Pillar | Description |
 |--------|-------------|
 | **Isometric Space** | Real-time isometric world. Mine, build, fight, explore with mouse + keyboard + UI. |
-| **Terminal (vsh)** | Optional in-game shell. Script automation, chain commands, schedule cron jobs. Not required — but powerful. |
+| **Shell (vsh)** | Optional in-game shell. Script automation, chain commands, schedule cron jobs. Not required — but powerful. |
 | **KIRA (Local AI)** | Local LLM on your machine. 10 evolution levels. Writes scripts for non-devs. The equalizer. |
 | **The Constellation** | PoE-style research web. 16 interconnected clusters, 18 bridges. No locks — unlock everything. |
 | **100+ Modules** | 13 categories, 5 rarities, 16 upgrade levels. Unlocked through the Constellation, then crafted. |
@@ -36,7 +36,7 @@ You awaken as the sole operator of **Station XARA-7**, a derelict outpost on the
 - ⛏️ Branching production chains with interdependencies
 - 🌳 The Constellation — 16-cluster research web with 18 bridge connections
 - 🔧 100+ modules across 13 categories (energy, weapons, defense, KIRA, stealth...)
-- 🖥️ In-game terminal (`vsh`) with scripting, piping, cron jobs
+- 🖥️ In-game shell (`vsh`) with scripting, piping, cron jobs
 - 🤖 KIRA — 10-level local AI that writes scripts, manages stations, reveals story
 - 🛡️ Activity-threat feedback loop (growth attracts danger)
 - 🏛️ Three factions with clan wars and territory sovereignty
@@ -48,7 +48,7 @@ You awaken as the sole operator of **Station XARA-7**, a derelict outpost on the
 
 > **Phase 0 — Foundation** `CURRENT`
 
-Game design complete (15 design docs). Godot 4.6 Mono project initialized. CI/CD with 10 PR checks. Branch protection active. Next: Terminal + KIRA (Phase 1).
+Game design complete (15 design docs). Godot 4.6 Mono project initialized. CI/CD with 10 PR checks. Branch protection active. Next: Shell + KIRA (Phase 1).
 
 Check the [roadmap](docs/ROADMAP.md) for all phases and MVPs.
 
@@ -66,14 +66,14 @@ All design docs live in [`docs/game-design/`](docs/game-design/INDEX.md):
 | [Resources](docs/game-design/RESOURCES.md) | Three-tier economy, production chains |
 | [Station](docs/game-design/STATION.md) | Building system, tiers, module layout |
 | [Threats](docs/game-design/THREATS.md) | Activity-threat loop, defense resolution |
-| [Terminal](docs/game-design/TERMINAL.md) | vsh terminal, scripting, automation |
+| [Shell](docs/game-design/TERMINAL.md) | vsh shell, scripting, automation |
 | [KIRA](docs/game-design/KIRA.md) | 10 evolution levels, LLM integration |
 | [Factions](docs/game-design/FACTIONS.md) | Three factions, clans, territory control |
 | [Exploration](docs/game-design/EXPLORATION.md) | Infinite universe, procedural gen, anomalies |
 | [Architecture](docs/game-design/ARCHITECTURE.md) | Chunked coords, offline-first, MMO architecture |
 | [Constellation](docs/game-design/CONSTELLATION.md) | Research web (16 clusters, 18 bridges) |
 | [Modules](docs/game-design/MODULES.md) | 100+ modules, rarity, levels, slots |
-| [Commands](docs/game-design/COMMANDS.md) | Terminal commands reference |
+| [Commands](docs/game-design/COMMANDS.md) | Shell commands reference |
 
 ---
 
@@ -137,7 +137,7 @@ project-kernex/
 │   ├── Nodes/                     Entities (ships, drones, station, environment, UI)
 │   ├── Screens/                   Game states (Root, MainMenu, Game, DevTools)
 │   ├── Core/                      Pure C# (interfaces, coordinates, enums, constants)
-│   ├── Systems/                   Game logic (production, combat, threat, AI, terminal)
+│   ├── Systems/                   Game logic (production, combat, threat, AI, shell)
 │   ├── Resources/                 .tres data + C# Resource definitions
 │   └── Tests/                     Isolated test scenes
 ├── .claude/                       Agents and skills (auto-detected)

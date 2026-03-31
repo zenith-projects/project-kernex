@@ -211,13 +211,13 @@ Each node also requires **KIRA Data Fragments** from anomalies (cannot be crafte
 
 ---
 
-### AUTOMATION — Terminal & Scripting
+### AUTOMATION — Shell & Scripting
 
-*The terminal power system, independent from KIRA.*
+*The shell power system, independent from KIRA.*
 
 | Depth | Stat/Capability Nodes | Module Blueprints Unlocked |
 |-------|----------------------|---------------------------|
-| Inner | Command aliases, piping, terminal QoL | Script Processor |
+| Inner | Command aliases, piping, shell QoL | Script Processor |
 | Mid | .vsh scripting, cron scheduler, 5 parallel scripts | Cron Engine, Parallel Executor |
 | Outer | Event hooks, reactive scripts, dashboards | Event Reactor, Pipeline Controller |
 | **Keystone** | **Self-Evolving Scripts** — scripts optimize themselves | Quantum Scheduler (Legendary) |

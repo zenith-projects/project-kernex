@@ -48,7 +48,7 @@ Up to 8 combat drones orbit the player's flagship:
 - **Raiding:** Attack other stations to steal resources (OGame model). Only unprocessed/stored resources are vulnerable — installed modules and refined materials in use are safe. This incentivizes keeping production moving (resource velocity principle)
 - **Offense slightly beats defense by design** — perfect defense is impossible, but 100% destruction is hard. Defenders "win" by minimizing losses.
 - **Bashing limits:** Maximum attacks on a single player per day to prevent griefing
-- **Post-attack logs:** Detailed event logs of what happened during an attack, reviewable via terminal (`log --event attack --last`)
+- **Post-attack logs:** Detailed event logs of what happened during an attack, reviewable via shell (`log --event attack --last`)
 
 ---
 

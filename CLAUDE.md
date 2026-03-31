@@ -131,7 +131,7 @@ project-kernex/
 │   │   ├── World/             ← ChunkLoader, SectorField, StarLayer
 │   │   ├── Ships/             ← Thruster, RCS, Banking, DamageSystem, CameraFollow
 │   │   ├── Drones/            ← DroneBehavior, MiningAI, CombatAI, ScoutAI, SalvageAI
-│   │   ├── Automation/        ← ScriptRunner, CronHook, AutomationBridge (terminal↔world)
+│   │   ├── Automation/        ← ScriptRunner, CronHook, AutomationBridge (shell↔world)
 │   │   ├── Visuals/           ← VFX, particles, shaders per component
 │   │   └── HUD/               ← Minimap, WorldMap, SpeedMeter, DebugPanel, etc.
 │   │
@@ -142,7 +142,7 @@ project-kernex/
 │   │   ├── Station/           ← StationBase, Modules, Turrets
 │   │   ├── Environment/       ← Asteroids, Derelicts, Anomalies
 │   │   ├── Projectiles/       ← Laser, Missile, etc.
-│   │   ├── Terminal/          ← Terminal overlay, vsh emulator, command output
+│   │   ├── Shell/             ← Shell overlay, vsh emulator, command output
 │   │   └── UI/                ← Menus, Panels, Popups, Tooltips
 │   │
 │   ├── Screens/               ← Full independent scenes (game states)
@@ -163,7 +163,7 @@ project-kernex/
 │   │   ├── Combat/            ← CombatSystem, FleetSystem, RapidFireResolver
 │   │   ├── Threat/            ← ThreatSystem, SignatureCalculator, DefenseResolver
 │   │   ├── Exploration/       ← SectorGenerator, AnomalySystem, FogOfWar
-│   │   ├── Terminal/          ← CommandParser, ScriptEngine, CronScheduler
+│   │   ├── Shell/             ← CommandParser, ScriptEngine, CronScheduler
 │   │   ├── AI/                ← KiraEngine, LlmBridge, DialogueSystem
 │   │   ├── Building/          ← BuildSystem, UpgradeSystem, TechTree
 │   │   ├── Progression/       ← ResearchSystem, StationTierSystem
@@ -201,7 +201,7 @@ project-kernex/
 | **Assets** | Raw files (images, audio, fonts, models, shaders) | No logic, no scripts |
 | **Autoloads** | Global singletons | Max 5-6. Thin coordinators, not gameplay owners |
 | **Components** | Reusable behavior (`.tscn` + `.cs` in same folder) | Instanced as children of entities |
-| **Nodes** | Entities, UI compositions, terminal overlay | Used inside Screens. Compose from Components |
+| **Nodes** | Entities, UI compositions, shell overlay | Used inside Screens. Compose from Components |
 | **Screens** | Full game states | Independent scenes (MainMenu, Game, DevTools) |
 | **Core** | Interfaces, structs, enums, constants, coordinates | Pure C#, no Godot scenes |
 | **Systems** | Game logic, behavior strategies + factories | Strategy pattern for extensibility |
@@ -268,7 +268,7 @@ Closes #123
 | `style` | Formatting only |
 
 ### Scopes (optional, use when clearly one system)
-`combat`, `station`, `world`, `production`, `terminal`, `kira`, `ui`, `exploration`, `faction`, `economy`, `progression`, `network`
+`combat`, `station`, `world`, `production`, `shell`, `kira`, `ui`, `exploration`, `faction`, `economy`, `progression`, `network`
 
 ### Examples
 ```
