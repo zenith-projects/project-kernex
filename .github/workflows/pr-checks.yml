@@ -1,0 +1,141 @@
+name: PR Checks
+
+on:
+  pull_request:
+    branches: [develop, main]
+
+jobs:
+  # Verify C# project builds successfully
+  build:
+    name: Build (Godot Mono)
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Setup .NET
+        uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: 8.0.x
+
+      - name: Setup Godot
+        uses: chickensoft-games/setup-godot@v2
+        with:
+          version: 4.6.1-stable
+          use-dotnet: true
+
+      - name: Restore dependencies
+        run: dotnet restore
+
+      - name: Build C# project
+        run: dotnet build --no-restore --configuration Release
+
+  # Ensure no GDScript files are committed
+  no-gdscript:
+    name: No GDScript
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Check for .gd files
+        run: |
+          GD_FILES=$(find . -name "*.gd" -not -path "./.godot/*" -not -path "./src/Addons/*" | head -20)
+          if [ -n "$GD_FILES" ]; then
+            echo "::error::GDScript files are strictly prohibited in this project."
+            echo "Found the following .gd files:"
+            echo "$GD_FILES"
+            echo ""
+            echo "This project uses C# exclusively. Please convert to C# and remove .gd files."
+            exit 1
+          fi
+          echo "No GDScript files found."
+
+  # Validate PR title follows conventional commits
+  pr-title:
+    name: PR Title (Conventional Commits)
+    runs-on: ubuntu-latest
+    steps:
+      - name: Validate PR title
+        uses: amannn/action-semantic-pull-request@v5
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          types: |
+            feat
+            fix
+            docs
+            refactor
+            perf
+            test
+            art
+            audio
+            chore
+            style
+            ci
+            revert
+          scopes: |
+            combat
+            station
+            world
+            production
+            terminal
+            kira
+            ui
+            exploration
+            faction
+            economy
+            progression
+            network
+          requireScope: false
+          subjectPattern: ^[a-z].+$
+          subjectPatternError: |
+            PR title subject must start with a lowercase letter.
+            Example: "feat(world): implement chunk system"
+
+  # Ensure no .cs file exceeds 500 lines
+  file-size:
+    name: File Size Check (500 lines max)
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Check C# file sizes
+        run: |
+          OVERSIZED=""
+          while IFS= read -r file; do
+            LINES=$(wc -l < "$file")
+            if [ "$LINES" -gt 500 ]; then
+              OVERSIZED="$OVERSIZED\n  $file ($LINES lines)"
+            fi
+          done < <(find . -name "*.cs" -not -path "./.godot/*" -not -path "./src/Addons/*")
+
+          if [ -n "$OVERSIZED" ]; then
+            echo "::error::C# files must not exceed 500 lines."
+            echo "The following files are too large:"
+            echo -e "$OVERSIZED"
+            echo ""
+            echo "Split into partial classes or extract sub-components."
+            exit 1
+          fi
+          echo "All C# files are within the 500-line limit."
+
+  # Verify CLA agreement in PR body
+  cla-check:
+    name: CLA Agreement
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check CLA statement in PR body
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const body = context.payload.pull_request.body || '';
+            const claPattern = /I have read and agree to the \[?Contributor License Agreement\]?/i;
+
+            if (!claPattern.test(body)) {
+              core.setFailed(
+                'CLA agreement not found in PR description.\n\n' +
+                'Please add the following statement to your PR description:\n\n' +
+                '> **I have read and agree to the [Contributor License Agreement](CLA.md).**'
+              );
+            } else {
+              console.log('CLA agreement found in PR description.');
+            }
