@@ -29,25 +29,50 @@ jobs:
       - name: Build C# project
         run: dotnet build --no-restore --configuration Release
 
-  # Ensure no GDScript files are committed
-  no-gdscript:
-    name: No GDScript
+  # Validate ALL commit messages in the PR follow conventional commits
+  commit-messages:
+    name: Commit Messages (Conventional Commits)
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
 
-      - name: Check for .gd files
+      - name: Validate commit messages
         run: |
-          GD_FILES=$(find . -name "*.gd" -not -path "./.godot/*" -not -path "./src/Addons/*" | head -20)
-          if [ -n "$GD_FILES" ]; then
-            echo "::error::GDScript files are strictly prohibited in this project."
-            echo "Found the following .gd files:"
-            echo "$GD_FILES"
+          PATTERN='^(feat|fix|docs|refactor|perf|test|art|audio|chore|style|ci|revert)(\([a-z]+\))?!?: .+'
+          FAILED=""
+          COMMITS=$(git log --format="%H %s" origin/${{ github.base_ref }}..HEAD)
+
+          while IFS= read -r line; do
+            [ -z "$line" ] && continue
+            HASH=$(echo "$line" | cut -d' ' -f1)
+            MSG=$(echo "$line" | cut -d' ' -f2-)
+            SHORT=$(echo "$HASH" | cut -c1-7)
+
+            if ! echo "$MSG" | grep -qE "$PATTERN"; then
+              FAILED="$FAILED\n  $SHORT: $MSG"
+            fi
+          done <<< "$COMMITS"
+
+          if [ -n "$FAILED" ]; then
+            echo "::error::Some commits do not follow conventional commits format."
             echo ""
-            echo "This project uses C# exclusively. Please convert to C# and remove .gd files."
+            echo "Invalid commits:"
+            echo -e "$FAILED"
+            echo ""
+            echo "Required format: type(scope): description"
+            echo "Types: feat, fix, docs, refactor, perf, test, art, audio, chore, style, ci, revert"
+            echo "Scopes (optional): combat, station, world, production, terminal, kira, ui, exploration, faction, economy, progression, network"
+            echo ""
+            echo "Examples:"
+            echo "  feat(world): implement chunk system"
+            echo "  fix: correct resource overflow"
+            echo ""
+            echo "Fix: rebase and reword the invalid commits, or squash them."
             exit 1
           fi
-          echo "No GDScript files found."
+          echo "All commit messages follow conventional commits format."
 
   # Validate PR title follows conventional commits
   pr-title:
@@ -91,6 +116,26 @@ jobs:
             PR title subject must start with a lowercase letter.
             Example: "feat(world): implement chunk system"
 
+  # Ensure no GDScript files are committed
+  no-gdscript:
+    name: No GDScript
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Check for .gd files
+        run: |
+          GD_FILES=$(find . -name "*.gd" -not -path "./.godot/*" -not -path "./src/Addons/*" | head -20)
+          if [ -n "$GD_FILES" ]; then
+            echo "::error::GDScript files are strictly prohibited in this project."
+            echo "Found the following .gd files:"
+            echo "$GD_FILES"
+            echo ""
+            echo "This project uses C# exclusively. Please convert to C# and remove .gd files."
+            exit 1
+          fi
+          echo "No GDScript files found."
+
   # Ensure no .cs file exceeds 500 lines
   file-size:
     name: File Size Check (500 lines max)
@@ -118,6 +163,88 @@ jobs:
           fi
           echo "All C# files are within the 500-line limit."
 
+  # Ensure no secrets or sensitive files are committed
+  no-secrets:
+    name: No Secrets
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Check for sensitive files
+        run: |
+          FORBIDDEN=""
+          PATTERNS=".env .env.local .env.production credentials.json secrets.json *.pem *.key *.pfx *.p12"
+
+          for pattern in $PATTERNS; do
+            FOUND=$(find . -name "$pattern" -not -path "./.git/*" -not -path "./.godot/*" | head -10)
+            if [ -n "$FOUND" ]; then
+              FORBIDDEN="$FORBIDDEN\n$FOUND"
+            fi
+          done
+
+          if [ -n "$FORBIDDEN" ]; then
+            echo "::error::Sensitive files detected. Do NOT commit secrets."
+            echo "Found:"
+            echo -e "$FORBIDDEN"
+            exit 1
+          fi
+          echo "No sensitive files found."
+
+  # Validate TSCN files don't use deprecated load_steps (Godot 4.6+)
+  tscn-validation:
+    name: TSCN Validation (Godot 4.6)
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Check for deprecated load_steps in TSCN files
+        run: |
+          DEPRECATED=""
+          while IFS= read -r file; do
+            if grep -q "load_steps" "$file"; then
+              DEPRECATED="$DEPRECATED\n  $file"
+            fi
+          done < <(find . -name "*.tscn" -not -path "./.godot/*" -not -path "./src/Addons/*")
+
+          if [ -n "$DEPRECATED" ]; then
+            echo "::warning::Some .tscn files use deprecated 'load_steps' (removed in Godot 4.6)."
+            echo "Files:"
+            echo -e "$DEPRECATED"
+            echo ""
+            echo "Remove 'load_steps=N' from the [gd_scene] header. Godot 4.6 ignores it."
+          fi
+          echo "TSCN validation complete."
+
+  # Check for large binary files that shouldn't be in git
+  no-large-files:
+    name: No Large Files (10MB max)
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Check for oversized files
+        run: |
+          MAX_SIZE=$((10 * 1024 * 1024))  # 10MB
+          OVERSIZED=""
+
+          while IFS= read -r file; do
+            SIZE=$(stat --format="%s" "$file" 2>/dev/null || stat -f%z "$file" 2>/dev/null)
+            if [ "$SIZE" -gt "$MAX_SIZE" ]; then
+              SIZE_MB=$(echo "scale=1; $SIZE / 1024 / 1024" | bc)
+              OVERSIZED="$OVERSIZED\n  $file (${SIZE_MB}MB)"
+            fi
+          done < <(find . -type f -not -path "./.git/*" -not -path "./.godot/*")
+
+          if [ -n "$OVERSIZED" ]; then
+            echo "::error::Files larger than 10MB should not be committed to git."
+            echo "Found:"
+            echo -e "$OVERSIZED"
+            echo ""
+            echo "Use Git LFS for large assets, or compress/optimize the files."
+            exit 1
+          fi
+          echo "No oversized files found."
+
   # Verify CLA agreement in PR body
   cla-check:
     name: CLA Agreement
@@ -138,4 +265,40 @@ jobs:
               );
             } else {
               console.log('CLA agreement found in PR description.');
+            }
+
+  # Verify PR description has all required sections filled
+  pr-template:
+    name: PR Template Filled
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check PR description completeness
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const body = context.payload.pull_request.body || '';
+            const missing = [];
+
+            // Check required sections exist and have content
+            const sections = [
+              { name: 'Description', pattern: /## Description\s*\n\s*(?!<!--)\S/m },
+              { name: 'Type of Change', pattern: /- \[x\]/i },
+              { name: 'Changes Made', pattern: /## Changes Made\s*\n\s*(?!<!--)\S/m },
+              { name: 'Testing', pattern: /## Testing/m },
+            ];
+
+            for (const section of sections) {
+              if (!section.pattern.test(body)) {
+                missing.push(section.name);
+              }
+            }
+
+            if (missing.length > 0) {
+              core.setFailed(
+                `PR description is incomplete. Missing or empty sections:\n\n` +
+                missing.map(s => `  - ${s}`).join('\n') +
+                '\n\nPlease fill out all sections of the PR template.'
+              );
+            } else {
+              console.log('PR template is properly filled out.');
             }
