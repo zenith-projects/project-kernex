@@ -52,32 +52,55 @@ This project is in active development. We're defining core mechanics, building p
 
 ## 🤝 Contributing
 
-This project is **community-driven**. Everyone can contribute — from code and art to game design and documentation.
+This project is **community-driven**. Anyone on the internet can contribute — no permission needed.
 
 **Important:** This is NOT an open-source project. The code is publicly visible to enable collaboration, but all rights are reserved. Please read:
 
-- [CONTRIBUTING.md](CONTRIBUTING.md) — How to contribute
+- [CONTRIBUTING.md](CONTRIBUTING.md) — Full contribution guide
 - [CLA.md](CLA.md) — Contributor License Agreement (required)
 - [LICENSE](LICENSE) — Project license (proprietary)
 
-### Quick Start
+### Quick Start (External Contributors)
 
 ```bash
-git clone https://github.com/Matrix2100/project-kernex.git
+# 1. Fork this repo on GitHub
+# 2. Clone your fork
+git clone https://github.com/YOUR-USERNAME/project-kernex.git
 cd project-kernex
-git checkout develop
-# See docs/SETUP.md for environment setup
+
+# 3. Set up upstream
+git remote add upstream https://github.com/zenith-projects/project-kernex.git
+
+# 4. Create a branch from develop
+git fetch upstream
+git checkout -b feature/your-feature upstream/develop
+
+# 5. Code, commit (conventional commits), push to your fork
+git push origin feature/your-feature
+
+# 6. Open a PR targeting develop on this repo
 ```
 
-### Branch Strategy
+### Quick Start (Team Members)
 
-| Branch | Purpose |
-|--------|---------|
-| `main` | Stable releases only |
-| `develop` | Integration branch — PRs go here |
-| `feature/*` | Individual feature branches |
-| `fix/*` | Bug fix branches |
-| `docs/*` | Documentation branches |
+```bash
+git clone https://github.com/zenith-projects/project-kernex.git
+cd project-kernex
+git checkout develop && git pull
+git checkout -b feature/your-feature
+# Code, commit, push, open PR targeting develop
+```
+
+### Rules
+
+| Rule | Detail |
+|------|--------|
+| **PRs required** | Direct pushes to `main`/`develop` are blocked |
+| **Rebase only** | No merge commits — linear history |
+| **1 approval required** | A maintainer must approve before merge |
+| **C# only** | GDScript is strictly prohibited |
+| **Conventional commits** | `type(scope): description` |
+| **CLA required** | Must agree to CLA in every PR |
 
 ---
 
