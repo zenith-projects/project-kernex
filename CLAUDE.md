@@ -1,5 +1,19 @@
 # CLAUDE.md — Project Conventions for PROJECT KERNEX
 
+## Core Philosophy — The 5-Step Process
+
+Before writing any code, building any system, or adding any feature, follow these steps **in order**:
+
+1. **Question the requirement.** Is this actually needed? Who asked for it and why? The most common source of bad code is a requirement that shouldn't exist. Delete dumb requirements before implementing them.
+2. **Delete.** Remove any part, process, system, or abstraction that doesn't directly serve the player experience. If you're not occasionally adding things back that you deleted, you're not deleting enough.
+3. **Simplify.** Only after steps 1-2. Reduce complexity. Fewer nodes, fewer scripts, fewer abstractions. The best code is no code. The second-best is simple code. Never simplify a step that shouldn't exist (step 2).
+4. **Optimize.** Only after steps 1-3. Make it faster, cheaper, lighter. Profile first, then act. Never optimize a system that should have been deleted or simplified.
+5. **Automate.** Only after steps 1-4. Automate what's proven to work. Never automate a broken or overcomplicated process — you'll just produce broken results faster.
+
+**The order matters.** Most engineers jump to step 3-5 immediately. The biggest gains come from steps 1-2.
+
+---
+
 ## Engine & Language
 
 - **Engine:** Godot 4.6+ Mono (.NET)
@@ -9,11 +23,46 @@
 
 ## Architecture Rules
 
-- **Composition is MANDATORY, not optional.** Build complex objects from small, reusable component scenes. Never use deep inheritance chains.
-- **"Call Down, Signal Up"** — Parents call methods on children. Children emit signals upward. Never use `GetParent()` or `GetNode("..")`.
-- **Scenes are the unit of reuse.** Every reusable piece of functionality is its own scene.
-- **Command/Event pattern** — Every player action is a command, every state change is an event. This supports future offline → online transition.
+### Composition — Mandatory, Not Optional
+
+- **Every component = `.tscn` + `.cs` in the same folder.** No loose scripts. No exceptions.
+- **Entities have NO script.** An entity (ship, station, drone) is a scene that instances components as children. All behavior comes from components.
+- **Scenes are the unit of reuse.** Every reusable piece of functionality is its own scene. C# is for logic, NOT for mounting node trees via code.
 - **Max 500 lines per .cs file.** Split into partial classes or extract sub-components.
+
+### Component Folder Structure
+```
+components/
+  └── {category}/
+      └── {name}/
+          ├── ComponentName.cs
+          ├── ComponentName.tscn
+          └── (optional: sub-scripts, shaders)
+```
+
+### Node Communication
+- **"Call Down, Signal Up"** — Parents call methods on children. Children emit signals upward.
+- **Component → Parent:** `GetParent<ParentType>()`
+- **Component → Sibling:** `parent.GetNodeOrNull<T>("SiblingName")`
+- **HUD → Entity:** Find by group (`GetTree().GetNodesInGroup("player")`)
+- **Lazy init always:** `_ref ??= GetNodeOrNull<T>("Name")`
+- **Never `GetNode("../../..")`** — scenes must work without knowing their parent.
+
+### Scene Composition
+```
+Map (Node2D)
+├── Environment       ← background, decorations, star layers
+├── Entities          ← instances of ships, stations, drones
+│   └── Camera       ← child of main entity
+└── HUD (CanvasLayer) ← all UI, separated from game world
+```
+
+**HUD is NEVER a child of an entity.** HUD belongs to the scene/map. If the entity dies, the HUD stays alive.
+
+### Other Rules
+- **Command/Event pattern** — Every player action is a command, every state change is an event. This supports future offline → online transition.
+- **[Export] everything configurable.** No magic numbers in scripts. Tuning without recompilation.
+- **If it can be configured in the editor, configure it in the editor.** Scenes define structure, scripts define logic.
 
 ## Optimization Philosophy
 
@@ -26,9 +75,12 @@
 - Chunk-based loading — only render what's in the viewport + one buffer chunk.
 - Profile before and after every significant change. Use Godot monitors and external .NET profilers.
 - Minimize allocations in hot paths. Cache references in `_Ready()`, never in `_Process()`.
+- Cooldowns by timestamp (`Time.GetTicksMsec()`) — zero allocation per frame.
+- Static/reusable lists for temporary operations — avoid `new` per frame.
 - MultiMeshInstance for repeated geometry. LOD for distant objects.
 - Spatial hash maps for O(1) chunk lookup.
 - **If it's not visible, it doesn't exist.** Despawn/pool entities outside the viewport.
+- One collision processed per frame when possible (`break` after processing).
 
 ## Project Structure
 
@@ -104,11 +156,27 @@ perf: optimize chunk loading with spatial hash
 
 ## Key Technical Decisions
 
-- **Chunked coordinates:** 64-bit integer SectorID + 32-bit float LocalOffset for infinite world
+### 3-Level Chunk System (proven in test-workspace prototype)
+```
+Quadrant (macro region, ~41 sectors)
+  └── Sector (origin shift boundary, ~61 cells)
+      └── Cell (smallest unit, entity spawn/despawn)
+```
+- **All world coordinates are `long` integers** — float only for small local offsets
+- **Origin shift at sector boundaries** — player stays near (0,0), world shifts around them
+- **Diamond lattice** with non-orthogonal lattice vectors for organic sector shapes
+- **Entity registry pattern** — single source of truth for all entities (live + off-screen)
+- **Off-screen simulation** — entities with velocity continue moving even when despawned
+- **RigidBody sync after shift** — reassign GlobalPosition to sync PhysicsServer after origin shift
+
+### Other Decisions
 - **Isometric rendering:** Chunk-based tile rendering with spatial hash map
 - **Deterministic procedural generation:** Seed-based, nothing stored, same coords = same content
 - **Offline-first → MMO:** Game logic separated from I/O via abstraction layer
 - **Local AI (KIRA):** llama.cpp or similar, 7B quantized model, with scripted fallback
+
+### Reference
+The `test-workspace` project (same org) contains a working prototype with this chunk system, origin shift, asteroid registry, ship physics, and 15+ HUD components. Use it as architectural reference.
 
 ## What NOT To Do
 
