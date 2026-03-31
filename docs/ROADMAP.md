@@ -14,7 +14,7 @@
 - [x] Write LICENSE, CLA, CONTRIBUTING guidelines
 - [x] Draft Game Design Document (v0.2)
 - [x] Research reference games (Dark Orbit, OGame, Factorio, CoC, NMS, Star Citizen)
-- [ ] Choose game engine and tech stack (Godot 4 leading candidate)
+- [x] Choose game engine and tech stack — **Godot 4.6+ Mono (C# / .NET 8+)**
 - [ ] Define command/event architecture (offline-first → online-ready)
 - [ ] Set up development environment documentation
 - [ ] Set up CI/CD pipeline

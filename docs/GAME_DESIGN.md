@@ -11,7 +11,7 @@
 | **Title** | PROJECT KERNEX |
 | **Genre** | Isometric Space MMO / Management / Automation |
 | **Platform** | PC (Steam) |
-| **Engine** | TBD (Godot 4 leading candidate) |
+| **Engine** | Godot 4.6+ Mono (C# / .NET 8+) |
 | **Perspective** | Isometric 2D/3D |
 | **Controls** | Mouse + Keyboard + UI (standard), Terminal (optional power tool) |
 | **Players** | Single-player (offline-first) → MMO (future) |

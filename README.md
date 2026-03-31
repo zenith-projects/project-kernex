@@ -119,13 +119,13 @@ project-kernex/
 
 > **Under evaluation** — Leading candidates:
 
-- **Engine:** Godot 4 (leading) / Unity / Custom
-- **Language:** C# / GDScript / Rust
+- **Engine:** Godot 4.6+ Mono
+- **Language:** C# (.NET 8+) — GDScript strictly prohibited
+- **Architecture:** Composition mandatory, Command/Event pattern, offline-first → MMO-ready
 - **Rendering:** Isometric 2D/3D with chunked coordinate system
-- **AI:** Local LLM (llama.cpp, 7B quantized) + scripted fallback
-- **Architecture:** Command/Event pattern (offline-first → MMO-ready)
 - **World Gen:** Seed-based deterministic procedural generation
-- **Audio:** FMOD / Wwise / Native
+- **AI:** Local LLM (llama.cpp, 7B quantized) + scripted fallback
+- **Audio:** TBD
 - **Build:** CI/CD with GitHub Actions
 
 Community input on tech stack decisions is welcome — see the related issue in the [Issues](../../issues) tab.
