@@ -86,103 +86,112 @@ Map (Node2D)
 
 Inspired by the proven v2 architecture from project-space-lanes.
 
+`project.godot`, `.csproj`, and `.sln` live at the repo root (Godot and IDEs expect this).
+All game code and assets live inside `src/`. Godot paths: `res://src/Assets/...`, `res://src/Components/...`, etc.
+
 ```
 project-kernex/
-├── project.godot
-├── ProjectKernex.csproj
-├── ProjectKernex.sln
+├── project.godot              ← Godot project root
+├── Project Kernex.csproj      ← .NET project file
+├── Project Kernex.sln         ← Solution file (IDE opens this)
+├── icon.svg
 │
-├── Addons/                    ← Third-party Godot plugins
+├── src/                       ← ALL game code and assets
+│   ├── Addons/                ← Third-party Godot plugins
+│   │
+│   ├── Assets/                ← Raw assets only, no logic
+│   │   ├── Audio/
+│   │   │   ├── Music/         ← BGM by context (combat/, ambient/, menu/)
+│   │   │   ├── SFX/
+│   │   │   │   ├── Definitive/← Final sounds
+│   │   │   │   └── Placeholder/← WIP sounds
+│   │   │   └── Voice/         ← KIRA voice lines
+│   │   ├── Fonts/
+│   │   ├── Materials/
+│   │   ├── Models/            ← 3D models (.glb) for SubViewport 3D
+│   │   ├── Particles/
+│   │   ├── Shaders/           ← Global reusable shaders
+│   │   ├── Textures/
+│   │   │   ├── Isometric/     ← Tilesets, floor tiles, isometric grid
+│   │   │   ├── Ships/
+│   │   │   ├── Drones/        ← Mining, combat, scout, salvage drone sprites
+│   │   │   ├── Station/
+│   │   │   ├── Environment/   ← Asteroids, nebulae, derelicts, anomalies
+│   │   │   ├── UI/
+│   │   │   ├── Effects/
+│   │   │   └── Icons/
+│   │   └── Themes/            ← Global UI theme (.tres)
+│   │
+│   ├── Autoloads/             ← Global singletons (max 5-6, thin coordinators)
+│   │
+│   ├── Components/            ← Reusable behavior units (scene + script, same folder)
+│   │   ├── Core/              ← HealthComponent, MovementComponent, HitboxComponent
+│   │   ├── Combat/            ← TargetingComponent, WeaponComponent, ShieldComponent
+│   │   ├── Station/           ← BuildingComponent, RefineryComponent, DefenseComponent
+│   │   ├── World/             ← ChunkLoader, SectorField, StarLayer
+│   │   ├── Ships/             ← Thruster, RCS, Banking, DamageSystem, CameraFollow
+│   │   ├── Drones/            ← DroneBehavior, MiningAI, CombatAI, ScoutAI, SalvageAI
+│   │   ├── Automation/        ← ScriptRunner, CronHook, AutomationBridge (terminal↔world)
+│   │   ├── Visuals/           ← VFX, particles, shaders per component
+│   │   └── HUD/               ← Minimap, WorldMap, SpeedMeter, DebugPanel, etc.
+│   │
+│   ├── Nodes/                 ← Entities and compositions used inside Screens
+│   │   ├── Ships/             ← PlayerShip, EnemyShip entities
+│   │   ├── Drones/            ← MiningDrone, CombatDrone, ScoutDrone, SalvageDrone
+│   │   ├── Fleet/             ← FleetFormation, FleetCommand (fleet compositions)
+│   │   ├── Station/           ← StationBase, Modules, Turrets
+│   │   ├── Environment/       ← Asteroids, Derelicts, Anomalies
+│   │   ├── Projectiles/       ← Laser, Missile, etc.
+│   │   ├── Terminal/          ← Terminal overlay, vsh emulator, command output
+│   │   └── UI/                ← Menus, Panels, Popups, Tooltips
+│   │
+│   ├── Screens/               ← Full independent scenes (game states)
+│   │   ├── Root/              ← Main scene, screen transitions
+│   │   ├── MainMenu/
+│   │   ├── Game/              ← Main game orchestrator
+│   │   └── DevTools/          ← Debug/dev tools, balance editor
+│   │
+│   ├── Core/                  ← Pure C# types — NO Godot scenes
+│   │   ├── Interfaces/        ← IShip, IStation, IDamageable, IAutomatable, IDrone
+│   │   ├── Coordinates/       ← CellAddress, SectorAddress, QuadrantAddress, CoordConvert
+│   │   ├── Enums/             ← FactionType, ResourceType, ThreatLevel, DroneType, etc.
+│   │   ├── Constants/         ← GameConstants.cs (compile-time)
+│   │   └── Utils/             ← MathUtil, ListUtils
+│   │
+│   ├── Systems/               ← Game logic + behavior strategies
+│   │   ├── Production/        ← ProductionSystem, RefinerySystem, ProductionChain
+│   │   ├── Combat/            ← CombatSystem, FleetSystem, RapidFireResolver
+│   │   ├── Threat/            ← ThreatSystem, SignatureCalculator, DefenseResolver
+│   │   ├── Exploration/       ← SectorGenerator, AnomalySystem, FogOfWar
+│   │   ├── Terminal/          ← CommandParser, ScriptEngine, CronScheduler
+│   │   ├── AI/                ← KiraEngine, LlmBridge, DialogueSystem
+│   │   ├── Building/          ← BuildSystem, UpgradeSystem, TechTree
+│   │   ├── Progression/       ← ResearchSystem, StationTierSystem
+│   │   ├── Faction/           ← FactionSystem, ReputationTracker, FactionBonus
+│   │   ├── Economy/           ← TradeSystem, MarketPrices, ResourceVelocity
+│   │   └── Network/           ← (future) NetworkManager, SyncService, RpcLayer
+│   │
+│   ├── Resources/             ← .tres data files + C# Resource class definitions
+│   │   ├── Ships/             ← ShipDefinition .tres files
+│   │   ├── Drones/            ← DroneDefinition .tres files
+│   │   ├── Buildings/         ← BuildingDefinition .tres files
+│   │   ├── Research/          ← TechDefinition .tres files
+│   │   ├── Enemies/           ← EnemyDefinition .tres files
+│   │   ├── Factions/          ← FactionDefinition .tres files
+│   │   ├── Balance/           ← BalanceConfig.tres (runtime-tunable via DevTools)
+│   │   └── World/             ← SectorArchetype .tres files
+│   │
+│   └── Tests/                 ← Test scenes for isolated component testing
 │
-├── Assets/                    ← Raw assets only, no logic
-│   ├── Audio/
-│   │   ├── Music/             ← BGM by context (combat/, ambient/, menu/)
-│   │   ├── SFX/
-│   │   │   ├── Definitive/    ← Final sounds
-│   │   │   └── Placeholder/   ← WIP sounds
-│   │   └── Voice/             ← KIRA voice lines
-│   ├── Fonts/
-│   ├── Materials/
-│   ├── Models/                ← 3D models (.glb) for SubViewport 3D (ship banking, etc.)
-│   ├── Particles/
-│   ├── Shaders/               ← Global reusable shaders
-│   ├── Textures/
-│   │   ├── Isometric/         ← Tilesets, floor tiles, isometric grid
-│   │   ├── Ships/
-│   │   ├── Drones/            ← Mining, combat, scout, salvage drone sprites
-│   │   ├── Station/
-│   │   ├── Environment/       ← Asteroids, nebulae, derelicts, anomalies
-│   │   ├── UI/
-│   │   ├── Effects/
-│   │   └── Icons/
-│   └── Themes/                ← Global UI theme (.tres)
-│
-├── Autoloads/                 ← Global singletons (max 5-6, thin coordinators)
-│   ├── GameState.cs           ← Run state, resources, phase
-│   ├── EventBus.cs            ← Pure signal relay (all systems communicate through here)
-│   ├── OriginShift.cs         ← Origin shift management
-│   ├── EntityRegistry.cs      ← Source of truth for all world entities (live + off-screen)
-│   ├── SfxManager.cs          ← Audio pooling
-│   └── MusicManager.cs        ← Context-based music
-│
-├── Components/                ← Reusable behavior units (scene + script, same folder)
-│   ├── Core/                  ← HealthComponent, MovementComponent, HitboxComponent
-│   ├── Combat/                ← TargetingComponent, WeaponComponent, ShieldComponent
-│   ├── Station/               ← BuildingComponent, RefineryComponent, DefenseComponent
-│   ├── World/                 ← ChunkLoader, SectorField, StarLayer
-│   ├── Ships/                 ← Thruster, RCS, Banking, DamageSystem, CameraFollow
-│   ├── Drones/                ← DroneBehavior, MiningAI, CombatAI, ScoutAI, SalvageAI
-│   ├── Automation/            ← ScriptRunner, CronHook, AutomationBridge (terminal↔world)
-│   ├── Visuals/               ← VFX, particles, shaders per component
-│   └── HUD/                   ← Minimap, WorldMap, SpeedMeter, DebugPanel, etc.
-│
-├── Nodes/                     ← Entities and compositions used inside Screens
-│   ├── Ships/                 ← PlayerShip, EnemyShip entities
-│   ├── Drones/                ← MiningDrone, CombatDrone, ScoutDrone, SalvageDrone
-│   ├── Fleet/                 ← FleetFormation, FleetCommand (fleet compositions)
-│   ├── Station/               ← StationBase, Modules, Turrets
-│   ├── Environment/           ← Asteroids, Derelicts, Anomalies
-│   ├── Projectiles/           ← Laser, Missile, etc.
-│   ├── Terminal/              ← Terminal overlay, vsh emulator, command output
-│   └── UI/                    ← Menus, Panels, Popups, Tooltips
-│
-├── Screens/                   ← Full independent scenes (game states)
-│   ├── Root/                  ← Main scene, screen transitions
-│   ├── MainMenu/
-│   ├── Game/                  ← Main game orchestrator
-│   └── DevTools/              ← Debug/dev tools, balance editor
-│
-├── Core/                      ← Pure C# types — NO Godot scenes
-│   ├── Interfaces/            ← IShip, IStation, IDamageable, IAutomatable, IDrone
-│   ├── Coordinates/           ← CellAddress, SectorAddress, QuadrantAddress, CoordConvert
-│   ├── Enums/                 ← FactionType, ResourceType, ThreatLevel, DroneType, etc.
-│   ├── Constants/             ← GameConstants.cs (compile-time)
-│   └── Utils/                 ← MathUtil, ListUtils
-│
-├── Systems/                   ← Game logic + behavior strategies
-│   ├── Production/            ← ProductionSystem, RefinerySystem, ProductionChain
-│   ├── Combat/                ← CombatSystem, FleetSystem, RapidFireResolver
-│   ├── Threat/                ← ThreatSystem, SignatureCalculator, DefenseResolver
-│   ├── Exploration/           ← SectorGenerator, AnomalySystem, FogOfWar
-│   ├── Terminal/              ← CommandParser, ScriptEngine, CronScheduler
-│   ├── AI/                    ← KiraEngine, LlmBridge, DialogueSystem
-│   ├── Building/              ← BuildSystem, UpgradeSystem, TechTree
-│   ├── Progression/           ← ResearchSystem, StationTierSystem
-│   ├── Faction/               ← FactionSystem, ReputationTracker, FactionBonus
-│   ├── Economy/               ← TradeSystem, MarketPrices, ResourceVelocity
-│   └── Network/               ← (future) NetworkManager, SyncService, RpcLayer
-│
-├── Resources/                 ← .tres data files + C# Resource class definitions
-│   ├── Ships/                 ← ShipDefinition .tres files
-│   ├── Drones/                ← DroneDefinition .tres files
-│   ├── Buildings/             ← BuildingDefinition .tres files
-│   ├── Research/              ← TechDefinition .tres files
-│   ├── Enemies/               ← EnemyDefinition .tres files
-│   ├── Factions/              ← FactionDefinition .tres files
-│   ├── Balance/               ← BalanceConfig.tres (runtime-tunable via DevTools)
-│   └── World/                 ← SectorArchetype .tres files
-│
-└── Tests/                     ← Test scenes for isolated component testing
+├── .claude/                   ← Agents, skills (auto-detected by Claude Code)
+├── .github/                   ← Issue/PR templates, CI workflows
+├── docs/                      ← Game design, roadmap, commands reference
+├── CLAUDE.md                  ← Project conventions (this file)
+├── README.md
+├── LICENSE
+├── CLA.md
+├── CODE_OF_CONDUCT.md
+└── CONTRIBUTING.md
 ```
 
 ### Folder Rules
