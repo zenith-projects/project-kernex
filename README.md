@@ -18,7 +18,7 @@ You awaken as the sole operator of **Station XARA-7**, a derelict outpost on the
 
 **In-Game Terminal (vsh)** — An optional power tool inside the game. Chain commands, write scripts, schedule automation. Not required to play, but gives a massive edge to those who use it.
 
-**AI Companion (KIRA)** — A local LLM running on your machine. KIRA lives in the terminal, writes automation scripts on request, provides strategic advice, and evolves through 5 stages. Non-programmers ask KIRA; programmers code manually — same result, no disadvantage.
+**AI Companion (KIRA)** — A local LLM running on your machine. KIRA lives in the terminal, writes automation scripts on request, provides strategic advice, and evolves through **10 stages** — from corrupted boot logs to a fully sentient AI that can run your entire station. Non-programmers ask KIRA; programmers code manually — same result, no disadvantage.
 
 **Deep Production Chains** — Branching, interdependent resource processing inspired by Factorio. Circuit Boards need both Silicon Wafers AND Copper Wire. Bottleneck identification is a core skill.
 
@@ -34,8 +34,9 @@ You awaken as the sole operator of **Station XARA-7**, a derelict outpost on the
 - ⚔️ Real-time fleet combat with hard counters and drone systems
 - 🏗️ Station building with defense layout strategy
 - ⛏️ Branching production chains with interdependencies
+- 🌳 Radial tech tree — 8 branches, 5 tiers each, expanding from center
 - 🖥️ In-game terminal emulator (`vsh`) for power users
-- 🤖 Local AI companion (KIRA) — writes scripts and automates for you
+- 🤖 Local AI companion (KIRA) — 10 evolution levels, writes scripts and automates for you
 - 🛡️ Activity-threat feedback loop (growth attracts danger)
 - 🏛️ Three-faction system with clan warfare
 - 🌐 Offline-first → MMO transition (future)

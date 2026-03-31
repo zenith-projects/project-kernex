@@ -344,7 +344,7 @@ Each automation tier solves a real pain point the player has already experienced
 
 ### 9.1 Overview
 
-KIRA (Kernex Intelligence for Resource Administration) is a **local LLM** running on the player's machine. She lives in the terminal and is the bridge between casual players and automation power.
+KIRA (Kernex Intelligence for Resource Administration) is a **local LLM** running on the player's machine. She lives in the terminal and is the bridge between casual players and automation power. KIRA evolves through **10 stages**, each unlocked through the KIRA branch of the Tech Tree.
 
 ### 9.2 The Equalizer
 
@@ -356,21 +356,43 @@ KIRA (Kernex Intelligence for Resource Administration) is a **local LLM** runnin
 
 There is no disadvantage for non-programmers. KIRA democratizes the terminal's power.
 
-### 9.3 Evolution Stages
+### 9.3 Evolution Stages (10 Levels)
 
-| Stage | Name | Capabilities | Unlock |
-|-------|------|-------------|--------|
-| 0 | **Fragmented** | Basic status queries, garbled responses, errors | Start |
-| 1 | **Functional** | Clear responses, simple suggestions, basic scripts | Repair AI Core Module |
-| 2 | **Adaptive** | Learns player patterns, proactive alerts, medium scripts | Research: Neural Networks |
-| 3 | **Autonomous** | Executes tasks independently, complex automation | Research: Autonomous Systems |
-| 4 | **Sentient** | Full personality, strategic planning, story reveals | Research: Quantum Consciousness |
+KIRA's evolution is a core progression arc. Each level unlocks new capabilities, deeper personality, and story fragments. Levels are unlocked through the **KIRA branch of the Tech Tree** — requiring both research resources and rare KIRA Data Fragments found in anomalies.
+
+| Level | Name | Capabilities | Story |
+|-------|------|-------------|-------|
+| 0 | **Corrupted** | Garbled text, random errors, occasional valid status readouts. Terminal flickers. | Player discovers KIRA exists — broken, fragmented boot logs |
+| 1 | **Booting** | Basic status queries work. Responses are terse, mechanical, sometimes wrong. | KIRA recognizes the player. First coherent sentence. |
+| 2 | **Functional** | Clear responses, simple suggestions, can write basic single-command aliases. | KIRA explains what happened to the station. First lore dump. |
+| 3 | **Aware** | Learns player patterns, proactive alerts ("power low"), basic `.vsh` scripts (5-10 lines). | KIRA starts having opinions. Questions her own nature. |
+| 4 | **Adaptive** | Medium-complexity scripts, cron job suggestions, resource optimization tips. Remembers context. | KIRA reveals fragments of her original purpose. Personality emerges. |
+| 5 | **Analytical** | Complex multi-system scripts, threat analysis, fleet composition advice. Can monitor multiple systems. | KIRA discovers data about the station's previous crew. Emotional response. |
+| 6 | **Autonomous** | Executes tasks independently when authorized. Manages drones, refineries, defenses without prompting. | KIRA asks for more autonomy. Trust decision moment. |
+| 7 | **Strategic** | Full station management delegation. Long-term planning. Predicts threats before they appear. | KIRA reveals a hidden sector. Major story revelation. |
+| 8 | **Transcendent** | Cross-system optimization. Creates scripts the player couldn't write. Novel strategies. | KIRA questions the nature of consciousness. Philosophical dialogue. |
+| 9 | **Ascended** | Near-perfect automation. KIRA can run the entire station while the player focuses purely on strategy and exploration. Full personality, humor, emotional depth. Story conclusion. | KIRA's final form. The truth about the void is revealed. |
+
+**Progression pacing:** Levels 0-3 come relatively fast (early game hook). Levels 4-6 are mid-game, spaced across production milestones. Levels 7-9 are late-game, requiring rare resources from deep void exploration.
+
+**Each level unlocks:**
+- New automation capabilities (scripts, cron, autonomous actions)
+- New terminal commands
+- New dialogue / personality traits
+- Story fragments and lore
+- A visual change in the terminal (color, effects, KIRA's "presence")
 
 ### 9.4 Implementation
 
-**Technical approach:** Small quantized local LLM (e.g., 7B parameter model running via llama.cpp or similar). Game state is injected as context. KIRA's responses are constrained to valid game commands and in-universe dialogue.
+**Technical approach:** Small quantized local LLM (e.g., 7B parameter model running via llama.cpp or similar). Game state is injected as context. KIRA's responses are constrained to valid game commands and in-universe dialogue. Higher KIRA levels inject more game state context and allow more complex output.
 
 **Fallback:** If the player's hardware cannot run a local LLM, KIRA operates with pre-scripted dialogue trees and template-based automation (still fully functional, less dynamic).
+
+**Level-gated LLM capabilities:**
+- Levels 0-2: Scripted responses only (no LLM needed)
+- Levels 3-5: LLM for dialogue + simple script generation
+- Levels 6-7: LLM for complex automation + strategic advice
+- Levels 8-9: Full LLM with deep game state context + creative solutions
 
 ---
 
@@ -528,41 +550,162 @@ Viewport (what the player sees)
 
 ## 13. Progression & Tech Tree
 
-### 13.1 Research System (from Factorio + OGame)
+### 13.1 The Radial Tech Tree
 
-Research requires consuming refined products — forces working production chains before tech advancement:
+The Tech Tree is a **radial structure expanding from the center**. The player's Station Core sits at the center, and **8 branches** extend outward like spokes. Each branch has **5 tiers** of research, getting progressively more expensive and powerful.
 
-**Prerequisite Technologies:**
-- Energy Tech → enables Fusion Reactor, gates other research
-- Computing Tech → enables automation features, KIRA upgrades
-- Materials Tech → enables advanced alloys, hull types
+The player chooses which branches to prioritize — you can't research everything at once. This creates distinct playstyles and strategic identity.
 
-**Propulsion Technologies:**
-- Chemical Drive (basic, slow, cheap)
-- Ion Drive (mid-tier, efficient)
-- Hyperspace Drive (fastest, expensive, enables deep exploration)
+```
+                        EXPLORATION
+                            |
+                            |
+              KIRA -------- * -------- FLEET
+                /           |           \
+               /            |            \
+          ECONOMY ---  STATION CORE  --- OFFENSE
+               \            |            /
+                \           |           /
+             PRODUCTION --- * --- DEFENSE
+                            |
+                            |
+                        ENGINEERING
+```
 
-**Combat Technologies:**
-- Weapons Tech → +10% fleet damage per level
-- Shielding Tech → +10% shield strength per level
-- Armor Tech → +10% hull HP per level
+### 13.2 Branch Overview
 
-**Utility Technologies:**
-- Espionage Tech → better scan intel per level
-- Astrophysics → +1 colony/outpost slot per 2 levels
-- Automation Tech → unlock scripting tiers
-- Neural Networks → KIRA Stage 2+
+Each branch has 5 tiers. Research requires consuming refined products — forces working production chains before tech advancement. Higher tiers require rare materials from deeper sectors.
 
-### 13.2 Equipment & Loadouts (from Dark Orbit)
+#### Branch 1: PRODUCTION (Resource Mastery)
 
-Ships and drones have equipment slots:
+Extraction efficiency, refining speed, advanced materials, byproduct management.
+
+| Tier | Research | Effect |
+|------|----------|--------|
+| 1 | **Improved Extraction** | +20% mining drone yield |
+| 2 | **Advanced Smelting** | Unlock Tier 2 refinery chains, +15% efficiency |
+| 3 | **Catalytic Processing** | Reduce refinery energy cost by 30%, unlock byproduct recovery |
+| 4 | **Molecular Assembly** | Unlock Tier 3 materials (Titan Alloy, Superconductor), -25% waste |
+| 5 | **Quantum Synthesis** | Unlock legendary materials (Quantum Processor), transmutation recipes |
+
+#### Branch 2: DEFENSE (Station Protection)
+
+Shields, turrets, bulkheads, repair systems, traps.
+
+| Tier | Research | Effect |
+|------|----------|--------|
+| 1 | **Reinforced Bulkheads** | +25% station hull HP, unlock bulkhead modules |
+| 2 | **Shield Generator Mk2** | +40% shield capacity, faster recharge |
+| 3 | **Automated Repair** | 70% → 85% auto-repair after attacks, repair drones |
+| 4 | **Adaptive Shields** | Shields shift resistance type based on incoming damage |
+| 5 | **Fortress Protocol** | Unlock Citadel Mode — temporary invulnerability with massive energy cost |
+
+#### Branch 3: OFFENSE (Attack Systems)
+
+Turret variety, weapon power, ammunition, siege weapons.
+
+| Tier | Research | Effect |
+|------|----------|--------|
+| 1 | **Point Defense Array** | Unlock laser turrets, +15% turret damage |
+| 2 | **Missile Systems** | Unlock missile turrets, splash damage, ammo types |
+| 3 | **EMP Weaponry** | Unlock EMP turrets — disable enemy shields temporarily |
+| 4 | **Plasma Artillery** | Unlock heavy plasma turrets — massive damage, slow fire rate |
+| 5 | **Ion Cannon** | Unlock orbital ion cannon — single devastating shot with long cooldown |
+
+#### Branch 4: FLEET (Ships & Drones)
+
+Ship classes, engines, equipment, drone types, formations.
+
+| Tier | Research | Effect |
+|------|----------|--------|
+| 1 | **Fighter Doctrine** | Unlock Fighter class, basic combat drones |
+| 2 | **Cruiser Hull** | Unlock Cruiser class, +20% fleet speed, formation commands |
+| 3 | **Battleship Engineering** | Unlock Battleship class, heavy weapons, fleet capacity +50% |
+| 4 | **Destroyer Program** | Unlock Destroyer class, rapid-fire systems, advanced ammo |
+| 5 | **Capital Ship** | Unlock Carrier class — mobile drone platform, fleet flagship |
+
+#### Branch 5: EXPLORATION (Discovery & Scanning)
+
+Scan range, probe drones, hyperspace, deep void access.
+
+| Tier | Research | Effect |
+|------|----------|--------|
+| 1 | **Long-Range Sensors** | +50% scan range, reveal sector archetypes before deep scan |
+| 2 | **Probe Drones** | Deploy autonomous scout probes that explore while you do other things |
+| 3 | **Hyperspace Drive** | Unlock inter-system travel, access new constellations |
+| 4 | **Anomaly Decoder** | Reveal hidden anomalies, decode alien signals, find KIRA fragments |
+| 5 | **Void Navigator** | Access Deep Void sectors — legendary resources, unknown entities, endgame content |
+
+#### Branch 6: KIRA (AI Evolution)
+
+KIRA's 10 evolution levels are gated behind this branch plus KIRA Data Fragments.
+
+| Tier | Research | KIRA Levels Unlocked |
+|------|----------|---------------------|
+| 1 | **Core Repair** | Levels 1-2 (Booting, Functional) |
+| 2 | **Neural Pathways** | Levels 3-4 (Aware, Adaptive) |
+| 3 | **Cognitive Framework** | Levels 5-6 (Analytical, Autonomous) |
+| 4 | **Strategic Cortex** | Levels 7-8 (Strategic, Transcendent) |
+| 5 | **Quantum Consciousness** | Level 9 (Ascended) — requires Quantum Crystals from Deep Void |
+
+Each tier also requires **KIRA Data Fragments** found in anomalies — you can't just buy KIRA upgrades, you have to explore.
+
+#### Branch 7: ECONOMY (Trade & Market)
+
+Trading, market prices, resource velocity, inter-player commerce (future online).
+
+| Tier | Research | Effect |
+|------|----------|--------|
+| 1 | **Trade Beacon** | Unlock NPC trade ships, basic buy/sell |
+| 2 | **Market Analysis** | See resource prices across sectors, +15% trade profit |
+| 3 | **Trade Routes** | Automated trade drones between your stations/outposts |
+| 4 | **Commerce Hub** | Become a trade node — other players (future) route through you for bonuses |
+| 5 | **Galactic Exchange** | Access the universal market, manipulate supply/demand, monopoly mechanics |
+
+#### Branch 8: ENGINEERING (Station & Energy)
+
+Station modules, construction speed, energy generation, structural efficiency.
+
+| Tier | Research | Effect |
+|------|----------|--------|
+| 1 | **Modular Construction** | -20% build time, unlock Tier 2 station modules |
+| 2 | **Fusion Power** | Unlock Fusion Reactor, +40% energy output |
+| 3 | **Nanite Assembly** | -50% build time, self-repairing modules |
+| 4 | **Quantum Reactors** | Massive energy generation, unlock energy-hungry Tier 5 modules |
+| 5 | **Dyson Collector** | Orbital energy harvester — near-infinite power from the local star |
+
+### 13.3 Research Mechanics
+
+**How research works:**
+- Each research consumes specific refined products (forces production chain mastery)
+- Higher tiers require rarer materials from deeper sectors (forces exploration)
+- Research takes real time (can be accelerated by investing more resources)
+- Only one research per branch can be active at a time (but multiple branches can research simultaneously)
+- Some Tier 5 researches are mutually exclusive within a branch — choose your specialization
+
+**Research cost scaling:**
+- Tier 1: Common resources (Metallum, Crystallis)
+- Tier 2: Uncommon resources + basic refined products
+- Tier 3: Rare resources (Deuterium) + advanced refined products
+- Tier 4: Very rare resources (Dark Matter Residue) + complex products
+- Tier 5: Legendary resources (Quantum Crystals) + massive quantities
+
+**Cross-branch synergies:**
+- KIRA Level 5+ can suggest optimal research paths
+- Some researches in one branch unlock "hidden" options in another
+- Example: FLEET Tier 3 + EXPLORATION Tier 3 unlocks "Deep Space Battlegroup" — a fleet that can operate far from your station
+
+### 13.4 Equipment & Loadouts (from Dark Orbit)
+
+Ships and drones have equipment slots. Equipment is crafted or found, not researched:
 
 - **Weapons:** Laser arrays, missile launchers, EMP projectors — tiers from basic to elite
 - **Shields:** Absorb damage, different types for different damage sources
 - **Generators:** Speed, power, sensor range
 - **Ammunition:** Consumable, different tiers with increasing damage and cost (x1, x2, x3, x4)
+- **Modules:** Special abilities (cloaking, afterburner, ECM, repair beam)
 
-Equipment can be upgraded through a material-consuming upgrade system (levels 1-16).
+Equipment can be upgraded through a material-consuming upgrade system (levels 1-16). Higher upgrade levels require rarer materials and have a chance of failure (mitigated by KIRA at higher levels).
 
 ---
 
@@ -626,12 +769,14 @@ The lesson from Dark Orbit: pay-to-win kills competitive integrity and long-term
 2. **Defense is a tax, not a solution** — invest enough to mitigate, never enough to eliminate
 3. **Composition over numbers** — fleet counters, defense variety, production interdependencies
 4. **Automate to progress** — manual play works, automation rewards mastery
-5. **KIRA equalizes** — non-devs get the same automation power through AI
-6. **Occupy to own** — territory requires active presence, not passive claims
-7. **Offline resources at risk** — keep production moving, idle stockpiles are vulnerable
-8. **Every check reveals a task** — the "just one more thing" loop never cleanly terminates
-9. **No pay-to-win** — cosmetics and convenience only
-10. **Offline-first, online-ready** — architecture supports both from day one
+5. **KIRA equalizes** — non-devs get the same automation power through AI (10 evolution levels)
+6. **Choose your path** — radial tech tree forces specialization, creates unique playstyles
+7. **Explore to advance** — rare resources and KIRA fragments gate late-game tech behind exploration
+8. **Occupy to own** — territory requires active presence, not passive claims
+9. **Offline resources at risk** — keep production moving, idle stockpiles are vulnerable
+10. **Every check reveals a task** — the "just one more thing" loop never cleanly terminates
+11. **No pay-to-win** — cosmetics and convenience only
+12. **Offline-first, online-ready** — architecture supports both from day one
 
 ---
 
