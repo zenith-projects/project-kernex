@@ -2,7 +2,7 @@
 
 > *You are the root user of the void.*
 
-**PROJECT KERNEX** is a space station management game where you operate, expand, and survive through a terminal interface. Write scripts to automate your drones, refine raw materials into advanced alloys, and explore procedurally generated star sectors — all from a command line.
+**PROJECT KERNEX** is an isometric space game where you build stations, command fleets, automate production chains, and conquer territory in a procedurally generated infinite universe. Play with mouse and keyboard like any normal game — or open the in-game terminal for scripting and automation. Your AI companion KIRA runs locally and writes scripts for you, so everyone has access to automation power regardless of coding skill.
 
 Built with AI assistance. Built by the community.
 
@@ -10,31 +10,35 @@ Built with AI assistance. Built by the community.
 
 ## 🎮 About the Game
 
-You awaken as the sole operator of **Station XARA-7**, a derelict outpost on the edge of known space. Your only tools: a terminal, a broken AI companion, and whatever resources you can scavenge from the void.
+You awaken as the sole operator of **Station XARA-7**, a derelict outpost on the edge of known space. Mine resources, refine materials, build your fleet, and expand into the void — while threats scale with your ambition.
 
 ### Core Pillars
 
-**Terminal-First Gameplay** — Every system on your station is operated through a shell interface. Scan sectors, deploy mining drones, manage power grids, and defend against threats using commands, pipes, and scripts.
+**Isometric Space Gameplay** — Build and manage your station in a real-time isometric world. Mine asteroids, deploy fleets, defend your base, and explore an infinite procedurally generated universe using mouse, keyboard, and UI.
 
-**Programming as a Mechanic** — Write real scripts in an in-game scripting language to automate repetitive tasks. The more you code, the more efficient your station becomes. Chain commands, schedule cron jobs, and build monitoring dashboards.
+**In-Game Terminal (vsh)** — An optional power tool inside the game. Chain commands, write scripts, schedule automation. Not required to play, but gives a massive edge to those who use it.
 
-**AI Companion (KIRA)** — Your station's AI starts broken and fragmented. Repair and upgrade her systems to unlock new capabilities, dialogue, and story progression. KIRA responds via the terminal and evolves based on your choices.
+**AI Companion (KIRA)** — A local LLM running on your machine. KIRA lives in the terminal, writes automation scripts on request, provides strategic advice, and evolves through 5 stages. Non-programmers ask KIRA; programmers code manually — same result, no disadvantage.
 
-**Resource Pipeline** — Mine asteroids → Process raw ore → Refine into alloys → Fabricate components → Build station modules. Every step can be optimized through automation.
+**Deep Production Chains** — Branching, interdependent resource processing inspired by Factorio. Circuit Boards need both Silicon Wafers AND Copper Wire. Bottleneck identification is a core skill.
 
-**Procedural Exploration** — Each star sector is procedurally generated with unique resource compositions, anomalies, hazards, and discoveries. No two playthroughs are the same.
+**Fleet Combat** — Real-time isometric combat with fleet composition depth inspired by OGame/Dark Orbit. Hard counters, rapid-fire mechanics, and drone formations. Composition beats numbers.
+
+**Defend Your Station** — Layered defense inspired by Clash of Clans. Different threat types need different countermeasures. Station activity attracts threats — growth has a cost.
+
+**Infinite Universe** — Procedurally generated from a single seed. Billions of sectors to explore. Chunked coordinates eliminate floating-point precision issues at any distance.
 
 ### Planned Features
 
-- 🖥️ Full terminal emulator with custom shell (`vsh`)
-- 📜 In-game scripting language for automation
-- 🤖 AI companion with dynamic responses (simulated + optional local LLM)
-- ⛏️ Deep resource collection and refinery chains
-- 🚀 Station expansion and module building
-- 🗺️ Procedural star sector generation
-- 🛡️ Threat detection and defense systems
-- 📊 In-game monitoring and dashboards
-- 🌐 Online mode concepts (future development)
+- 🌍 Isometric infinite procedural universe
+- ⚔️ Real-time fleet combat with hard counters and drone systems
+- 🏗️ Station building with defense layout strategy
+- ⛏️ Branching production chains with interdependencies
+- 🖥️ In-game terminal emulator (`vsh`) for power users
+- 🤖 Local AI companion (KIRA) — writes scripts and automates for you
+- 🛡️ Activity-threat feedback loop (growth attracts danger)
+- 🏛️ Three-faction system with clan warfare
+- 🌐 Offline-first → MMO transition (future)
 
 ---
 
@@ -113,11 +117,14 @@ project-kernex/
 
 ## 🛠️ Tech Stack
 
-> **To be defined** — The tech stack is under evaluation. Candidates include:
+> **Under evaluation** — Leading candidates:
 
-- **Engine:** Godot 4 / Unity / Custom
-- **Language:** GDScript / C# / Rust
-- **AI:** Local LLM integration (optional) + scripted dialogue system
+- **Engine:** Godot 4 (leading) / Unity / Custom
+- **Language:** C# / GDScript / Rust
+- **Rendering:** Isometric 2D/3D with chunked coordinate system
+- **AI:** Local LLM (llama.cpp, 7B quantized) + scripted fallback
+- **Architecture:** Command/Event pattern (offline-first → MMO-ready)
+- **World Gen:** Seed-based deterministic procedural generation
 - **Audio:** FMOD / Wwise / Native
 - **Build:** CI/CD with GitHub Actions
 
