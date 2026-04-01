@@ -5,7 +5,7 @@
 
 ---
 
-## Phase 0 — Foundation 🏗️ `CURRENT`
+## Phase 0 — Foundation 🏗️ `COMPLETE`
 
 **Goal:** Project structure, game design, community infrastructure, and technical architecture.
 
@@ -24,24 +24,64 @@
 
 ---
 
-## Phase 1 — Shell & KIRA (Core Innovation) 🖥️🤖
+## Phase 1 — Shell & KIRA (Core Innovation) 🖥️🤖 `IN PROGRESS`
 
 **Goal:** Build the shell and KIRA first — they are the core innovation and differentiate the game from everything else. Even before the isometric world exists, the shell + KIRA should be functional and impressive.
 
-- [ ] Shell emulator overlay (toggleable, resizable panel)
-- [ ] Command parser and execution engine
-- [ ] Core commands: `help`, `status`, `clear`, `log`, `kira`
+### Shell (vsh) — Terminal Emulator
+
+- [x] **Shell emulator overlay** — `TerminalOverlay` (CanvasLayer) with `TerminalDisplay` (scrollable RichTextLabel output) + `TerminalInput` (LineEdit with command history via Up/Down arrows). Components follow project composition rules: each is `.tscn` + `.cs` in `src/Components/HUD/`.
+- [x] **Command parser and execution engine** — `CommandParser` (stateless tokenizer with quote support), `CommandRegistry` (name + alias lookup), `ParsedCommand` (value object with positional args + flags), `CommandResult` (factory with typed outputs: Success, Error, Info, Kira, Clear). All pure C# in `src/Systems/Terminal/`.
+- [x] **Core commands** — `help`, `status`, `clear`, `whoami`, `uptime`, `kira`. Each implements `ICommand` interface. `HelpCommand` lists all registered commands. `KiraCommand` bridges to `KiraEngine`. Located in `src/Systems/Terminal/Commands/`.
+- [x] **Terminal test scene** — `TerminalTestScene.tscn` in `src/Screens/DevTools/`, F6-runnable standalone scene with dark background, welcome banner, all commands registered.
 - [ ] Piping system (`|`) and command chaining
 - [ ] Aliases (`alias mine="drone deploy --type mining"`)
 - [ ] Basic `.vsh` scripting (loops, conditionals, variables)
 - [ ] Cron jobs (scheduled task execution)
-- [ ] KIRA scripted dialogue engine (Levels 0-2: Corrupted → Booting → Functional)
-- [ ] KIRA game state context injection
-- [ ] Local LLM integration prototype (llama.cpp, 7B quantized)
+
+### KIRA — AI Companion
+
+- [x] **KIRA scripted dialogue engine (Levels 0-2)** — `ScriptedDialogueProvider` with keyword-based response banks per level. Level 0 (Corrupted): 70% garbled via `GlitchTextGenerator` (character corruption, dropouts, insertions), 30% glitched scripted response. Level 1 (Booting): terse mechanical responses, 15% chance of `[SIGNAL LOST]` append. Level 2 (Functional): clear helpful responses, no glitching.
+- [x] **KIRA game state context injection** — `KiraPromptBuilder` constructs system prompts with station state (hull, power, drones, threat, etc.) filtered by `KiraLevelData.AllowedContextKeys`. Level 0 sees nothing, Level 2 sees 5 keys, Level 5+ sees everything. Context always appended to prompt, even with custom prompts.
+- [x] **Local LLM integration** — `LlamaSharpProvider` wraps LLamaSharp 0.26.0 (C# bindings for llama.cpp). Uses `InteractiveExecutor` with `MemoryClear()` before each call for fresh context. ChatML format (`<|im_start|>`) for Qwen compatibility. Configurable: Temperature, TopP, TopK, MinP, MaxTokens, RepeatPenalty, FrequencyPenalty, PresencePenalty, Seed, Mirostat (mode/tau/eta), AntiPrompts. Response cleaning pipeline strips role prefixes, artifacts, and asterisk actions.
+- [x] **10-level evolution system** — `KiraLevelData` Resource (`.tres`) for all 10 levels (Corrupted → Ascended). Each defines: personality notes, response delay, glitch intensity, allowed context keys, LLM toggle, output color. Levels 0-2 always scripted, 3+ use LLM with scripted fallback.
+- [x] **Emotion system** — `KiraResponse.Parse()` extracts `[EMOTION]` tags from LLM output. 11 emotions: NEUTRAL, CURIOUS, HAPPY, SAD, ANGRY, CRAZY, CRYING, CAUTIOUS, RELAX, SHY, VANISHED. Emotion drives portrait changes with crossfade transition (0.25s Sine tween). KIRA waifu portraits (10 emotion variants + VANISHED empty screen) in `src/Assets/Textures/Kira/`.
+- [x] **Persistent memory system** — `KiraMemoryStore` saves all messages to JSON (`user://kira_memory/messages.json`). Features: keyword search (stopword filtering, relevance ranking), long-term summaries via 3B model (batches of 20 messages → 3-5 bullet points stored in `summaries.json`). Prompt injection: summaries always included + keyword matches for relevant past messages. Chat restored on scene reload (last 30 messages).
+- [x] **Proactive messaging engine** — `KiraProactiveEngine` uses the 3B model for autonomous KIRA messages. Escalating behavior: 15s (casual/curious) → +20s (needy/shy) → +30s (emotional/dramatic) → gives up. Fresh chat: KIRA introduces herself. Visual indicator: portrait border gold flash (2-pulse tween). State persisted (gave_up, attempt count). Resets when player speaks.
+- [x] **Dual-model architecture** — Two Qwen2.5 models loaded simultaneously:
+  - **7B** (`qwen2.5-7b-instruct-q4_k_m.gguf`, 4.4 GB) — Main chat, higher quality responses
+  - **3B** (`qwen2.5-3b-instruct-q4_k_m.gguf`, 2.0 GB) — Proactive decisions, memory summarization, fast inference
+  - Both Apache 2.0 license, GGUF Q4_K_M quantization, ~6.5 GB total RAM
+- [x] **Debug/test scene** — `KiraTestScene.tscn` with comprehensive controls:
+  - Left: KiraPanel (chat with KIRA, emotion portrait with crossfade)
+  - Right: Collapsible debug sections (KIRA, MODEL, INFERENCE, SYSTEM PROMPT, GAME CONTEXT, OUTPUT, PROACTIVE, MEMORY)
+  - All parameters adjustable via sliders with tooltips
+  - Editable system prompt with anti-prompts
+  - Mock game context (hull, power, drones, storage, threat, sector, faction)
+  - Config persisted in `user://kira_debug_config.tres` (auto-save on every change)
+  - JetBrains Mono font, dark+gold glassmorphism theme (`kira_debug_theme.tres`), animated nebula background shader
 - [ ] KIRA writes `.vsh` scripts on player request
 - [ ] Hardware detection and automatic fallback (LLM vs scripted)
 
-**MVP 1:** Shell works, KIRA responds, player can type commands and KIRA writes scripts. The core innovation is playable.
+### AI Models — Technical Details
+
+| Model | File | Size | License | Use |
+|-------|------|------|---------|-----|
+| Qwen2.5-7B-Instruct | `models/qwen2.5-7b-instruct-q4_k_m.gguf` | 4.4 GB | Apache 2.0 | Main chat (Level 3+) |
+| Qwen2.5-3B-Instruct | `models/qwen2.5-3b-instruct-q4_k_m.gguf` | 2.0 GB | Apache 2.0 | Proactive + summarization |
+
+**Runtime:** LLamaSharp 0.26.0 (NuGet) with CPU backend. GPU offload supported via `GpuLayerCount`.
+
+**Qwen2.5 supports tool/function calling** natively via ChatML format. This opens the path for KIRA to execute game commands directly (scan sectors, deploy drones, manage refineries) — planned for the `.vsh` script generation feature.
+
+### Next Steps (Phase 1 remaining)
+
+1. **Tool calling integration** — KIRA calls game functions directly instead of just injecting state. Enables: `get_hull_status()`, `deploy_drone(sector)`, `scan_sector(id)`. Foundation for KIRA writing `.vsh` scripts.
+2. **Piping and aliases** — Shell command chaining (`scan | filter | deploy`) and shortcut system.
+3. **`.vsh` scripting** — Basic script interpreter with loops, conditionals, variables.
+4. **Hardware detection** — Auto-detect RAM/VRAM and select 3B vs 7B model. Fallback to scripted-only if insufficient hardware.
+
+**MVP 1:** Shell works, KIRA responds with personality and memory, player can type commands and KIRA generates context-aware responses with emotions. ✅ *Partially achieved — shell + KIRA chat functional, scripting pending.*
 
 ---
 

@@ -1,3 +1,7 @@
 # Godot 4+ specific ignores
 .godot/
 /android/
+
+# LLM models (large binary files)
+models/
+*.gguf

@@ -27,7 +27,7 @@ jobs:
         run: dotnet restore
 
       - name: Build C# project
-        run: dotnet build --no-restore --configuration Release
+        run: dotnet build --no-restore --configuration Debug
 
   # Validate ALL commit messages in the PR follow conventional commits
   commit-messages:
@@ -37,6 +37,10 @@ jobs:
       - uses: actions/checkout@v4
         with:
           fetch-depth: 0
+          ref: ${{ github.head_ref }}
+
+      - name: Fetch base branch
+        run: git fetch origin ${{ github.base_ref }}
 
       - name: Validate commit messages
         run: |
