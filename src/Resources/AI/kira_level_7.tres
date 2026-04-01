@@ -1,0 +1,15 @@
+[gd_resource type="Resource" script_class="KiraLevelData" format=3]
+
+[ext_resource type="Script" path="res://src/Resources/AI/KiraLevelData.cs" id="1"]
+
+[resource]
+script = ExtResource("1")
+Level = 7
+DisplayName = "Strategic"
+UsesLlm = true
+ResponseDelay = 0.1
+GlitchIntensity = 0.0
+OutputColor = Color(0.91, 0.753, 0.376, 1)
+AllowedContextKeys = PackedStringArray("hull", "power", "drones", "threat", "storage", "modules", "sector", "faction")
+PersonalityNotes = "Full station management. Long-term planning. Predicts threats. Reveals hidden sectors. Major story revelations."
+SystemPromptTemplate = ""
