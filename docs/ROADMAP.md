@@ -87,19 +87,21 @@
 
 ## Phase 2 — Core Engine & Isometric World 🌍
 
-**Goal:** Isometric renderer, chunked coordinate system, and basic player interaction.
+**Goal:** Isometric renderer, chunked coordinate system, and basic player interaction. This is the primary rendering perspective — all core gameplay starts here.
 
-- [ ] Isometric tile rendering engine
+- [ ] Isometric tile rendering engine (2.5D with fake 3D depth via layering)
 - [ ] 3-level chunked coordinate system (Cell / Sector / Quadrant with origin shift)
 - [ ] Camera system (pan, zoom, multi-level: station → sector → system → galaxy)
 - [ ] Chunk manager (load/unload around camera, spatial hash map)
 - [ ] Entity registry (source of truth for all entities, live + off-screen)
 - [ ] Basic player ship in isometric space
 - [ ] Mouse + keyboard input handling
-- [ ] Basic UI framework (HUD, panels, tooltips)
+- [ ] HUD framework inspired by cockpit instrument design (panels, tooltips, gauges)
 - [ ] Shell integration with isometric view (commands trigger visual feedback)
 
 **MVP 2:** Player navigates an infinite isometric space with origin shift. Shell commands affect the world.
+
+> **Rendering philosophy:** The game uses hybrid 2.5D/3D. Isometric view is the primary perspective for all gameplay. First-person cockpit and station interior views come in later phases. Fake 3D (pre-rendered sprites, SubViewport 3D, parallax depth) is preferred wherever the player can't distinguish it from real 3D.
 
 ---
 
@@ -198,14 +200,32 @@
 
 ---
 
-## Phase 9 — Polish & Release 🎨
+## Phase 9 — Cockpit View 🚀
+
+**Goal:** First-person cockpit perspective inside ships — a second way to experience the game.
+
+- [ ] Cockpit 3D scene (SubViewport or fake 3D with pre-rendered panels)
+- [ ] Instrument panels: navigation, ship status, threat radar, resource overview
+- [ ] AXIA holographic interface inside cockpit (3D model or animated sprite)
+- [ ] Viewport into space (see what's outside from cockpit perspective)
+- [ ] Cockpit UI and isometric HUD share visual language (same design system)
+- [ ] Toggle between isometric ↔ cockpit with smooth transition
+- [ ] Cockpit state reflects isometric world (same data, different presentation)
+
+**MVP 9:** Player can toggle into cockpit view, see instruments, interact with AXIA hologram, and navigate from first-person. Isometric remains the primary interface.
+
+> The cockpit doesn't replace isometric gameplay — it's an immersion layer. Players who prefer top-down keep using isometric. Players who want immersion switch to cockpit. Both views show the same game state.
+
+---
+
+## Phase 10 — Polish & Release 🎨
 
 **Goal:** Game feel, content, and Steam launch.
 
 - [ ] Sound design (ambient, station ops, combat, AXIA voice)
 - [ ] Music (atmospheric, procedurally layered)
 - [ ] Visual polish (particles, lighting, UI animations)
-- [ ] Full isometric art pass
+- [ ] Full isometric art pass + cockpit art pass
 - [ ] Achievement system
 - [ ] Monolith of Contributors (credits)
 - [ ] Steam integration (achievements, cloud saves)
@@ -214,7 +234,7 @@
 
 ---
 
-## Phase 10 — Online MVP 🌐
+## Phase 11 — Online MVP 🌐
 
 **Goal:** First multiplayer features — offline to online transition.
 
@@ -226,7 +246,7 @@
 
 ---
 
-## Phase 11 — MMO & Endgame 🌍
+## Phase 12 — MMO & Endgame 🌍
 
 **Goal:** Full MMO — territory, clans, warfare, endgame content.
 
@@ -238,6 +258,21 @@
 - [ ] Shared script repository (`vpm`)
 - [ ] Server meshing for scale
 - [ ] Expansion DLCs
+
+---
+
+## Phase 13 — Station Interior 🏠
+
+**Goal:** First-person walkable station interiors — see your station from the inside.
+
+- [ ] First-person navigation inside station (3D or pre-rendered corridors)
+- [ ] Modules as rooms/bays (refinery room, drone bay, research lab)
+- [ ] AXIA holographic terminal in station common area
+- [ ] Visual link: isometric module layout maps to interior room layout
+- [ ] Interact with systems from interior (alternative to isometric management)
+- [ ] Station damage visible in interior (hull breaches, power failures)
+
+> Station interiors are a long-term immersion feature, not a gameplay replacement. All station management works from isometric view. Interiors add atmosphere and a new way to experience the station.
 
 ---
 

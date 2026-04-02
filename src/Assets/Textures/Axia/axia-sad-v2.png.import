@@ -3,15 +3,15 @@
 importer="texture"
 type="CompressedTexture2D"
 uid="uid://c6wrrhmq536o0"
-path="res://.godot/imported/kira-sad-v2.png-3d1b64bd24acfe499950b633208c0a7d.ctex"
+path="res://.godot/imported/axia-sad-v2.png-8eba3530acc6921107ebc5f8638e4134.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://src/Assets/Textures/Kira/kira-sad-v2.png"
-dest_files=["res://.godot/imported/kira-sad-v2.png-3d1b64bd24acfe499950b633208c0a7d.ctex"]
+source_file="res://src/Assets/Textures/Axia/axia-sad-v2.png"
+dest_files=["res://.godot/imported/axia-sad-v2.png-8eba3530acc6921107ebc5f8638e4134.ctex"]
 
 [params]
 

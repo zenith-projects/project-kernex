@@ -7,10 +7,10 @@
 | Field | Value |
 |-------|-------|
 | **Title** | PROJECT KERNEX |
-| **Genre** | Isometric Space MMO / Management / Automation |
+| **Genre** | Hybrid 2.5D/3D Space MMO / Management / Automation |
 | **Platform** | PC (Steam) |
 | **Engine** | Godot 4.6+ Mono (C# / .NET 8+) |
-| **Perspective** | Isometric 2D/3D |
+| **Perspective** | Isometric (exploration, building, combat) + First-person (cockpit, station interiors) |
 | **Controls** | Mouse + Keyboard + UI (standard), Shell (optional power tool) |
 | **Players** | Single-player (offline-first) → MMO (future) |
 | **Target Audience** | Gamers who enjoy Dark Orbit, OGame, Factorio, Clash of Clans; devs who want deeper automation |
@@ -27,7 +27,7 @@
 
 ## Core Concept
 
-PROJECT KERNEX is an isometric space game set in a procedurally generated infinite universe. Players build and expand space stations, command fleets, mine resources, automate production chains, and compete for territory — all in real-time with an isometric perspective.
+PROJECT KERNEX is a hybrid 2.5D/3D space game set in a procedurally generated infinite universe. Players build and expand space stations, command fleets, mine resources, automate production chains, and compete for territory — blending isometric and first-person perspectives. Exploration, mining, combat, and base building happen in isometric view. Ships have a first-person cockpit with instruments and a holographic AXIA interface. Station interiors are walkable in first-person (future). Fake 3D is used wherever the player can't tell the difference — the feel matters, not the technical approach.
 
 ### What Makes It Unique: Three Layers of Play
 
@@ -45,20 +45,26 @@ The shell is not required to play. It is a power-user tool. AXIA is the equalize
 
 ### Visual Style
 
-- **Primary:** Isometric space — dark backgrounds, glowing station modules, particle effects for mining/combat
-- **Secondary:** Shell overlay with classic CLI aesthetic (green/amber text on dark)
-- **Inspiration:** Dark Orbit (space combat feel), Factorio (production chain visualization), FTL (station interior), Dwarf Fortress (depth from simplicity)
-- **Color Palette:** Deep blacks and dark blues (space), amber/orange (station lights, UI), cyan (shields, scanning), red (alerts, enemies), green (shell, AXIA)
+- **Isometric view:** Dark space backgrounds, glowing station modules, particle effects for mining/combat. Primary gameplay perspective.
+- **Cockpit view:** First-person inside ships — instrument panels, holographic AXIA display, viewport into space. UI panels in isometric mode are visually inspired by cockpit instruments, so both perspectives share the same design language.
+- **Station interior:** First-person walkable station interiors (future). See your modules, storage bays, and AXIA's hologram up close.
+- **Shell overlay:** Classic CLI aesthetic (gold text on dark) — consistent across all perspectives.
+- **Rendering philosophy:** Fake 3D wherever possible. Pre-rendered sprites, SubViewport 3D for cockpit, 2.5D tricks for depth. If the player perceives 3D, it doesn't matter how it's achieved.
+- **Inspiration:** Dark Orbit (space combat feel), Factorio (production chain visualization), FTL (ship interior), Dwarf Fortress (depth from simplicity), Star Citizen (cockpit immersion)
+- **Color Palette:** Deep blacks and dark blues (space), amber/gold (station lights, UI, cockpit instruments), cyan (shields, scanning), red (alerts, enemies), green (shell, AXIA)
 
-### Zoom Levels
+### Views & Perspectives
 
-| Level | View | Detail |
-|-------|------|--------|
-| 1 | Station Interior | Individual modules, crew, equipment |
-| 2 | Station Exterior | Full station, nearby ships, local space |
-| 3 | Sector View | Asteroid fields, fleets, other stations |
-| 4 | System Map | Star, planets, hyperspace lanes |
-| 5 | Galaxy Map | Regions, faction territories, strategic overview |
+| View | Perspective | When |
+|------|------------|------|
+| **Isometric World** | Top-down isometric (2.5D) | Exploration, mining, combat, base building (primary) |
+| **Cockpit** | First-person (3D/fake 3D) | Inside ship — instruments, navigation, AXIA hologram |
+| **Station Interior** | First-person (3D/fake 3D) | Walk inside your station (future) |
+| **Sector Map** | Strategic overhead | Asteroid fields, fleets, other stations |
+| **System Map** | Abstract | Star, planets, hyperspace lanes |
+| **Galaxy Map** | Abstract | Regions, faction territories, strategic overview |
+
+The isometric view is the initial development focus. Cockpit and station interior views come in later phases.
 
 ### Audio
 

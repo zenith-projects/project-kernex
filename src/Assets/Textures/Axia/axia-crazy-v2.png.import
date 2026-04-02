@@ -3,15 +3,15 @@
 importer="texture"
 type="CompressedTexture2D"
 uid="uid://deldki6m5luhy"
-path="res://.godot/imported/kira-crazy-v2.png-19a76da106530ac735d5fad276d6d391.ctex"
+path="res://.godot/imported/axia-crazy-v2.png-2475e2bd09005a22ad92ca04ead8363e.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://src/Assets/Textures/Kira/kira-crazy-v2.png"
-dest_files=["res://.godot/imported/kira-crazy-v2.png-19a76da106530ac735d5fad276d6d391.ctex"]
+source_file="res://src/Assets/Textures/Axia/axia-crazy-v2.png"
+dest_files=["res://.godot/imported/axia-crazy-v2.png-2475e2bd09005a22ad92ca04ead8363e.ctex"]
 
 [params]
 
