@@ -32,7 +32,7 @@ The Constellation is PROJECT KERNEX's research system — a **massive web of int
                 · · · · · · · · · · ·   |   · · · · · · · · · ·
                ·                  · · · | · · ·                  ·
               ·                  ·      |      ·                  ·
-     KIRA · · · · · · · · · · ·   STATION   · · · · · · · · · · · FLEET
+     AXIA · · · · · · · · · · ·   STATION   · · · · · · · · · · · FLEET
               ·                  ·  CORE   ·                  ·
                ·                  · · · · · ·                ·
                 · · · · · · · · · · ·   · · · · · · · · · · ·
@@ -194,18 +194,18 @@ Each cluster contains **stat nodes** (passive bonuses), **capability nodes** (ne
 
 ---
 
-### KIRA — AI Companion
+### AXIA — AI Companion
 
-*KIRA's 10 evolution levels and capabilities.*
+*AXIA's 10 evolution levels and capabilities.*
 
 | Depth | Stat/Capability Nodes | Module Blueprints Unlocked |
 |-------|----------------------|---------------------------|
-| Inner | KIRA Levels 1-2 (Booting, Functional) | AI Core Fragment, Neural Network Card |
-| Mid | KIRA Levels 3-5 (Aware, Adaptive, Analytical) | Memory Bank, Cognitive Accelerator, Personality Core |
-| Outer | KIRA Levels 6-7 (Autonomous, Strategic) | Strategic Module, Empathy Chip |
+| Inner | AXIA Levels 1-2 (Booting, Functional) | AI Core Fragment, Neural Network Card |
+| Mid | AXIA Levels 3-5 (Aware, Adaptive, Analytical) | Memory Bank, Cognitive Accelerator, Personality Core |
+| Outer | AXIA Levels 6-7 (Autonomous, Strategic) | Strategic Module, Empathy Chip |
 | **Keystone** | **Quantum Consciousness** — Levels 8-9 | Quantum Mind (Legendary) |
 
-Each node also requires **KIRA Data Fragments** from anomalies (cannot be crafted).
+Each node also requires **AXIA Data Fragments** from anomalies (cannot be crafted).
 
 *Bridges to:* AUTOMATION, ANOMALY SCIENCE, COMMUNICATIONS
 
@@ -213,7 +213,7 @@ Each node also requires **KIRA Data Fragments** from anomalies (cannot be crafte
 
 ### AUTOMATION — Shell & Scripting
 
-*The shell power system, independent from KIRA.*
+*The shell power system, independent from AXIA.*
 
 | Depth | Stat/Capability Nodes | Module Blueprints Unlocked |
 |-------|----------------------|---------------------------|
@@ -222,7 +222,7 @@ Each node also requires **KIRA Data Fragments** from anomalies (cannot be crafte
 | Outer | Event hooks, reactive scripts, dashboards | Event Reactor, Pipeline Controller |
 | **Keystone** | **Self-Evolving Scripts** — scripts optimize themselves | Quantum Scheduler (Legendary) |
 
-*Bridges to:* KIRA, DRONES, LOGISTICS
+*Bridges to:* AXIA, DRONES, LOGISTICS
 
 ---
 
@@ -267,7 +267,7 @@ Each node also requires **KIRA Data Fragments** from anomalies (cannot be crafte
 | Outer | Station invisibility, blueprint theft, vision hack | Active Cloak |
 | **Keystone** | **Phantom Station** — appear in multiple locations | Phase Cloak (Legendary) |
 
-*Bridges to:* WEAPONS, EXPLORATION, KIRA
+*Bridges to:* WEAPONS, EXPLORATION, AXIA
 
 ---
 
@@ -280,7 +280,7 @@ Each node also requires **KIRA Data Fragments** from anomalies (cannot be crafte
 | Inner | +50% storage capacity, basic transport | Station Warehouse, Cargo Shuttles |
 | Mid | Shared storage, fast freight, auto-balancing | Compressed Storage, Basic Cargo Hold upgrades |
 | Outer | Orbital depots, warp freight, zero-waste production | Orbital Depot, Quantum Container |
-| **Keystone** | **Self-Optimizing Pipeline** — KIRA manages supply | Dimensional Vault (Legendary) |
+| **Keystone** | **Self-Optimizing Pipeline** — AXIA manages supply | Dimensional Vault (Legendary) |
 
 *Bridges to:* PRODUCTION, ENGINEERING, AUTOMATION, ECONOMY
 
@@ -312,7 +312,7 @@ Each node also requires **KIRA Data Fragments** from anomalies (cannot be crafte
 | Outer | Use alien tech in station, void power, lost knowledge | Void Siphon, Alien Power Cell |
 | **Keystone** | **Precursor Technology** — alien modules | Void Beam (Legendary), Living Hull (Legendary), Void Shift Engine (Legendary) |
 
-*Bridges to:* EXPLORATION, KIRA, ENGINEERING
+*Bridges to:* EXPLORATION, AXIA, ENGINEERING
 
 ---
 
@@ -327,7 +327,7 @@ Each node also requires **KIRA Data Fragments** from anomalies (cannot be crafte
 | Outer | Instant galaxy comms, propaganda, jamming | SubSpace Relay, Propaganda Array |
 | **Keystone** | **Quantum Entanglement Comms** — unblockable | Quantum Link (Legendary) |
 
-*Bridges to:* KIRA, ECONOMY, COLONIZATION, STEALTH
+*Bridges to:* AXIA, ECONOMY, COLONIZATION, STEALTH
 
 ---
 
@@ -345,9 +345,9 @@ Bridges are special nodes that sit between two clusters. Researching a bridge no
 | **Drone Fleet** | DRONES ↔ FLEET | Carrier ships deploy double drone capacity |
 | **Scout Strike** | EXPLORATION ↔ STEALTH | Scan reveals enemy fleet compositions |
 | **Void Warfare** | EXPLORATION ↔ FLEET | Fleets operate in deep void without penalties |
-| **KIRA Infiltrator** | KIRA ↔ STEALTH | KIRA can hack enemy stations remotely |
-| **KIRA Logistics** | KIRA ↔ LOGISTICS | KIRA auto-manages all supply chains |
-| **KIRA Science** | KIRA ↔ ANOMALY SCIENCE | KIRA decodes alien artifacts faster |
+| **AXIA Infiltrator** | AXIA ↔ STEALTH | AXIA can hack enemy stations remotely |
+| **AXIA Logistics** | AXIA ↔ LOGISTICS | AXIA auto-manages all supply chains |
+| **AXIA Science** | AXIA ↔ ANOMALY SCIENCE | AXIA decodes alien artifacts faster |
 | **Auto-Mine** | AUTOMATION ↔ DRONES | Scripts control drone swarms directly |
 | **Auto-Trade** | AUTOMATION ↔ ECONOMY | Scripts execute trades based on market conditions |
 | **Trade Routes** | ECONOMY ↔ NAVIGATION | Automated long-range trade convoys |
@@ -364,7 +364,7 @@ Bridges are special nodes that sit between two clusters. Researching a bridge no
 - **No locks.** Every node is reachable. You choose what to prioritize by spending resources, not by closing doors.
 - Each node consumes specific refined products (forces production chain mastery)
 - Deeper nodes require rarer materials from deeper sectors (forces exploration)
-- Research takes real time (accelerated by investing more resources or KIRA optimization)
+- Research takes real time (accelerated by investing more resources or AXIA optimization)
 - Multiple nodes can research simultaneously (limited by Research Lab level)
 - **Bridge nodes** require prerequisite nodes in BOTH adjacent clusters
 
@@ -379,7 +379,7 @@ Bridges are special nodes that sit between two clusters. Researching a bridge no
 - A focused player can reach one Keystone in ~20 hours
 - A generalist spreading across all clusters reaches mid-depth everywhere in ~30 hours
 - Completing the entire Constellation is a 200+ hour endgame goal
-- KIRA at higher levels suggests optimal paths through the web
+- AXIA at higher levels suggests optimal paths through the web
 
 ---
 

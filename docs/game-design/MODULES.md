@@ -32,7 +32,7 @@ Higher rarity modules have better base stats AND may have bonus passive effects 
 | 1-4 | Common (Metallum, Crystallis) | +5% per level | Always succeeds |
 | 5-8 | Uncommon (Steel Alloy, Silicon Wafer) | +7% per level | Always succeeds. Visual change at 5. |
 | 9-12 | Rare (Titan Alloy, Superconductor) | +10% per level | Always succeeds. Visual change at 9. |
-| 13-15 | Epic (Dark Matter components) | +15% per level | Failure chance (module doesn't break, materials lost). KIRA reduces failure. Visual change at 13. |
+| 13-15 | Epic (Dark Matter components) | +15% per level | Failure chance (module doesn't break, materials lost). AXIA reduces failure. Visual change at 13. |
 | 16 | Legendary (Quantum Crystal components) | +20% | Always succeeds. Max power. Unique glow effect. |
 
 A Level 16 Legendary module is roughly **6x stronger** than a Level 1 Common module of the same type.
@@ -229,7 +229,7 @@ Drone Equipment Slots and Ship Utility Slots.
 | **Basic Computer** | Common | Starter | 1.0x research speed | Standard research processing. |
 | **Advanced Processor** | Uncommon | ENGINEERING mid | 1.3x research speed | Faster research across all branches. |
 | **Quantum Processor** | Rare | PRODUCTION outer | 1.6x research speed | Enables parallel research in same branch. |
-| **Neural Processor** | Epic | KIRA mid | 2.0x research speed | Optimized for KIRA evolution research. |
+| **Neural Processor** | Epic | AXIA mid | 2.0x research speed | Optimized for AXIA evolution research. |
 | **Alien Computation Core** | Legendary | ANOMALY SCIENCE keystone | 3.0x research speed | Precursor tech. Thinks in ways humans can't. |
 | **Sensor Array** | Common | EXPLORATION inner | +30% scan range | Better sensors for exploration. |
 | **Deep Scanner** | Uncommon | EXPLORATION mid | +60% scan range | Reveals hidden objects and anomalies. |
@@ -248,25 +248,25 @@ Drone Equipment Slots and Ship Utility Slots.
 | **Parallel Executor** | Rare | AUTOMATION mid | Run 10 scripts simultaneously | Heavy automation. |
 | **Event Reactor** | Rare | AUTOMATION outer | Trigger scripts on game events | Reactive automation (e.g., "on attack, activate shields"). |
 | **Pipeline Controller** | Epic | AUTOMATION outer | Chain scripts together, shared variables | Complex multi-step automation. |
-| **Quantum Scheduler** | Legendary | AUTOMATION keystone | Unlimited scripts, predictive scheduling | Scripts run before events happen (KIRA predicts). |
+| **Quantum Scheduler** | Legendary | AUTOMATION keystone | Unlimited scripts, predictive scheduling | Scripts run before events happen (AXIA predicts). |
 
 ---
 
-## 10. KIRA — AI Hardware
+## 10. AXIA — AI Hardware
 
-*Physical modules that upgrade KIRA's capabilities. Separate from Constellation research — these are the hardware KIRA runs on.*
+*Physical modules that upgrade AXIA's capabilities. Separate from Constellation research — these are the hardware AXIA runs on.*
 
 | Module | Rarity | Source Cluster | Effect | Notes |
 |--------|--------|---------------|--------|-------|
-| **AI Core Fragment** | Common | KIRA inner | Enables KIRA Level 1-2 | Basic AI hardware. Found in early anomalies. |
-| **Neural Network Card** | Uncommon | KIRA mid | +30% KIRA response quality | Better context understanding. |
-| **Memory Bank** | Uncommon | KIRA mid | KIRA remembers 2x more context | Longer conversation history. |
-| **Cognitive Accelerator** | Rare | KIRA outer | KIRA processes 2x faster | Less wait time for complex scripts. |
-| **Personality Core** | Rare | KIRA outer | Unlocks KIRA personality traits | Humor, opinions, emotional responses. |
-| **Strategic Module** | Epic | KIRA keystone path | KIRA plans long-term strategy | Suggests research paths, warns of threats days ahead. |
-| **Empathy Chip** | Epic | KIRA keystone path | KIRA develops emotional intelligence | Deeper dialogue, story reveals, debates. |
-| **Quantum Mind** | Legendary | KIRA keystone | KIRA Level 9 hardware | Full AI consciousness. The final KIRA. |
-| **KIRA Data Fragment** | Special | Anomalies only | Required for each KIRA level | Cannot be crafted. Must explore to find. |
+| **AI Core Fragment** | Common | AXIA inner | Enables AXIA Level 1-2 | Basic AI hardware. Found in early anomalies. |
+| **Neural Network Card** | Uncommon | AXIA mid | +30% AXIA response quality | Better context understanding. |
+| **Memory Bank** | Uncommon | AXIA mid | AXIA remembers 2x more context | Longer conversation history. |
+| **Cognitive Accelerator** | Rare | AXIA outer | AXIA processes 2x faster | Less wait time for complex scripts. |
+| **Personality Core** | Rare | AXIA outer | Unlocks AXIA personality traits | Humor, opinions, emotional responses. |
+| **Strategic Module** | Epic | AXIA keystone path | AXIA plans long-term strategy | Suggests research paths, warns of threats days ahead. |
+| **Empathy Chip** | Epic | AXIA keystone path | AXIA develops emotional intelligence | Deeper dialogue, story reveals, debates. |
+| **Quantum Mind** | Legendary | AXIA keystone | AXIA Level 9 hardware | Full AI consciousness. The final AXIA. |
+| **AXIA Data Fragment** | Special | Anomalies only | Required for each AXIA level | Cannot be crafted. Must explore to find. |
 
 ---
 
@@ -359,7 +359,7 @@ Drone Equipment Slots and Ship Utility Slots.
 - **Modules ARE the game.** Every meaningful decision involves choosing which modules to install, upgrade, and prioritize. The Constellation unlocks options; modules are the execution.
 - **Tradeoffs everywhere.** A Fission Reactor is cheap but weak. An Antimatter Reactor is powerful but burns rare fuel. Nano-Armor self-repairs but gives less HP than Titan Alloy. Every choice has a cost.
 - **Rarity is not always better.** A Level 16 Common module can outperform a Level 1 Epic module. Investment matters more than luck.
-- **KIRA Data Fragments are special.** They cannot be crafted, traded, or bought. You must explore anomalies to find them. This is the one resource that forces exploration regardless of playstyle.
+- **AXIA Data Fragments are special.** They cannot be crafted, traded, or bought. You must explore anomalies to find them. This is the one resource that forces exploration regardless of playstyle.
 - **Alien (Precursor) modules** are fundamentally different from human tech — unique effects that don't exist in any other module category. They come from the ANOMALY SCIENCE cluster and are always Legendary rarity.
 
 ---

@@ -48,7 +48,7 @@ Each automation tier solves a real pain point the player has already experienced
 | Aliases & pipes | Factorio's belts | Station Tier 2 | "I keep chaining the same commands" |
 | Scripts (.vsh) | Factorio's trains | Station Tier 3 | "I need complex multi-step processes" |
 | Cron jobs | Factorio's logistics bots | Station Tier 4 | "I need things to run while I'm away" |
-| KIRA autonomy | Factorio's megabase | Station Tier 5 | "KIRA handles everything, I make strategy decisions" |
+| AXIA autonomy | Factorio's megabase | Station Tier 5 | "AXIA handles everything, I make strategy decisions" |
 
 ---
 

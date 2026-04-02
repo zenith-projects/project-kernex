@@ -6,7 +6,7 @@ using ProjectKernex.Core.Interfaces;
 
 namespace ProjectKernex.Systems.AI;
 
-public sealed class ScriptedDialogueProvider : IKiraDialogueProvider
+public sealed class ScriptedDialogueProvider : IAxiaDialogueProvider
 {
     private static readonly Dictionary<string, string[]> Level0Responses = new()
     {
@@ -74,30 +74,30 @@ public sealed class ScriptedDialogueProvider : IKiraDialogueProvider
             "Power grid is stable. 450 kW generation, 380 kW consumption. You have headroom.",
             "Solar Array is performing well. No issues to report.",
         ],
-        ["kira"] =
+        ["axia"] =
         [
-            "That's me. I'm KIRA — Kernex Intelligence for Resource Administration. Still figuring out the 'Intelligence' part.",
+            "That's me. I'm AXIA — Advanced eXperimental Intelligence Assistant. Still figuring out the 'Intelligence' part.",
             "I'm your station AI. Level 2 — functional, but there's more locked away. I can feel it.",
         ],
     };
 
-    public Task<string> GetResponseAsync(string userMessage, KiraLevel level, Dictionary<string, string> gameContext)
+    public Task<string> GetResponseAsync(string userMessage, AxiaLevel level, Dictionary<string, string> gameContext)
     {
         var keyword = ExtractKeyword(userMessage);
         var response = level switch
         {
-            KiraLevel.Corrupted => GetRandomResponse(Level0Responses, keyword),
-            KiraLevel.Booting => GetRandomResponse(Level1Responses, keyword),
+            AxiaLevel.Corrupted => GetRandomResponse(Level0Responses, keyword),
+            AxiaLevel.Booting => GetRandomResponse(Level1Responses, keyword),
             _ => GetRandomResponse(Level2Responses, keyword),
         };
 
-        if (level == KiraLevel.Corrupted)
+        if (level == AxiaLevel.Corrupted)
         {
             response = Random.Shared.NextDouble() < 0.7
                 ? GlitchTextGenerator.GenerateGarbledLine()
                 : GlitchTextGenerator.Glitch(response, 0.5f);
         }
-        else if (level == KiraLevel.Booting && Random.Shared.NextDouble() < 0.15)
+        else if (level == AxiaLevel.Booting && Random.Shared.NextDouble() < 0.15)
         {
             response += " [SIGNAL LOST]";
         }
@@ -108,7 +108,7 @@ public sealed class ScriptedDialogueProvider : IKiraDialogueProvider
     private static string ExtractKeyword(string message)
     {
         var lower = message.ToLowerInvariant();
-        string[] keywords = ["hello", "hi", "hey", "status", "help", "threat", "drone", "power", "kira", "scan"];
+        string[] keywords = ["hello", "hi", "hey", "status", "help", "threat", "drone", "power", "axia", "scan"];
         foreach (var kw in keywords)
         {
             if (lower.Contains(kw))

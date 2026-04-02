@@ -12,7 +12,7 @@ ModelPool (shared model instances by .gguf path)
 AgentRunner (generic: config + memory + context + inference)
     |--- sub-AgentRunners (children, shared or own memory)
     |
-KiraEngine (KIRA-specific wrapper: levels, scripted fallback, emotions)
+AxiaEngine (AXIA-specific wrapper: levels, scripted fallback, emotions)
     |--- MainAgent: AgentRunner (7B)
     |--- ProactiveAgent: AgentRunner (3B, shares parent memory)
 ```
@@ -25,7 +25,7 @@ KiraEngine (KIRA-specific wrapper: levels, scripted fallback, emotions)
 | `src/Systems/AI/AgentRunner.cs` | Generic runtime that runs any agent |
 | `src/Systems/AI/AgentMemoryStore.cs` | Per-agent conversation memory (JSON persistence) |
 | `src/Systems/AI/ModelPool.cs` | Shared model pool (prevents loading same .gguf twice) |
-| `src/Systems/AI/KiraEngine.cs` | KIRA-specific wrapper around AgentRunner |
+| `src/Systems/AI/AxiaEngine.cs` | AXIA-specific wrapper around AgentRunner |
 
 ---
 
@@ -124,7 +124,7 @@ What happens internally:
 
 ### Custom system prompt override
 
-If you need to override the system prompt for a specific call (like KIRA does with `KiraPromptBuilder`):
+If you need to override the system prompt for a specific call (like AXIA does with `AxiaPromptBuilder`):
 
 ```csharp
 var customPrompt = "You are a tactical advisor. Analyze this battle.";
@@ -249,49 +249,49 @@ sentinel.Dispose(); // releases model back to ModelPool
 
 ---
 
-## How KIRA uses this system
+## How AXIA uses this system
 
-KIRA is a specialized agent built on top of `AgentRunner`. See `src/Systems/AI/KiraEngine.cs`.
+AXIA is a specialized agent built on top of `AgentRunner`. See `src/Systems/AI/AxiaEngine.cs`.
 
 ```csharp
-// KiraEngine wraps AgentRunner with KIRA-specific behavior:
+// AxiaEngine wraps AgentRunner with AXIA-specific behavior:
 // - 10-level progression system (Corrupted → Ascended)
 // - Scripted dialogue fallback for levels 0-2
 // - Emotion parsing from [EMOTION] tags
-// - KiraPromptBuilder for level-aware prompts
+// - AxiaPromptBuilder for level-aware prompts
 // - Glitch text effects for corrupted levels
 
-var kiraConfig = new AgentConfig
+var axiaConfig = new AgentConfig
 {
-    AgentId = "kira",
-    DisplayName = "KIRA",
+    AgentId = "axia",
+    DisplayName = "AXIA",
     MemoryEnabled = true,
 };
 
-var kira = new KiraEngine(kiraConfig, new ScriptedDialogueProvider());
-await kira.MainAgent.LoadModelAsync();
+var axia = new AxiaEngine(axiaConfig, new ScriptedDialogueProvider());
+await axia.MainAgent.LoadModelAsync();
 
-// KiraEngine.GetResponseAsync returns KiraResponse (with emotion)
+// AxiaEngine.GetResponseAsync returns AxiaResponse (with emotion)
 // instead of raw string
-var response = await kira.GetResponseAsync("Status report");
+var response = await axia.GetResponseAsync("Status report");
 GD.Print($"{response.Text} [{response.Emotion}]");
 // "All systems nominal. Hull integrity at 100%. [NEUTRAL]"
 ```
 
-KIRA also uses a **sub-agent** for proactive messaging:
+AXIA also uses a **sub-agent** for proactive messaging:
 
 ```csharp
-// The proactive sub-agent shares KIRA's memory
+// The proactive sub-agent shares AXIA's memory
 // so it knows the conversation history
 var proactiveConfig = new AgentConfig
 {
-    AgentId = "kira-proactive",
-    DisplayName = "KIRA (Proactive)",
+    AgentId = "axia-proactive",
+    DisplayName = "AXIA (Proactive)",
     ModelPath = "user://models/qwen2.5-3b-instruct-q4_k_m.gguf",
     MemoryEnabled = false, // shares parent memory instead
 };
 
-var proactiveAgent = kira.MainAgent.AddSubAgent(proactiveConfig, shareMemory: true);
+var proactiveAgent = axia.MainAgent.AddSubAgent(proactiveConfig, shareMemory: true);
 await proactiveAgent.LoadModelAsync();
 ```
 
@@ -302,12 +302,12 @@ await proactiveAgent.LoadModelAsync();
 `ModelPool` is a static singleton that manages loaded models. You never interact with it directly — `AgentRunner` handles it.
 
 ```
-Agent "kira"     → ModelPath: "7b.gguf" → ModelPool loads it (refCount=1)
+Agent "axia"     → ModelPath: "7b.gguf" → ModelPool loads it (refCount=1)
 Agent "sentinel" → ModelPath: "7b.gguf" → ModelPool reuses it (refCount=2)
 Agent "proactive" → ModelPath: "3b.gguf" → ModelPool loads it (refCount=1)
 
 sentinel.Dispose() → refCount drops to 1 (model stays loaded)
-kira.Dispose()     → refCount drops to 0 (model unloaded)
+axia.Dispose()     → refCount drops to 0 (model unloaded)
 ```
 
 When two agents share the same model, inference is serialized via a queue (`SemaphoreSlim`). One agent waits while the other generates — no errors, no data leaks.
@@ -323,7 +323,7 @@ user://agent_memory/
     sentinel/
         messages.json     ← full conversation history
         summaries.json    ← long-term compressed summaries
-    kira/
+    axia/
         messages.json
         summaries.json
 ```
@@ -340,14 +340,14 @@ agent.Memory.ClearAll();                       // reset
 
 ## Debug scene
 
-The `KiraTestScene` (`src/Screens/DevTools/KiraTestScene.tscn`) includes an **Agent Selector** dropdown at the top of the debug panel.
+The `AxiaTestScene` (`src/Screens/DevTools/AxiaTestScene.tscn`) includes an **Agent Selector** dropdown at the top of the debug panel.
 
-- Select "KIRA (Main 7B)" to tune the main agent's inference params
-- Select "KIRA (Proactive 3B)" to tune the proactive sub-agent
-- KIRA-specific sections (Level, Emotion, Portrait, Proactive) are hidden when a non-KIRA agent is selected
+- Select "AXIA (Main 7B)" to tune the main agent's inference params
+- Select "AXIA (Proactive 3B)" to tune the proactive sub-agent
+- AXIA-specific sections (Level, Emotion, Portrait, Proactive) are hidden when a non-AXIA agent is selected
 - All slider changes are written to the selected agent's `AgentConfig` in real-time
 
-To add a new agent to the debug scene, register it in `KiraTestScene.Setup.cs`:
+To add a new agent to the debug scene, register it in `AxiaTestScene.Setup.cs`:
 
 ```csharp
 _agentSelector.AddItem("SENTINEL (7B)", 2);

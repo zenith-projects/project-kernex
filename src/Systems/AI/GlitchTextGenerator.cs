@@ -10,7 +10,7 @@ public static class GlitchTextGenerator
     private static readonly string[] GarbledPrefixes =
     [
         "[SYS] ë::BOOT_FAIL::",
-        "ERR::KIRA_CORE >>",
+        "ERR::AXIA_CORE >>",
         "[0xDEAD] >>>",
         "??? ...",
         "[NULL_REF]",

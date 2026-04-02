@@ -39,7 +39,7 @@ Up to 8 combat drones orbit the player's flagship:
 
 - **Hostile NPCs:** Pirates, rogue AI, alien creatures — escalating difficulty by sector depth
 - **Void Gates:** Instanced wave-based PvE challenges (inspired by Dark Orbit Galaxy Gates) with exclusive rewards
-- **Boss encounters:** Sector guardians protecting rare resources or KIRA upgrade data
+- **Boss encounters:** Sector guardians protecting rare resources or AXIA upgrade data
 - **Environmental hazards:** Radiation storms, asteroid fields, solar flares during combat
 
 ### PvP (Future Online)

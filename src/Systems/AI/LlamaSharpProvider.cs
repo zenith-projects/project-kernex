@@ -142,7 +142,7 @@ public sealed class LlamaSharpProvider : ILlmProvider, IDisposable
         var text = raw.Trim();
 
         // Strip role prefixes from the start
-        string[] prefixes = ["System:", "KIRA:", "Assistant:", "Bot:"];
+        string[] prefixes = ["System:", "AXIA:", "Assistant:", "Bot:"];
         foreach (var p in prefixes)
         {
             if (text.StartsWith(p, StringComparison.OrdinalIgnoreCase))
@@ -158,7 +158,7 @@ public sealed class LlamaSharpProvider : ILlmProvider, IDisposable
         }
 
         // Remove role-play artifacts (LLM continuing as another role)
-        string[] cutPoints = ["You:", "KIRA:", "Assistant:", "System:", "User:", "Operator:", "<|", "###", "\nNote:", "\nNote "];
+        string[] cutPoints = ["You:", "AXIA:", "Assistant:", "System:", "User:", "Operator:", "<|", "###", "\nNote:", "\nNote "];
         foreach (var a in cutPoints)
         {
             var idx = text.IndexOf(a, StringComparison.OrdinalIgnoreCase);

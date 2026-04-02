@@ -10,7 +10,7 @@ public partial class ShellDisplay : PanelContainer
     [Export] public Color ErrorColor { get; set; } = new(1.0f, 0.3f, 0.3f);
     [Export] public Color InfoColor { get; set; } = new(0.7f, 0.7f, 0.7f);
     [Export] public Color WarningColor { get; set; } = new(1.0f, 0.8f, 0.2f);
-    [Export] public Color KiraColor { get; set; } = new(0.0f, 1.0f, 0.8f);
+    [Export] public Color AxiaColor { get; set; } = new(0.0f, 1.0f, 0.8f);
     [Export] public Color SystemColor { get; set; } = new(0.5f, 0.5f, 0.5f);
 
     private RichTextLabel _output;
@@ -59,7 +59,7 @@ public partial class ShellDisplay : PanelContainer
         CommandResultType.Error => ErrorColor,
         CommandResultType.Info => InfoColor,
         CommandResultType.Warning => WarningColor,
-        CommandResultType.Kira => KiraColor,
+        CommandResultType.Axia => AxiaColor,
         CommandResultType.System => SystemColor,
         _ => InfoColor
     };

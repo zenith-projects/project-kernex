@@ -17,7 +17,7 @@ allowed-tools:
 ```
 main          ← Stable releases only. Never commit directly.
   └── develop ← Integration branch. All PRs target here.
-      ├── feature/*  ← New features (feature/chunk-system, feature/kira-ai)
+      ├── feature/*  ← New features (feature/chunk-system, feature/axia-ai)
       ├── fix/*      ← Bug fixes (fix/origin-shift-jitter)
       ├── docs/*     ← Documentation (docs/update-roadmap)
       ├── art/*      ← Art/assets (art/station-textures)
@@ -76,7 +76,7 @@ Use when the change is clearly scoped to one system:
 | `world` | Chunks, sectors, origin shift, procedural gen |
 | `production` | Resources, refinery, production chains |
 | `shell` | vsh shell, commands, scripting |
-| `kira` | KIRA AI system |
+| `axia` | AXIA AI system |
 | `ui` | HUD, menus, panels |
 | `exploration` | Scanning, fog of war, anomalies |
 | `faction` | Factions, clans, reputation |

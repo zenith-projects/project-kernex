@@ -19,7 +19,7 @@ Resources follow a **Common / Uncommon / Rare** hierarchy with distinct producti
 **Special resources** from exploration:
 | Resource | Source | Use |
 |----------|--------|-----|
-| Dark Matter Residue | Anomalies | KIRA upgrades, advanced research |
+| Dark Matter Residue | Anomalies | AXIA upgrades, advanced research |
 | Quantum Crystals | Deep Void sectors | Endgame tech, legendary equipment |
 | Salvage Data | Derelict ships | Blueprints, lore, tech unlocks |
 
@@ -39,7 +39,7 @@ Crystallis ──→ Copper Wire ────┘
 Deuterium ───→ Hydrogen Fuel ──→ Fusion Cell ─────────────→ Reactor Core
 
 Metallum ────→ Titan Alloy ────→ Advanced Hull ───────────→ Capital Ships
-Crystallis ──→ Superconductor ─→ Quantum Processor ───────→ AI Modules (KIRA)
+Crystallis ──→ Superconductor ─→ Quantum Processor ───────→ AI Modules (AXIA)
 ```
 
 Key design: **Circuit Board requires BOTH Silicon Wafer AND Copper Wire.** This forces players to manage multiple production chains simultaneously. Bottleneck identification becomes a core skill.
