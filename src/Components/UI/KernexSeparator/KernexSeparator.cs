@@ -5,13 +5,13 @@ namespace ProjectKernex.Components.UI;
 [GlobalClass, Tool]
 public partial class KernexSeparator : HSeparator
 {
-    private static readonly Color ColorGold = new(0.831f, 0.659f, 0.294f, 0.15f);
+    private static readonly Color ColorAccent = new(0.6f, 0.65f, 0.75f, 0.15f);
 
     public override void _Ready()
     {
         var style = new StyleBoxLine
         {
-            Color = ColorGold,
+            Color = ColorAccent,
             Thickness = 1,
             GrowBegin = 0,
             GrowEnd = 0,

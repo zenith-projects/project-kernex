@@ -1,0 +1,6 @@
+[gd_scene format=3]
+
+[ext_resource type="Script" path="res://src/Components/UI/KernexToggle/KernexToggle.cs" id="1"]
+
+[node name="KernexToggle" type="HBoxContainer"]
+script = ExtResource("1")

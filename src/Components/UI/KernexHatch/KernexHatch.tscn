@@ -1,0 +1,6 @@
+[gd_scene format=3]
+
+[ext_resource type="Script" path="res://src/Components/UI/KernexHatch/KernexHatch.cs" id="1"]
+
+[node name="KernexHatch" type="Control"]
+script = ExtResource("1")

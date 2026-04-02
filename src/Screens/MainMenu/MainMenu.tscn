@@ -1,21 +1,116 @@
-[gd_scene format=3]
+[gd_scene format=3 uid="uid://dashemafgkf6j"]
 
-[ext_resource type="Script" path="res://src/Screens/MainMenu/MainMenu.cs" id="1"]
-[ext_resource type="Shader" path="res://src/Assets/Themes/Axia/Shaders/ambient_bg.gdshader" id="2"]
-[ext_resource type="Script" path="res://src/Components/UI/KernexButton/KernexButton.cs" id="3"]
-[ext_resource type="Script" path="res://src/Components/UI/KernexLabel/KernexLabel.cs" id="4"]
-[ext_resource type="Script" path="res://src/Components/UI/KernexSeparator/KernexSeparator.cs" id="5"]
+[ext_resource type="Script" uid="uid://dako857118ruf" path="res://src/Screens/MainMenu/MainMenu.cs" id="1"]
+[ext_resource type="Texture2D" uid="uid://cht6h0x3q7ahr" path="res://src/Assets/Textures/UI/main-menu-background.png" id="2"]
+[ext_resource type="Script" uid="uid://1nhmnmaunn75" path="res://src/Components/UI/KernexButton/KernexButton.cs" id="3"]
+[ext_resource type="Script" uid="uid://c7jbsrml27ocl" path="res://src/Components/UI/KernexLabel/KernexLabel.cs" id="4"]
+[ext_resource type="FontFile" uid="uid://bv1ghqgpy4t8y" path="res://src/Assets/Fonts/moonhouse.ttf" id="4_xqe5u"]
+[ext_resource type="PackedScene" path="res://src/Screens/Settings/Settings.tscn" id="7"]
+[ext_resource type="FontFile" uid="uid://w4wikxnpjc4p" path="res://src/Assets/Fonts/JetBrainsMono-Regular.ttf" id="7_oyadd"]
+[ext_resource type="Shader" uid="uid://d2bpy5h36je5v" path="res://src/Assets/Themes/Axia/Shaders/bg_enhance.gdshader" id="8"]
+[ext_resource type="Script" uid="uid://dhgut0wn7i0j4" path="res://src/Components/UI/KernexCorner/KernexCorner.cs" id="9"]
+[ext_resource type="Script" uid="uid://n7oet0wrbqw8" path="res://src/Components/UI/KernexLine/KernexLine.cs" id="10"]
+[ext_resource type="Script" uid="uid://bniwlwcwrl15l" path="res://src/Components/UI/KernexHatch/KernexHatch.cs" id="11"]
 
-[sub_resource type="ShaderMaterial" id="bg_mat"]
-shader = ExtResource("2")
-shader_parameter/color_deep = Color(0.02, 0.02, 0.04, 1)
-shader_parameter/color_nebula1 = Color(0.12, 0.06, 0.02, 1)
-shader_parameter/color_nebula2 = Color(0.02, 0.04, 0.10, 1)
-shader_parameter/speed = 0.06
-shader_parameter/nebula_scale = 2.5
-shader_parameter/star_density = 0.004
+[sub_resource type="ShaderMaterial" id="bg_enhance_mat"]
+shader = ExtResource("8")
+shader_parameter/breath_amount = 0.035
+shader_parameter/breath_speed = 0.3
+shader_parameter/barrel_base = 0.05
+shader_parameter/barrel_breath = 0.08
+shader_parameter/vignette_strength = 0.4
+shader_parameter/vignette_softness = 0.7
+shader_parameter/brightness = 0.92
+shader_parameter/contrast = 1.05
 
-[node name="MainMenu" type="Control"]
+[sub_resource type="FontVariation" id="FontVariation_xqe5u"]
+base_font = ExtResource("4_xqe5u")
+spacing_glyph = 14
+
+[sub_resource type="LabelSettings" id="LabelSettings_oyadd"]
+font = SubResource("FontVariation_xqe5u")
+font_size = 36
+shadow_size = 4
+shadow_color = Color(0, 0, 0, 0.6)
+
+[sub_resource type="FontVariation" id="FontVariation_iqc5r"]
+base_font = ExtResource("4_xqe5u")
+spacing_glyph = 4
+
+[sub_resource type="LabelSettings" id="LabelSettings_hj4v3"]
+font = SubResource("FontVariation_iqc5r")
+font_size = 83
+shadow_size = 4
+shadow_color = Color(0, 0, 0, 0.6)
+
+[sub_resource type="FontVariation" id="FontVariation_thdxy"]
+base_font = ExtResource("4_xqe5u")
+variation_embolden = 0.8
+
+[sub_resource type="FontVariation" id="FontVariation_2nr6f"]
+base_font = SubResource("FontVariation_thdxy")
+spacing_glyph = 6
+
+[sub_resource type="LabelSettings" id="LabelSettings_5u5ok"]
+font = SubResource("FontVariation_2nr6f")
+font_size = 10
+shadow_size = 4
+shadow_color = Color(0, 0, 0, 0.6)
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_hkmfn"]
+content_margin_left = 24.0
+content_margin_top = 10.0
+content_margin_right = 24.0
+content_margin_bottom = 10.0
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_b1jg6"]
+content_margin_left = 24.0
+content_margin_top = 10.0
+content_margin_right = 24.0
+content_margin_bottom = 10.0
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_kmxw4"]
+content_margin_left = 24.0
+content_margin_top = 10.0
+content_margin_right = 24.0
+content_margin_bottom = 10.0
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_jfb4p"]
+content_margin_left = 24.0
+content_margin_top = 10.0
+content_margin_right = 24.0
+content_margin_bottom = 10.0
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_15tfd"]
+content_margin_left = 24.0
+content_margin_top = 10.0
+content_margin_right = 24.0
+content_margin_bottom = 10.0
+
+[sub_resource type="LabelSettings" id="LabelSettings_aek4l"]
+font = ExtResource("7_oyadd")
+font_size = 11
+font_color = Color(0.45, 0.45, 0.47, 1)
+shadow_size = 4
+shadow_color = Color(0, 0, 0, 0.6)
+
+[sub_resource type="LabelSettings" id="LabelSettings_vmslo"]
+font = ExtResource("7_oyadd")
+font_size = 11
+font_color = Color(0.45, 0.45, 0.47, 1)
+shadow_size = 4
+shadow_color = Color(0, 0, 0, 0.6)
+
+[sub_resource type="LabelSettings" id="LabelSettings_dpffj"]
+font = ExtResource("4_xqe5u")
+font_size = 20
+
+[sub_resource type="LabelSettings" id="LabelSettings_3c65m"]
+font = ExtResource("4_xqe5u")
+font_size = 12
+font_color = Color(18.892, 18.892, 18.892, 0.373)
+
+[node name="MainMenu" type="Control" unique_id=1667833833]
 layout_mode = 3
 anchors_preset = 15
 anchor_right = 1.0
@@ -24,18 +119,23 @@ grow_horizontal = 2
 grow_vertical = 2
 script = ExtResource("1")
 
-[node name="Background" type="ColorRect" parent="."]
+[node name="Background" type="TextureRect" parent="." unique_id=1937125834]
+material = SubResource("bg_enhance_mat")
 layout_mode = 1
 anchors_preset = 15
 anchor_right = 1.0
 anchor_bottom = 1.0
+offset_top = -1.0
+offset_bottom = -1.0
 grow_horizontal = 2
 grow_vertical = 2
-material = SubResource("bg_mat")
+texture = ExtResource("2")
+expand_mode = 1
+stretch_mode = 6
 
-[node name="ContentLayer" type="CanvasLayer" parent="."]
+[node name="ContentLayer" type="CanvasLayer" parent="." unique_id=2038605247]
 
-[node name="CenterContent" type="VBoxContainer" parent="ContentLayer"]
+[node name="MenuContent" type="VBoxContainer" parent="ContentLayer" unique_id=91323169]
 anchors_preset = 8
 anchor_left = 0.5
 anchor_top = 0.5
@@ -50,63 +150,96 @@ grow_vertical = 2
 theme_override_constants/separation = 0
 alignment = 1
 
-[node name="LogoSmall" type="Label" parent="ContentLayer/CenterContent"]
+[node name="LogoSmall" type="Label" parent="ContentLayer/MenuContent" unique_id=252077999]
 layout_mode = 2
-text = "P R O J E C T"
+theme_override_colors/font_color = Color(1, 1, 1, 1)
+theme_override_fonts/font = ExtResource("4_xqe5u")
+theme_override_font_sizes/font_size = 36
+text = "PROJECT"
+label_settings = SubResource("LabelSettings_oyadd")
 horizontal_alignment = 1
+uppercase = true
+script = ExtResource("4")
+Style = 5
+FontSize = 36
+LetterSpacing = 14
+ShadowEnabled = true
+
+[node name="LogoTitle" type="Label" parent="ContentLayer/MenuContent" unique_id=21795462]
+layout_mode = 2
+theme_override_colors/font_color = Color(1, 1, 1, 1)
+theme_override_fonts/font = ExtResource("4_xqe5u")
+theme_override_font_sizes/font_size = 83
+text = "KERNEX"
+label_settings = SubResource("LabelSettings_hj4v3")
+horizontal_alignment = 1
+uppercase = true
+script = ExtResource("4")
+Style = 5
+FontSize = 83
+LetterSpacing = 4
+ShadowEnabled = true
+
+[node name="Tagline" type="Label" parent="ContentLayer/MenuContent" unique_id=1449089700]
+layout_mode = 2
+theme_override_colors/font_color = Color(1, 1, 1, 1)
+theme_override_fonts/font = SubResource("FontVariation_thdxy")
+theme_override_font_sizes/font_size = 10
+text = "You are the root user of the void"
+label_settings = SubResource("LabelSettings_5u5ok")
+horizontal_alignment = 1
+uppercase = true
 script = ExtResource("4")
 Style = 1
+FontSize = 10
+LetterSpacing = 6
+ShadowEnabled = true
 
-[node name="LogoTitle" type="Label" parent="ContentLayer/CenterContent"]
+[node name="Spacer" type="Control" parent="ContentLayer/MenuContent" unique_id=2143542353]
+custom_minimum_size = Vector2(0, 100)
 layout_mode = 2
-text = "KERNEX"
-horizontal_alignment = 1
-script = ExtResource("4")
-Style = 0
-FontSize = 52
 
-[node name="Tagline" type="Label" parent="ContentLayer/CenterContent"]
-layout_mode = 2
-text = "You are the root user of the void."
-horizontal_alignment = 1
-script = ExtResource("4")
-Style = 3
-
-[node name="Spacer" type="Control" parent="ContentLayer/CenterContent"]
-layout_mode = 2
-custom_minimum_size = Vector2(0, 40)
-
-[node name="ButtonsContainer" type="VBoxContainer" parent="ContentLayer/CenterContent"]
+[node name="ButtonsContainer" type="VBoxContainer" parent="ContentLayer/MenuContent" unique_id=742637135]
 layout_mode = 2
 theme_override_constants/separation = 8
 alignment = 1
 
-[node name="NewGameButton" type="PanelContainer" parent="ContentLayer/CenterContent/ButtonsContainer"]
+[node name="NewGameButton" type="PanelContainer" parent="ContentLayer/MenuContent/ButtonsContainer" unique_id=1917879343]
+custom_minimum_size = Vector2(220, 0)
 layout_mode = 2
+theme_override_styles/panel = SubResource("StyleBoxEmpty_hkmfn")
 script = ExtResource("3")
 Text = "NEW GAME"
 
-[node name="ContinueButton" type="PanelContainer" parent="ContentLayer/CenterContent/ButtonsContainer"]
+[node name="ContinueButton" type="PanelContainer" parent="ContentLayer/MenuContent/ButtonsContainer" unique_id=327775187]
+custom_minimum_size = Vector2(220, 0)
 layout_mode = 2
+theme_override_styles/panel = SubResource("StyleBoxEmpty_b1jg6")
 script = ExtResource("3")
 Text = "CONTINUE"
 
-[node name="SettingsButton" type="PanelContainer" parent="ContentLayer/CenterContent/ButtonsContainer"]
+[node name="SettingsButton" type="PanelContainer" parent="ContentLayer/MenuContent/ButtonsContainer" unique_id=1137414044]
+custom_minimum_size = Vector2(220, 0)
 layout_mode = 2
+theme_override_styles/panel = SubResource("StyleBoxEmpty_kmxw4")
 script = ExtResource("3")
 Text = "SETTINGS"
 
-[node name="CreditsButton" type="PanelContainer" parent="ContentLayer/CenterContent/ButtonsContainer"]
+[node name="CreditsButton" type="PanelContainer" parent="ContentLayer/MenuContent/ButtonsContainer" unique_id=137720011]
+custom_minimum_size = Vector2(220, 0)
 layout_mode = 2
+theme_override_styles/panel = SubResource("StyleBoxEmpty_jfb4p")
 script = ExtResource("3")
 Text = "CREDITS"
 
-[node name="QuitButton" type="PanelContainer" parent="ContentLayer/CenterContent/ButtonsContainer"]
+[node name="QuitButton" type="PanelContainer" parent="ContentLayer/MenuContent/ButtonsContainer" unique_id=145260598]
+custom_minimum_size = Vector2(220, 0)
 layout_mode = 2
+theme_override_styles/panel = SubResource("StyleBoxEmpty_15tfd")
 script = ExtResource("3")
 Text = "QUIT"
 
-[node name="BottomBar" type="HBoxContainer" parent="ContentLayer"]
+[node name="BottomBar" type="HBoxContainer" parent="ContentLayer" unique_id=186398398]
 anchors_preset = 12
 anchor_top = 1.0
 anchor_right = 1.0
@@ -117,18 +250,353 @@ offset_right = -20.0
 grow_horizontal = 2
 grow_vertical = 0
 
-[node name="StationLabel" type="Label" parent="ContentLayer/BottomBar"]
+[node name="StationLabel" type="Label" parent="ContentLayer/BottomBar" unique_id=733644060]
 layout_mode = 2
+theme_override_colors/font_color = Color(0.45, 0.45, 0.47, 1)
+theme_override_fonts/font = ExtResource("7_oyadd")
+theme_override_font_sizes/font_size = 11
+label_settings = SubResource("LabelSettings_aek4l")
 script = ExtResource("4")
-Text = "STATION XARA-7"
 Style = 3
+ShadowEnabled = true
 
-[node name="Spacer" type="Control" parent="ContentLayer/BottomBar"]
+[node name="Spacer" type="Control" parent="ContentLayer/BottomBar" unique_id=963398080]
 layout_mode = 2
 size_flags_horizontal = 3
 
-[node name="VersionLabel" type="Label" parent="ContentLayer/BottomBar"]
+[node name="VersionLabel" type="Label" parent="ContentLayer/BottomBar" unique_id=472650063]
 layout_mode = 2
+theme_override_colors/font_color = Color(0.45, 0.45, 0.47, 1)
+theme_override_fonts/font = ExtResource("7_oyadd")
+theme_override_font_sizes/font_size = 11
+label_settings = SubResource("LabelSettings_vmslo")
 script = ExtResource("4")
-Text = "v0.1 Alpha"
 Style = 3
+ShadowEnabled = true
+
+[node name="CornerTL" type="Control" parent="ContentLayer" unique_id=1540148448]
+custom_minimum_size = Vector2(8, 8)
+layout_mode = 3
+anchors_preset = 0
+offset_left = 32.0
+offset_top = 32.0
+offset_right = 40.0
+offset_bottom = 40.0
+mouse_filter = 2
+script = ExtResource("9")
+Thickness = 1.0
+
+[node name="CornerTR" type="Control" parent="ContentLayer" unique_id=1055886519]
+custom_minimum_size = Vector2(8, 8)
+layout_mode = 3
+anchors_preset = 1
+anchor_left = 1.0
+anchor_right = 1.0
+offset_left = -40.0
+offset_top = 32.0
+offset_right = -32.0
+offset_bottom = 40.0
+grow_horizontal = 0
+mouse_filter = 2
+script = ExtResource("9")
+Corner = 1
+Thickness = 1.0
+
+[node name="CornerBL" type="Control" parent="ContentLayer" unique_id=1342521687]
+custom_minimum_size = Vector2(8, 8)
+layout_mode = 3
+anchors_preset = 2
+anchor_top = 1.0
+anchor_bottom = 1.0
+offset_left = 32.0
+offset_top = -40.0
+offset_right = 40.0
+offset_bottom = -32.0
+grow_vertical = 0
+mouse_filter = 2
+script = ExtResource("9")
+Corner = 2
+Thickness = 1.0
+
+[node name="CornerBR" type="Control" parent="ContentLayer" unique_id=734843749]
+custom_minimum_size = Vector2(8, 8)
+layout_mode = 3
+anchors_preset = 3
+anchor_left = 1.0
+anchor_top = 1.0
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = -40.0
+offset_top = -40.0
+offset_right = -32.0
+offset_bottom = -32.0
+grow_horizontal = 0
+grow_vertical = 0
+mouse_filter = 2
+script = ExtResource("9")
+Corner = 3
+Thickness = 1.0
+
+[node name="LineTop" type="Control" parent="ContentLayer" unique_id=2054764353]
+custom_minimum_size = Vector2(0, 8)
+layout_mode = 3
+anchor_right = 0.471
+offset_left = 40.0
+offset_top = 32.0
+offset_bottom = 40.0
+mouse_filter = 2
+script = ExtResource("10")
+Thickness = 1.0
+LineColor = Color(18.892, 18.892, 18.892, 0.373)
+Padding = 8.0
+
+[node name="LineTop2" type="Control" parent="ContentLayer" unique_id=675305252]
+custom_minimum_size = Vector2(0, 8)
+layout_mode = 3
+anchor_left = 0.529
+anchor_right = 1.0
+offset_top = 32.0
+offset_right = -40.0
+offset_bottom = 40.0
+mouse_filter = 2
+script = ExtResource("10")
+Thickness = 1.0
+LineColor = Color(18.892, 18.892, 18.892, 0.373)
+Padding = 8.0
+
+[node name="LineTopLeftThin" type="Control" parent="ContentLayer" unique_id=1086153557]
+custom_minimum_size = Vector2(0, 8)
+layout_mode = 3
+anchor_left = 0.233
+anchor_right = 0.433
+offset_top = 24.0
+offset_bottom = 32.0
+mouse_filter = 2
+script = ExtResource("10")
+Thickness = 1.0
+LineColor = Color(18.892, 18.892, 18.892, 0.373)
+
+[node name="LineTopLeftThin3" type="Control" parent="ContentLayer" unique_id=896371785]
+custom_minimum_size = Vector2(0, 8)
+layout_mode = 3
+anchor_left = 0.25
+anchor_right = 0.45
+offset_top = 16.0
+offset_bottom = 24.0
+mouse_filter = 2
+script = ExtResource("10")
+Thickness = 1.0
+LineColor = Color(18.892, 18.892, 18.892, 0.373)
+
+[node name="LineTopLeftThin4" type="Control" parent="ContentLayer" unique_id=1830049301]
+custom_minimum_size = Vector2(0, 8)
+layout_mode = 3
+anchor_left = 0.55
+anchor_right = 0.75
+offset_top = 16.0
+offset_bottom = 32.0
+mouse_filter = 2
+script = ExtResource("10")
+Thickness = 1.0
+LineColor = Color(18.892, 18.892, 18.892, 0.373)
+
+[node name="LineTopLeftThin2" type="Control" parent="ContentLayer" unique_id=195403840]
+custom_minimum_size = Vector2(0, 8)
+layout_mode = 3
+anchor_left = 0.567
+anchor_right = 0.767
+offset_top = 24.0
+offset_bottom = 32.0
+mouse_filter = 2
+script = ExtResource("10")
+Thickness = 1.0
+LineColor = Color(18.892, 18.892, 18.892, 0.373)
+
+[node name="LineLeft2" type="Control" parent="ContentLayer" unique_id=2097789104]
+custom_minimum_size = Vector2(8, 0)
+layout_mode = 3
+anchor_bottom = 0.156
+offset_left = 32.0
+offset_top = 40.0
+offset_right = 40.0
+mouse_filter = 2
+script = ExtResource("10")
+Orientation = 1
+Thickness = 1.0
+LineColor = Color(18.892, 18.892, 18.892, 0.373)
+Padding = 8.0
+
+[node name="LineLeft" type="Control" parent="ContentLayer" unique_id=608788943]
+custom_minimum_size = Vector2(8, 0)
+layout_mode = 3
+anchor_top = 0.311
+anchor_bottom = 1.0
+offset_left = 32.0
+offset_right = 40.0
+offset_bottom = -40.0
+mouse_filter = 2
+script = ExtResource("10")
+Orientation = 1
+Thickness = 1.0
+LineColor = Color(18.892, 18.892, 18.892, 0.373)
+Padding = 8.0
+
+[node name="LineRight" type="Control" parent="ContentLayer" unique_id=528406400]
+custom_minimum_size = Vector2(8, 0)
+layout_mode = 3
+anchor_left = 1.0
+anchor_right = 1.0
+anchor_bottom = 0.689
+offset_left = -40.0
+offset_top = 40.0
+offset_right = -32.0
+mouse_filter = 2
+script = ExtResource("10")
+Orientation = 1
+Thickness = 1.0
+LineColor = Color(18.892, 18.892, 18.892, 0.373)
+Edge = 2
+Padding = 8.0
+
+[node name="LineRight2" type="Control" parent="ContentLayer" unique_id=1987721121]
+custom_minimum_size = Vector2(8, 0)
+layout_mode = 3
+anchor_left = 1.0
+anchor_top = 0.844
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = -40.0
+offset_right = -32.0
+offset_bottom = -40.0
+mouse_filter = 2
+script = ExtResource("10")
+Orientation = 1
+Thickness = 1.0
+LineColor = Color(18.892, 18.892, 18.892, 0.373)
+Edge = 2
+Padding = 8.0
+
+[node name="LineBottom" type="Control" parent="ContentLayer" unique_id=1580479447]
+custom_minimum_size = Vector2(0, 8)
+layout_mode = 3
+anchors_preset = 12
+anchor_top = 1.0
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = 40.0
+offset_top = -40.0
+offset_right = -40.0
+offset_bottom = -32.0
+grow_horizontal = 2
+grow_vertical = 0
+mouse_filter = 2
+script = ExtResource("10")
+Thickness = 1.0
+LineColor = Color(18.892, 18.892, 18.892, 0.373)
+Edge = 2
+Padding = 8.0
+
+[node name="HatchBL" type="Control" parent="ContentLayer" unique_id=273089449]
+layout_mode = 3
+anchor_top = 0.141
+anchor_bottom = 0.31500003
+offset_left = 24.0
+offset_top = -0.27999878
+offset_right = 33.0
+offset_bottom = -0.20004272
+mouse_filter = 2
+script = ExtResource("11")
+LineSpacing = 5.0
+LineThickness = 1.0
+LineColor = Color(18.892, 18.892, 18.892, 0.373)
+Horizontal = false
+
+[node name="HatchBR2" type="Control" parent="ContentLayer" unique_id=1927655474]
+layout_mode = 3
+anchor_left = 1.0
+anchor_top = 0.68200004
+anchor_right = 1.0
+anchor_bottom = 0.85400003
+offset_left = -31.0
+offset_top = 0.4399414
+offset_right = -26.0
+offset_bottom = -0.32000732
+mouse_filter = 2
+script = ExtResource("11")
+LineSpacing = 5.0
+LineThickness = 1.0
+LineColor = Color(18.892, 18.892, 18.892, 0.373)
+Horizontal = false
+
+[node name="HatchTR" type="Control" parent="ContentLayer" unique_id=608903070]
+layout_mode = 3
+anchor_left = 0.86700004
+anchor_right = 0.97900003
+offset_left = -0.6401367
+offset_top = 16.0
+offset_right = 0.3199463
+offset_bottom = 32.0
+grow_horizontal = 0
+grow_vertical = 0
+mouse_filter = 2
+script = ExtResource("11")
+LineSpacing = 5.0
+LineThickness = 1.0
+Angle = -45.0
+LineColor = Color(18.892, 18.892, 18.892, 0.373)
+
+[node name="HatchBR" type="Control" parent="ContentLayer" unique_id=2039024683]
+layout_mode = 3
+anchor_left = 0.86700004
+anchor_top = 1.0
+anchor_right = 0.97900003
+anchor_bottom = 1.0
+offset_left = -0.6401367
+offset_top = -32.0
+offset_right = 0.3199463
+offset_bottom = -16.0
+grow_horizontal = 0
+grow_vertical = 0
+mouse_filter = 2
+script = ExtResource("11")
+LineSpacing = 5.0
+LineThickness = 1.0
+Angle = -45.0
+LineColor = Color(18.892, 18.892, 18.892, 0.373)
+
+[node name="SettingsPanel" parent="ContentLayer" unique_id=1414286987 instance=ExtResource("7")]
+visible = false
+
+[node name="KernexLabel2" type="Label" parent="ContentLayer" unique_id=1026360346]
+anchors_preset = -1
+anchor_left = 0.86700004
+anchor_right = 1.0
+offset_left = -0.6401367
+offset_top = 64.0
+offset_right = -64.0
+offset_bottom = 87.0
+theme_override_colors/font_color = Color(0.75, 0.75, 0.78, 1)
+theme_override_fonts/font = ExtResource("7_oyadd")
+theme_override_font_sizes/font_size = 14
+text = "AXIA ONLINE"
+label_settings = SubResource("LabelSettings_dpffj")
+horizontal_alignment = 2
+script = ExtResource("4")
+metadata/_custom_type_script = "uid://c7jbsrml27ocl"
+
+[node name="KernexLabel" type="Label" parent="ContentLayer" unique_id=860118930]
+anchors_preset = -1
+anchor_top = 0.9990001
+anchor_right = 0.133
+anchor_bottom = 0.9990001
+offset_left = 48.0
+offset_top = -30.920044
+offset_right = 0.6399994
+offset_bottom = -10.920044
+theme_override_colors/font_color = Color(0.75, 0.75, 0.78, 1)
+theme_override_fonts/font = ExtResource("7_oyadd")
+theme_override_font_sizes/font_size = 14
+text = "CONTRIBUTORS MONOLITH"
+label_settings = SubResource("LabelSettings_3c65m")
+script = ExtResource("4")
+metadata/_custom_type_script = "uid://c7jbsrml27ocl"
