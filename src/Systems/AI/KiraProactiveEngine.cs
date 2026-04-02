@@ -1,7 +1,5 @@
 using System;
-using System.Collections.Generic;
 using System.Threading.Tasks;
-using ProjectKernex.Core.Interfaces;
 
 namespace ProjectKernex.Systems.AI;
 
@@ -12,8 +10,7 @@ public class KiraProactiveEngine
     public bool Enabled { get; set; } = true;
     public int ProactiveMessageCount { get; private set; }
 
-    private ILlmProvider _lightModel;
-    private KiraMemoryStore _memory;
+    private AgentRunner _agent;
     private float _silenceTimer;
     private int _attempt;
     private bool _gaveUp;
@@ -63,8 +60,7 @@ public class KiraProactiveEngine
     public bool GaveUp { get => _gaveUp; set => _gaveUp = value; }
     public int Attempt { get => _attempt; set => _attempt = value; }
 
-    public void SetLightModel(ILlmProvider model) => _lightModel = model;
-    public void SetMemory(KiraMemoryStore memory) => _memory = memory;
+    public void SetAgent(AgentRunner agent) => _agent = agent;
 
     /// <summary>
     /// Call when the player sends a message — resets timers and reactivates.
@@ -90,7 +86,7 @@ public class KiraProactiveEngine
 
     public void Update(float delta)
     {
-        if (!Enabled || !_active || _lightModel is not { IsModelLoaded: true } || _checking || _gaveUp)
+        if (!Enabled || !_active || _agent?.Provider is not { IsModelLoaded: true } || _checking || _gaveUp)
             return;
 
         _silenceTimer += delta;
@@ -120,6 +116,10 @@ public class KiraProactiveEngine
                 ProactiveMessageReady?.Invoke(message);
             }
         }
+        catch (Exception ex)
+        {
+            Godot.GD.PrintErr($"[KiraProactive] Failed to generate message: {ex.Message}");
+        }
         finally
         {
             _checking = false;
@@ -136,7 +136,7 @@ public class KiraProactiveEngine
 
     public async Task ForceCheck()
     {
-        if (_lightModel is not { IsModelLoaded: true } || _checking) return;
+        if (_agent?.Provider is not { IsModelLoaded: true } || _checking) return;
 
         _checking = true;
         try
@@ -168,19 +168,19 @@ public class KiraProactiveEngine
                 End with: [EMOTION]
                 Allowed: [NEUTRAL] [CURIOUS] [HAPPY] [RELAX]
                 """;
-            return await _lightModel.GenerateAsync(introPrompt, "Introduce yourself to the operator.");
+            return await _agent.GetResponseAsync(introPrompt, "Introduce yourself to the operator.");
         }
 
         var promptIndex = Math.Min(_attempt, GenerationPrompts.Length - 1);
         var prompt = $"{GenerationPrompts[promptIndex]}\n\nRecent conversation:\n{recentContext}";
-        return await _lightModel.GenerateAsync(prompt, "Generate a follow-up message.");
+        return await _agent.GetResponseAsync(prompt, "Generate a follow-up message.");
     }
 
     private string BuildRecentContext()
     {
-        if (_memory == null) return "(no conversation history)";
+        if (_agent?.Memory == null) return "(no conversation history)";
 
-        var recent = _memory.GetRecent(6);
+        var recent = _agent.Memory.GetRecent(6);
         if (recent.Count == 0) return "(no conversation history)";
 
         var sb = new System.Text.StringBuilder();

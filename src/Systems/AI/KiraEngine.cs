@@ -3,44 +3,41 @@ using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
 using ProjectKernex.Core.Enums;
-using ProjectKernex.Core.Interfaces;
 using ProjectKernex.Resources.AI;
 
 namespace ProjectKernex.Systems.AI;
 
-public sealed class KiraEngine
+public sealed class KiraEngine : IDisposable
 {
-    private static readonly Random Rng = new();
-
     public KiraLevel CurrentLevel { get; private set; } = KiraLevel.Corrupted;
     public bool IsProcessing { get; private set; }
+    public AgentRunner MainAgent { get; }
 
     private readonly ScriptedDialogueProvider _scriptedProvider;
-    private ILlmProvider _llmProvider;
-    private readonly Dictionary<string, string> _gameContext = new();
     private readonly Dictionary<int, KiraLevelData> _levelData = new();
 
-    public KiraEngine(ScriptedDialogueProvider scriptedProvider)
+    public KiraEngine(AgentConfig mainConfig, ScriptedDialogueProvider scriptedProvider)
     {
         _scriptedProvider = scriptedProvider;
+        MainAgent = new AgentRunner(mainConfig);
     }
 
     public void SetLevel(KiraLevel level) => CurrentLevel = level;
 
     public void RegisterLevelData(KiraLevelData data) => _levelData[(int)data.Level] = data;
 
-    public void SetLlmProvider(ILlmProvider provider) => _llmProvider = provider;
+    public void UpdateGameContext(string key, string value) => MainAgent.SetContext(key, value);
 
-    public void UpdateGameContext(string key, string value) => _gameContext[key] = value;
+    public void UpdateGameContext(Dictionary<string, string> context) => MainAgent.SetContext(context);
 
-    public void ClearGameContext() => _gameContext.Clear();
+    public void ClearGameContext() => MainAgent.ClearContext();
 
     public KiraLevelData GetCurrentLevelData() =>
         _levelData.TryGetValue((int)CurrentLevel, out var data) ? data : null;
 
-    public async Task<string> GetResponseAsync(string userMessage, CancellationToken ct = default)
+    public async Task<KiraResponse> GetResponseAsync(string userMessage, CancellationToken ct = default)
     {
-        if (IsProcessing) return "[KIRA is still processing...]";
+        if (IsProcessing) return KiraResponse.Parse("[KIRA is still processing...]");
         IsProcessing = true;
 
         try
@@ -50,17 +47,30 @@ public sealed class KiraEngine
 
             if (delay > 0)
             {
-                var jitter = (float)(Rng.NextDouble() * 0.3 * delay);
+                var jitter = (float)(Random.Shared.NextDouble() * 0.3 * delay);
                 await Task.Delay(TimeSpan.FromSeconds(delay + jitter), ct);
             }
 
+            string raw;
             if ((int)CurrentLevel <= 2)
-                return await _scriptedProvider.GetResponseAsync(userMessage, CurrentLevel, _gameContext);
+            {
+                raw = await _scriptedProvider.GetResponseAsync(userMessage, CurrentLevel, MainAgent.GetContext());
+            }
+            else if (MainAgent.Provider is { IsModelLoaded: true })
+            {
+                raw = await GetLlmResponseAsync(userMessage, levelData, ct);
+            }
+            else
+            {
+                raw = await _scriptedProvider.GetResponseAsync(userMessage, CurrentLevel, MainAgent.GetContext());
+            }
 
-            if (_llmProvider is { IsModelLoaded: true })
-                return await GetLlmResponseAsync(userMessage, levelData, ct);
+            var response = KiraResponse.Parse(raw);
 
-            return await _scriptedProvider.GetResponseAsync(userMessage, CurrentLevel, _gameContext);
+            MainAgent.Memory?.SaveMessage("user", userMessage);
+            MainAgent.Memory?.SaveMessage("assistant", response.Text, response.Emotion);
+
+            return response;
         }
         finally
         {
@@ -70,8 +80,11 @@ public sealed class KiraEngine
 
     private async Task<string> GetLlmResponseAsync(string userMessage, KiraLevelData levelData, CancellationToken ct)
     {
-        var systemPrompt = KiraPromptBuilder.Build(CurrentLevel, _gameContext, levelData);
-        return await _llmProvider.GenerateAsync(systemPrompt, userMessage, ct);
+        var memoryBlock = MainAgent.Memory?.BuildMemoryBlock(userMessage) ?? "";
+        var systemPrompt = KiraPromptBuilder.Build(CurrentLevel, MainAgent.GetContext(), levelData, memoryBlock);
+
+        // Use the overload that accepts a custom system prompt
+        return await MainAgent.GetResponseAsync(systemPrompt, userMessage, ct);
     }
 
     private float GetDefaultDelay() => CurrentLevel switch
@@ -81,4 +94,6 @@ public sealed class KiraEngine
         KiraLevel.Functional => 0.3f,
         _ => 0.1f
     };
+
+    public void Dispose() => MainAgent.Dispose();
 }

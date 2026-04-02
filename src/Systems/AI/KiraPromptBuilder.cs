@@ -12,7 +12,7 @@ public static class KiraPromptBuilder
         "Allowed emotions: ANGRY, HAPPY, SAD, NEUTRAL, CRAZY, CRYING, CURIOUS, CAUTIOUS, RELAX, SHY, VANISHED. " +
         "Do not repeat the emotion, do not add extra lines, do not add explanations.";
 
-    public static string Build(KiraLevel level, Dictionary<string, string> gameContext, KiraLevelData levelData)
+    public static string Build(KiraLevel level, Dictionary<string, string> gameContext, KiraLevelData levelData, string memoryBlock = "")
     {
         var sb = new StringBuilder();
 
@@ -37,6 +37,12 @@ public static class KiraPromptBuilder
                     parts.Add($"{key} {value}");
             }
             sb.AppendLine(string.Join(", ", parts) + ".");
+        }
+
+        if (!string.IsNullOrWhiteSpace(memoryBlock))
+        {
+            sb.AppendLine();
+            sb.Append(memoryBlock);
         }
 
         return sb.ToString();

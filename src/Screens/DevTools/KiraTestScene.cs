@@ -3,13 +3,14 @@ using System.Collections.Generic;
 using Godot;
 using ProjectKernex.Components.HUD;
 using ProjectKernex.Core.Enums;
+using ProjectKernex.Resources.AI;
 using ProjectKernex.Systems.AI;
 
 namespace ProjectKernex.Screens.DevTools;
 
 /// <summary>
 /// KIRA debug/test scene with chat panel (left) and debug controls (right).
-/// Theme is defined in kira_debug_theme.tres; glass shader provides frosted background.
+/// Theme: src/Assets/Themes/Kira/kira_debug_theme.tres; glass shader provides frosted background.
 /// </summary>
 public partial class KiraTestScene : Control
 {
@@ -21,14 +22,15 @@ public partial class KiraTestScene : Control
 	private KiraPanel _kiraPanel;
 	private KiraEngine _kira;
 	private ScriptedDialogueProvider _scriptedProvider;
-	private LlamaSharpProvider _llmProvider;
-	private Resources.AI.KiraDebugConfig _config;
+	private AgentConfig _mainAgentConfig;
+	private AgentConfig _proactiveAgentConfig;
+	private KiraDebugConfig _config;
 	private bool _loadingConfig;
 
 	// Memory + Proactive
-	private KiraMemoryStore _memoryStore;
+	private AgentMemoryStore _memoryStore; // convenience ref → _kira.MainAgent.Memory
 	private KiraProactiveEngine _proactiveEngine;
-	private LlamaSharpProvider _lightLlmProvider;
+	private AgentRunner _proactiveAgent;
 	private volatile string _downloadMainStatus = "";
 	private volatile float _downloadMainPct = -1f;
 	private volatile string _downloadLightStatus = "";
@@ -111,6 +113,10 @@ public partial class KiraTestScene : Control
 	private LineEdit _proactiveModelPathInput;
 	private Button _forceCheckButton;
 
+	// Agent selector
+	private OptionButton _agentSelector;
+	private AgentRunner _selectedAgent;
+
 	// Memory debug controls
 	private Label _memoryMessagesLabel;
 	private Label _memorySummariesLabel;
@@ -126,11 +132,7 @@ public partial class KiraTestScene : Control
 	{
 		_kiraPanel = GetNode<KiraPanel>("ScreenMargin/HSplitContainer/KiraPanel");
 
-		_config = Resources.AI.KiraDebugConfig.LoadOrCreate();
-
-		// Initialize persistent memory store before everything else
-		_memoryStore = new KiraMemoryStore();
-		_memoryStore.Load();
+		_config = KiraDebugConfig.LoadOrCreate();
 
 		GetDebugControls();
 		ApplyAccentColors();
@@ -139,9 +141,12 @@ public partial class KiraTestScene : Control
 		SetupAllControls();
 		LoadConfigToUI();
 
-		// Initialize proactive engine
+		// Convenience ref to memory managed by AgentRunner
+		_memoryStore = (AgentMemoryStore)_kira.MainAgent.Memory;
+
+		// Initialize proactive engine with sub-agent
 		_proactiveEngine = new KiraProactiveEngine();
-		_proactiveEngine.SetMemory(_memoryStore);
+		_proactiveEngine.SetAgent(_proactiveAgent);
 		_proactiveEngine.ProactiveMessageReady += OnProactiveMessage;
 
 		_kiraPanel.MessageSubmitted += OnMessageSubmitted;
