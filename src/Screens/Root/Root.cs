@@ -2,7 +2,7 @@ using Godot;
 
 namespace ProjectKernex.Screens.Root;
 
-public partial class Root : Node
+public partial class Root : Control
 {
     [Export] public PackedScene MainMenuScene { get; set; }
 

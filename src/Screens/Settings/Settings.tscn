@@ -1,19 +1,12 @@
 [gd_scene format=3]
 
 [ext_resource type="Script" path="res://src/Screens/Settings/Settings.cs" id="1"]
-[ext_resource type="Shader" path="res://src/Assets/Themes/Axia/Shaders/ambient_bg.gdshader" id="2"]
 [ext_resource type="Script" path="res://src/Components/UI/KernexButton/KernexButton.cs" id="3"]
 [ext_resource type="Script" path="res://src/Components/UI/KernexLabel/KernexLabel.cs" id="4"]
 [ext_resource type="Script" path="res://src/Components/UI/KernexPanel/KernexPanel.cs" id="5"]
-
-[sub_resource type="ShaderMaterial" id="bg_mat"]
-shader = ExtResource("2")
-shader_parameter/color_deep = Color(0.02, 0.02, 0.04, 1)
-shader_parameter/color_nebula1 = Color(0.12, 0.06, 0.02, 1)
-shader_parameter/color_nebula2 = Color(0.02, 0.04, 0.10, 1)
-shader_parameter/speed = 0.04
-shader_parameter/nebula_scale = 3.0
-shader_parameter/star_density = 0.003
+[ext_resource type="Script" path="res://src/Components/UI/KernexToggle/KernexToggle.cs" id="6"]
+[ext_resource type="Script" path="res://src/Components/UI/KernexSlider/KernexSlider.cs" id="7"]
+[ext_resource type="Script" path="res://src/Components/UI/KernexDropdown/KernexDropdown.cs" id="8"]
 
 [node name="Settings" type="Control"]
 layout_mode = 3
@@ -24,183 +17,135 @@ grow_horizontal = 2
 grow_vertical = 2
 script = ExtResource("1")
 
-[node name="Background" type="ColorRect" parent="."]
-layout_mode = 1
-anchors_preset = 15
-anchor_right = 1.0
-anchor_bottom = 1.0
-grow_horizontal = 2
-grow_vertical = 2
-material = SubResource("bg_mat")
-
-[node name="ContentLayer" type="CanvasLayer" parent="."]
-
-[node name="Layout" type="VBoxContainer" parent="ContentLayer"]
+[node name="Layout" type="VBoxContainer" parent="."]
 anchors_preset = 8
 anchor_left = 0.5
 anchor_top = 0.5
 anchor_right = 0.5
 anchor_bottom = 0.5
-offset_left = -320.0
-offset_top = -260.0
-offset_right = 320.0
-offset_bottom = 260.0
+offset_left = -350.0
+offset_top = -280.0
+offset_right = 350.0
+offset_bottom = 280.0
 grow_horizontal = 2
 grow_vertical = 2
-theme_override_constants/separation = 16
+theme_override_constants/separation = 20
 
-[node name="Header" type="Label" parent="ContentLayer/Layout"]
+[node name="Header" type="Label" parent="Layout"]
 layout_mode = 2
 text = "SETTINGS"
 horizontal_alignment = 1
 script = ExtResource("4")
-Style = 0
+Style = 5
+FontSize = 42
+LetterSpacing = 8
+ShadowEnabled = true
 
-[node name="TabBar" type="HBoxContainer" parent="ContentLayer/Layout"]
+[node name="TabBar" type="HBoxContainer" parent="Layout"]
 layout_mode = 2
-theme_override_constants/separation = 8
+theme_override_constants/separation = 16
 alignment = 1
 
-[node name="GraphicsTab" type="PanelContainer" parent="ContentLayer/Layout/TabBar"]
+[node name="GraphicsTab" type="PanelContainer" parent="Layout/TabBar"]
 layout_mode = 2
 script = ExtResource("3")
 Text = "GRAPHICS"
-FontSize = 13
 
-[node name="AudioTab" type="PanelContainer" parent="ContentLayer/Layout/TabBar"]
+[node name="AudioTab" type="PanelContainer" parent="Layout/TabBar"]
 layout_mode = 2
 script = ExtResource("3")
 Text = "AUDIO"
-FontSize = 13
 
-[node name="ControlsTab" type="PanelContainer" parent="ContentLayer/Layout/TabBar"]
+[node name="ControlsTab" type="PanelContainer" parent="Layout/TabBar"]
 layout_mode = 2
 script = ExtResource("3")
 Text = "CONTROLS"
-FontSize = 13
 
-[node name="ContentPanel" type="PanelContainer" parent="ContentLayer/Layout"]
+[node name="ContentPanel" type="PanelContainer" parent="Layout"]
 layout_mode = 2
 size_flags_vertical = 3
 script = ExtResource("5")
-BackgroundAlpha = 0.7
+BackgroundAlpha = 0.5
 
 ; ======== GRAPHICS ========
 
-[node name="GraphicsContent" type="VBoxContainer" parent="ContentLayer/Layout/ContentPanel"]
+[node name="GraphicsContent" type="VBoxContainer" parent="Layout/ContentPanel"]
 layout_mode = 2
-theme_override_constants/separation = 12
+theme_override_constants/separation = 16
 
-[node name="ResolutionRow" type="HBoxContainer" parent="ContentLayer/Layout/ContentPanel/GraphicsContent"]
+[node name="ResolutionDropdown" type="HBoxContainer" parent="Layout/ContentPanel/GraphicsContent"]
 layout_mode = 2
+script = ExtResource("8")
+Text = "Resolution"
 
-[node name="ResolutionLabel" type="Label" parent="ContentLayer/Layout/ContentPanel/GraphicsContent/ResolutionRow"]
+[node name="FullscreenToggle" type="HBoxContainer" parent="Layout/ContentPanel/GraphicsContent"]
 layout_mode = 2
-custom_minimum_size = Vector2(160, 0)
-text = "Resolution"
-script = ExtResource("4")
-Style = 2
+script = ExtResource("6")
+Text = "Fullscreen"
 
-[node name="ResolutionOption" type="OptionButton" parent="ContentLayer/Layout/ContentPanel/GraphicsContent/ResolutionRow"]
+[node name="VsyncToggle" type="HBoxContainer" parent="Layout/ContentPanel/GraphicsContent"]
 layout_mode = 2
-size_flags_horizontal = 3
-
-[node name="FullscreenToggle" type="CheckButton" parent="ContentLayer/Layout/ContentPanel/GraphicsContent"]
-layout_mode = 2
-text = "Fullscreen"
-
-[node name="VsyncToggle" type="CheckButton" parent="ContentLayer/Layout/ContentPanel/GraphicsContent"]
-layout_mode = 2
-button_pressed = true
-text = "VSync"
+script = ExtResource("6")
+Text = "VSync"
+Value = true
 
 ; ======== AUDIO ========
 
-[node name="AudioContent" type="VBoxContainer" parent="ContentLayer/Layout/ContentPanel"]
+[node name="AudioContent" type="VBoxContainer" parent="Layout/ContentPanel"]
 visible = false
 layout_mode = 2
-theme_override_constants/separation = 12
+theme_override_constants/separation = 16
 
-[node name="MasterRow" type="HBoxContainer" parent="ContentLayer/Layout/ContentPanel/AudioContent"]
+[node name="MasterSlider" type="HBoxContainer" parent="Layout/ContentPanel/AudioContent"]
 layout_mode = 2
+script = ExtResource("7")
+Text = "Master"
+MaxValue = 100.0
+Value = 80.0
 
-[node name="MasterLabel" type="Label" parent="ContentLayer/Layout/ContentPanel/AudioContent/MasterRow"]
+[node name="MusicSlider" type="HBoxContainer" parent="Layout/ContentPanel/AudioContent"]
 layout_mode = 2
-custom_minimum_size = Vector2(160, 0)
-text = "Master"
-script = ExtResource("4")
-Style = 2
+script = ExtResource("7")
+Text = "Music"
+MaxValue = 100.0
+Value = 70.0
 
-[node name="MasterSlider" type="HSlider" parent="ContentLayer/Layout/ContentPanel/AudioContent/MasterRow"]
+[node name="SfxSlider" type="HBoxContainer" parent="Layout/ContentPanel/AudioContent"]
 layout_mode = 2
-size_flags_horizontal = 3
-min_value = 0.0
-max_value = 100.0
-value = 80.0
-
-[node name="MusicRow" type="HBoxContainer" parent="ContentLayer/Layout/ContentPanel/AudioContent"]
-layout_mode = 2
-
-[node name="MusicLabel" type="Label" parent="ContentLayer/Layout/ContentPanel/AudioContent/MusicRow"]
-layout_mode = 2
-custom_minimum_size = Vector2(160, 0)
-text = "Music"
-script = ExtResource("4")
-Style = 2
-
-[node name="MusicSlider" type="HSlider" parent="ContentLayer/Layout/ContentPanel/AudioContent/MusicRow"]
-layout_mode = 2
-size_flags_horizontal = 3
-min_value = 0.0
-max_value = 100.0
-value = 70.0
-
-[node name="SfxRow" type="HBoxContainer" parent="ContentLayer/Layout/ContentPanel/AudioContent"]
-layout_mode = 2
-
-[node name="SfxLabel" type="Label" parent="ContentLayer/Layout/ContentPanel/AudioContent/SfxRow"]
-layout_mode = 2
-custom_minimum_size = Vector2(160, 0)
-text = "SFX"
-script = ExtResource("4")
-Style = 2
-
-[node name="SfxSlider" type="HSlider" parent="ContentLayer/Layout/ContentPanel/AudioContent/SfxRow"]
-layout_mode = 2
-size_flags_horizontal = 3
-min_value = 0.0
-max_value = 100.0
-value = 80.0
+script = ExtResource("7")
+Text = "SFX"
+MaxValue = 100.0
+Value = 80.0
 
 ; ======== CONTROLS ========
 
-[node name="ControlsContent" type="VBoxContainer" parent="ContentLayer/Layout/ContentPanel"]
+[node name="ControlsContent" type="VBoxContainer" parent="Layout/ContentPanel"]
 visible = false
 layout_mode = 2
-theme_override_constants/separation = 12
+theme_override_constants/separation = 16
 
-[node name="PlaceholderLabel" type="Label" parent="ContentLayer/Layout/ContentPanel/ControlsContent"]
+[node name="PlaceholderLabel" type="Label" parent="Layout/ContentPanel/ControlsContent"]
 layout_mode = 2
-text = "Keybind configuration coming soon."
+text = "Keybind configuration coming soon"
 horizontal_alignment = 1
 script = ExtResource("4")
-Style = 3
+Style = 1
+FontSize = 12
+ShadowEnabled = true
 
 ; ======== BOTTOM BAR ========
 
-[node name="BottomBar" type="HBoxContainer" parent="ContentLayer/Layout"]
+[node name="BottomBar" type="HBoxContainer" parent="Layout"]
 layout_mode = 2
 alignment = 1
-theme_override_constants/separation = 12
+theme_override_constants/separation = 20
 
-[node name="BackButton" type="PanelContainer" parent="ContentLayer/Layout/BottomBar"]
+[node name="BackButton" type="PanelContainer" parent="Layout/BottomBar"]
 layout_mode = 2
 script = ExtResource("3")
 Text = "BACK"
-FontSize = 14
 
-[node name="ApplyButton" type="PanelContainer" parent="ContentLayer/Layout/BottomBar"]
+[node name="ApplyButton" type="PanelContainer" parent="Layout/BottomBar"]
 layout_mode = 2
 script = ExtResource("3")
 Text = "APPLY"
-FontSize = 14

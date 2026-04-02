@@ -5,85 +5,75 @@ namespace ProjectKernex.Screens.MainMenu;
 
 public partial class MainMenu : Control
 {
-    private KernexButton _newGameButton;
-    private KernexButton _continueButton;
-    private KernexButton _settingsButton;
-    private KernexButton _creditsButton;
-    private KernexButton _quitButton;
-    private VBoxContainer _buttonsContainer;
+	private KernexButton _newGameButton;
+	private KernexButton _continueButton;
+	private KernexButton _settingsButton;
+	private KernexButton _creditsButton;
+	private KernexButton _quitButton;
+	private VBoxContainer _menuContent;
+	private Control _settingsPanel;
 
-    public override void _Ready()
-    {
-        _buttonsContainer = GetNode<VBoxContainer>("ContentLayer/CenterContent/ButtonsContainer");
-        _newGameButton = GetNode<KernexButton>("ContentLayer/CenterContent/ButtonsContainer/NewGameButton");
-        _continueButton = GetNode<KernexButton>("ContentLayer/CenterContent/ButtonsContainer/ContinueButton");
-        _settingsButton = GetNode<KernexButton>("ContentLayer/CenterContent/ButtonsContainer/SettingsButton");
-        _creditsButton = GetNode<KernexButton>("ContentLayer/CenterContent/ButtonsContainer/CreditsButton");
-        _quitButton = GetNode<KernexButton>("ContentLayer/CenterContent/ButtonsContainer/QuitButton");
+	public override void _Ready()
+	{
+		_menuContent = GetNode<VBoxContainer>("ContentLayer/MenuContent");
+		_settingsPanel = GetNode<Control>("ContentLayer/SettingsPanel");
 
-        _newGameButton.Pressed += OnNewGamePressed;
-        _continueButton.Pressed += OnContinuePressed;
-        _settingsButton.Pressed += OnSettingsPressed;
-        _creditsButton.Pressed += OnCreditsPressed;
-        _quitButton.Pressed += OnQuitPressed;
+		_newGameButton = GetNode<KernexButton>("ContentLayer/MenuContent/ButtonsContainer/NewGameButton");
+		_continueButton = GetNode<KernexButton>("ContentLayer/MenuContent/ButtonsContainer/ContinueButton");
+		_settingsButton = GetNode<KernexButton>("ContentLayer/MenuContent/ButtonsContainer/SettingsButton");
+		_creditsButton = GetNode<KernexButton>("ContentLayer/MenuContent/ButtonsContainer/CreditsButton");
+		_quitButton = GetNode<KernexButton>("ContentLayer/MenuContent/ButtonsContainer/QuitButton");
 
-        // Disable continue if no save exists
-        _continueButton.SetDisabled(!HasSaveGame());
+		_newGameButton.Pressed += OnNewGamePressed;
+		_continueButton.Pressed += OnContinuePressed;
+		_settingsButton.Pressed += OnSettingsPressed;
+		_creditsButton.Pressed += OnCreditsPressed;
+		_quitButton.Pressed += OnQuitPressed;
 
-        // Stagger animation: buttons slide in one by one
-        AnimateButtonsIn();
-    }
+		_continueButton.SetDisabled(!HasSaveGame());
 
-    private void AnimateButtonsIn()
-    {
-        var buttons = _buttonsContainer.GetChildren();
-        for (int i = 0; i < buttons.Count; i++)
-        {
-            if (buttons[i] is not Control btn) continue;
+		AnimateButtonsIn();
+	}
 
-            btn.Modulate = new Color(1, 1, 1, 0);
-            btn.Position += new Vector2(40, 0);
+	private void AnimateButtonsIn()
+	{
+		var buttons = GetNode<VBoxContainer>("ContentLayer/MenuContent/ButtonsContainer").GetChildren();
+		for (int i = 0; i < buttons.Count; i++)
+		{
+			if (buttons[i] is not Control btn) continue;
 
-            var tween = CreateTween();
-            tween.SetParallel();
-            tween.TweenProperty(btn, "modulate:a", 1.0f, 0.3f)
-                .SetDelay(0.1f * i)
-                .SetEase(Tween.EaseType.Out);
-            tween.TweenProperty(btn, "position:x", btn.Position.X - 40, 0.3f)
-                .SetDelay(0.1f * i)
-                .SetEase(Tween.EaseType.Out)
-                .SetTrans(Tween.TransitionType.Cubic);
-        }
-    }
+			btn.Modulate = new Color(1, 1, 1, 0);
+			btn.Position += new Vector2(40, 0);
 
-    private static bool HasSaveGame()
-    {
-        return FileAccess.FileExists("user://savegame.json");
-    }
+			var tween = CreateTween();
+			tween.SetParallel();
+			tween.TweenProperty(btn, "modulate:a", 1.0f, 0.3f)
+				.SetDelay(0.1f * i)
+				.SetEase(Tween.EaseType.Out);
+			tween.TweenProperty(btn, "position:x", btn.Position.X - 40, 0.3f)
+				.SetDelay(0.1f * i)
+				.SetEase(Tween.EaseType.Out)
+				.SetTrans(Tween.TransitionType.Cubic);
+		}
+	}
 
-    private void OnNewGamePressed()
-    {
-        GD.Print("[MainMenu] New Game — not implemented yet");
-    }
+	public void ShowSettings()
+	{
+		_menuContent.Visible = false;
+		_settingsPanel.Visible = true;
+	}
 
-    private void OnContinuePressed()
-    {
-        GD.Print("[MainMenu] Continue — not implemented yet");
-    }
+	public void HideSettings()
+	{
+		_settingsPanel.Visible = false;
+		_menuContent.Visible = true;
+	}
 
-    private void OnSettingsPressed()
-    {
-        GetNode<Autoloads.ScreenManager>("/root/ScreenManager")
-            .ChangeScreen("res://src/Screens/Settings/Settings.tscn");
-    }
+	private static bool HasSaveGame() => FileAccess.FileExists("user://savegame.json");
 
-    private void OnCreditsPressed()
-    {
-        GD.Print("[MainMenu] Credits — not implemented yet");
-    }
-
-    private void OnQuitPressed()
-    {
-        GetTree().Quit();
-    }
+	private void OnNewGamePressed() => GD.Print("[MainMenu] New Game — not implemented yet");
+	private void OnContinuePressed() => GD.Print("[MainMenu] Continue — not implemented yet");
+	private void OnSettingsPressed() => ShowSettings();
+	private void OnCreditsPressed() => GD.Print("[MainMenu] Credits — not implemented yet");
+	private void OnQuitPressed() => GetTree().Quit();
 }

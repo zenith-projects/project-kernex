@@ -17,39 +17,40 @@ public partial class Settings : Control
     private KernexButton _applyButton;
 
     // Graphics
-    private OptionButton _resolutionOption;
-    private CheckButton _fullscreenToggle;
-    private CheckButton _vsyncToggle;
+    private KernexDropdown _resolutionDropdown;
+    private KernexToggle _fullscreenToggle;
+    private KernexToggle _vsyncToggle;
 
     // Audio
-    private HSlider _masterSlider;
-    private HSlider _musicSlider;
-    private HSlider _sfxSlider;
+    private KernexSlider _masterSlider;
+    private KernexSlider _musicSlider;
+    private KernexSlider _sfxSlider;
 
-    private int _activeTab;
     private readonly ConfigFile _configFile = new();
     private const string ConfigPath = "user://settings.cfg";
 
     public override void _Ready()
     {
-        _graphicsTab = GetNode<KernexButton>("ContentLayer/Layout/TabBar/GraphicsTab");
-        _audioTab = GetNode<KernexButton>("ContentLayer/Layout/TabBar/AudioTab");
-        _controlsTab = GetNode<KernexButton>("ContentLayer/Layout/TabBar/ControlsTab");
+        if (Engine.IsEditorHint()) return;
 
-        _graphicsContent = GetNode<VBoxContainer>("ContentLayer/Layout/ContentPanel/GraphicsContent");
-        _audioContent = GetNode<VBoxContainer>("ContentLayer/Layout/ContentPanel/AudioContent");
-        _controlsContent = GetNode<VBoxContainer>("ContentLayer/Layout/ContentPanel/ControlsContent");
+        _graphicsTab = GetNode<KernexButton>("Layout/TabBar/GraphicsTab");
+        _audioTab = GetNode<KernexButton>("Layout/TabBar/AudioTab");
+        _controlsTab = GetNode<KernexButton>("Layout/TabBar/ControlsTab");
 
-        _backButton = GetNode<KernexButton>("ContentLayer/Layout/BottomBar/BackButton");
-        _applyButton = GetNode<KernexButton>("ContentLayer/Layout/BottomBar/ApplyButton");
+        _graphicsContent = GetNode<VBoxContainer>("Layout/ContentPanel/GraphicsContent");
+        _audioContent = GetNode<VBoxContainer>("Layout/ContentPanel/AudioContent");
+        _controlsContent = GetNode<VBoxContainer>("Layout/ContentPanel/ControlsContent");
 
-        _resolutionOption = GetNode<OptionButton>("ContentLayer/Layout/ContentPanel/GraphicsContent/ResolutionRow/ResolutionOption");
-        _fullscreenToggle = GetNode<CheckButton>("ContentLayer/Layout/ContentPanel/GraphicsContent/FullscreenToggle");
-        _vsyncToggle = GetNode<CheckButton>("ContentLayer/Layout/ContentPanel/GraphicsContent/VsyncToggle");
+        _backButton = GetNode<KernexButton>("Layout/BottomBar/BackButton");
+        _applyButton = GetNode<KernexButton>("Layout/BottomBar/ApplyButton");
 
-        _masterSlider = GetNode<HSlider>("ContentLayer/Layout/ContentPanel/AudioContent/MasterRow/MasterSlider");
-        _musicSlider = GetNode<HSlider>("ContentLayer/Layout/ContentPanel/AudioContent/MusicRow/MusicSlider");
-        _sfxSlider = GetNode<HSlider>("ContentLayer/Layout/ContentPanel/AudioContent/SfxRow/SfxSlider");
+        _resolutionDropdown = GetNode<KernexDropdown>("Layout/ContentPanel/GraphicsContent/ResolutionDropdown");
+        _fullscreenToggle = GetNode<KernexToggle>("Layout/ContentPanel/GraphicsContent/FullscreenToggle");
+        _vsyncToggle = GetNode<KernexToggle>("Layout/ContentPanel/GraphicsContent/VsyncToggle");
+
+        _masterSlider = GetNode<KernexSlider>("Layout/ContentPanel/AudioContent/MasterSlider");
+        _musicSlider = GetNode<KernexSlider>("Layout/ContentPanel/AudioContent/MusicSlider");
+        _sfxSlider = GetNode<KernexSlider>("Layout/ContentPanel/AudioContent/SfxSlider");
 
         _graphicsTab.Pressed += () => ShowTab(0);
         _audioTab.Pressed += () => ShowTab(1);
@@ -65,7 +66,6 @@ public partial class Settings : Control
 
     private void ShowTab(int index)
     {
-        _activeTab = index;
         _graphicsContent.Visible = index == 0;
         _audioContent.Visible = index == 1;
         _controlsContent.Visible = index == 2;
@@ -73,47 +73,45 @@ public partial class Settings : Control
 
     private void SetupResolutionOptions()
     {
-        _resolutionOption.AddItem("1920x1080", 0);
-        _resolutionOption.AddItem("1600x900", 1);
-        _resolutionOption.AddItem("1280x720", 2);
-        _resolutionOption.AddItem("2560x1440", 3);
-        _resolutionOption.AddItem("3840x2160", 4);
+        _resolutionDropdown.AddItem("1920x1080");
+        _resolutionDropdown.AddItem("1600x900");
+        _resolutionDropdown.AddItem("1280x720");
+        _resolutionDropdown.AddItem("2560x1440");
+        _resolutionDropdown.AddItem("3840x2160");
     }
 
     private void LoadSettings()
     {
         if (_configFile.Load(ConfigPath) != Error.Ok) return;
 
-        _fullscreenToggle.ButtonPressed = (bool)_configFile.GetValue("graphics", "fullscreen", false);
-        _vsyncToggle.ButtonPressed = (bool)_configFile.GetValue("graphics", "vsync", true);
-        _resolutionOption.Selected = (int)_configFile.GetValue("graphics", "resolution", 0);
-        _masterSlider.Value = (double)_configFile.GetValue("audio", "master", 80.0);
-        _musicSlider.Value = (double)_configFile.GetValue("audio", "music", 70.0);
-        _sfxSlider.Value = (double)_configFile.GetValue("audio", "sfx", 80.0);
+        _fullscreenToggle.SetValue((bool)_configFile.GetValue("graphics", "fullscreen", false));
+        _vsyncToggle.SetValue((bool)_configFile.GetValue("graphics", "vsync", true));
+        _resolutionDropdown.Selected = (int)_configFile.GetValue("graphics", "resolution", 0);
+        _masterSlider.SetValue((float)(double)_configFile.GetValue("audio", "master", 80.0));
+        _musicSlider.SetValue((float)(double)_configFile.GetValue("audio", "music", 70.0));
+        _sfxSlider.SetValue((float)(double)_configFile.GetValue("audio", "sfx", 80.0));
     }
 
     private void SaveSettings()
     {
-        _configFile.SetValue("graphics", "fullscreen", _fullscreenToggle.ButtonPressed);
-        _configFile.SetValue("graphics", "vsync", _vsyncToggle.ButtonPressed);
-        _configFile.SetValue("graphics", "resolution", _resolutionOption.Selected);
-        _configFile.SetValue("audio", "master", _masterSlider.Value);
-        _configFile.SetValue("audio", "music", _musicSlider.Value);
-        _configFile.SetValue("audio", "sfx", _sfxSlider.Value);
+        _configFile.SetValue("graphics", "fullscreen", _fullscreenToggle.Value);
+        _configFile.SetValue("graphics", "vsync", _vsyncToggle.Value);
+        _configFile.SetValue("graphics", "resolution", _resolutionDropdown.Selected);
+        _configFile.SetValue("audio", "master", (double)_masterSlider.Value);
+        _configFile.SetValue("audio", "music", (double)_musicSlider.Value);
+        _configFile.SetValue("audio", "sfx", (double)_sfxSlider.Value);
         _configFile.Save(ConfigPath);
     }
 
     private void ApplySettings()
     {
-        // Fullscreen
-        if (_fullscreenToggle.ButtonPressed)
+        if (_fullscreenToggle.Value)
             DisplayServer.WindowSetMode(DisplayServer.WindowMode.Fullscreen);
         else
             DisplayServer.WindowSetMode(DisplayServer.WindowMode.Windowed);
 
-        // VSync
         DisplayServer.WindowSetVsyncMode(
-            _vsyncToggle.ButtonPressed ? DisplayServer.VSyncMode.Enabled : DisplayServer.VSyncMode.Disabled);
+            _vsyncToggle.Value ? DisplayServer.VSyncMode.Enabled : DisplayServer.VSyncMode.Disabled);
     }
 
     private void OnApplyPressed()
@@ -124,7 +122,8 @@ public partial class Settings : Control
 
     private void OnBackPressed()
     {
-        GetNode<Autoloads.ScreenManager>("/root/ScreenManager")
-            .ChangeScreen("res://src/Screens/MainMenu/MainMenu.tscn");
+        // SettingsPanel → ContentLayer → MainMenu
+        var mainMenu = GetParent()?.GetParent<MainMenu.MainMenu>();
+        mainMenu?.HideSettings();
     }
 }

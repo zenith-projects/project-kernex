@@ -11,7 +11,7 @@ public partial class KernexPanel : PanelContainer
     [Export] public string HeaderText { get; set; } = "";
     [Export] public int CornerRadius { get; set; } = 8;
 
-    private static readonly Color ColorBorderGold = new(0.831f, 0.659f, 0.294f, 0.2f);
+    private static readonly Color ColorBorderAccent = new(0.6f, 0.65f, 0.75f, 0.2f);
     private static readonly Color ColorBg = new(0.07f, 0.07f, 0.10f);
 
     private StyleBoxFlat _panelStyle;
@@ -48,7 +48,7 @@ public partial class KernexPanel : PanelContainer
 
         if (ShowBorder)
         {
-            _panelStyle.BorderColor = ColorBorderGold;
+            _panelStyle.BorderColor = ColorBorderAccent;
             _panelStyle.BorderWidthLeft = 1;
             _panelStyle.BorderWidthTop = 1;
             _panelStyle.BorderWidthRight = 1;
