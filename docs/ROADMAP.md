@@ -81,7 +81,28 @@
 3. **`.vsh` scripting** — Basic script interpreter with loops, conditionals, variables.
 4. **Hardware detection** — Auto-detect RAM/VRAM and select 3B vs 7B model. Fallback to scripted-only if insufficient hardware.
 
-**MVP 1:** Shell works, AXIA responds with personality and memory, player can type commands and AXIA generates context-aware responses with emotions. ✅ *Partially achieved — shell + AXIA chat functional, scripting pending.*
+### UI Foundation & Design System
+
+- [x] **Design system components** — Custom UI components with `[GlobalClass]` + `[Tool]` (visible in Godot "Add Node" dialog, render in editor viewport):
+  - `KernexButton` — Ghost-style button (text-only, no background). Hover: text color tween + scale-up (1.12x). Moonhouse font with FontVariation embolden.
+  - `KernexLabel` — Label with 6 style variants (Title, Subtitle, Body, Caption, Monospace, Logo). Shadow support via LabelSettings. Moonhouse display font for titles, JetBrains Mono for body text.
+  - `KernexPanel` — Styled panel with configurable border, alpha, header, corner radius.
+  - `KernexSeparator` — Horizontal separator with accent color.
+  - `KernexToggle` — Animated toggle switch with pill track and sliding knob.
+  - `KernexSlider` — Labeled slider with track fill, circular grabber, and value display.
+  - `KernexDropdown` — Labeled dropdown with styled popup and hover states.
+  - `KernexCorner` — L-bracket decorative drawn as filled polygon via `_Draw()`.
+  - `KernexLine` — Horizontal/vertical line with Edge alignment and Padding, drawn as polygon.
+  - `KernexHatch` — Diagonal line pattern for sci-fi decorative detail.
+- [x] **Screen infrastructure** — `ScreenManager` autoload with fade transitions (ColorRect + Tween). Root scene as entry point loading MainMenu. Configured in `project.godot`.
+- [x] **Main Menu** — Background image with `bg_enhance` shader (zoom breathing + barrel distortion + vignette). Logo (Moonhouse font) with "PROJECT" / "KERNEX" / tagline. 5 ghost buttons with stagger slide-in animation. Decorative frame: corners, lines, thin accent lines, hatch patterns — all anchor-responsive for window resize. Settings as internal panel (show/hide, no screen transition).
+- [x] **Settings** — Graphics tab (resolution dropdown, fullscreen/vsync toggles), Audio tab (master/music/sfx sliders), Controls tab (placeholder). All using Kernex custom components. Persists to `user://settings.cfg` via ConfigFile.
+- [x] **Background shader** — `bg_enhance.gdshader`: zoom breathing (oscillating scale from center), barrel distortion (intensity synced with breath), vignette, contrast/brightness grading.
+- [x] **Rendering quality** — Viewport 1920x1080, MSAA 2D 4x, FXAA enabled.
+- [ ] Loading screen
+- [ ] Credits / Monolith of Contributors scroll
+
+**MVP 1:** Shell works, AXIA responds with personality and memory, player can type commands and AXIA generates context-aware responses with emotions. Main menu and settings functional with custom design system. ✅ *Partially achieved — shell + AXIA + UI foundation functional, scripting pending.*
 
 ---
 

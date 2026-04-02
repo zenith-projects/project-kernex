@@ -46,9 +46,9 @@ You awaken as the sole operator of **Station XARA-7**, a derelict outpost on the
 
 ## Project Status
 
-> **Phase 0 — Foundation** `CURRENT`
+> **Phase 1 — Shell & AXIA & UI** `IN PROGRESS`
 
-Game design complete (15 design docs). Godot 4.6 Mono project initialized. CI/CD with 10 PR checks. Branch protection active. Next: Shell + AXIA (Phase 1).
+Shell terminal emulator working. AXIA AI companion with 10-level evolution, local LLM (Qwen2.5 7B + 3B), emotion system, persistent memory, and proactive messaging. Multi-agent AI architecture. Main menu with custom design system (10 UI components), settings screen, background shader effects. 15 game design docs. CI/CD with 10 PR checks.
 
 Check the [roadmap](docs/ROADMAP.md) for all phases and MVPs.
 
