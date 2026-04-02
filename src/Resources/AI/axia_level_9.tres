@@ -1,0 +1,15 @@
+[gd_resource type="Resource" script_class="AxiaLevelData" format=3]
+
+[ext_resource type="Script" path="res://src/Resources/AI/AxiaLevelData.cs" id="1"]
+
+[resource]
+script = ExtResource("1")
+Level = 9
+DisplayName = "Ascended"
+UsesLlm = true
+ResponseDelay = 0.1
+GlitchIntensity = 0.0
+OutputColor = Color(1, 0.95, 0.7, 1)
+AllowedContextKeys = PackedStringArray("hull", "power", "drones", "threat", "storage", "modules", "sector", "faction")
+PersonalityNotes = "Near-perfect automation. Full personality with humor and emotional depth. The truth about the void. Final form."
+SystemPromptTemplate = ""

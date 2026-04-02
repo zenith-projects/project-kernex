@@ -31,11 +31,11 @@ public sealed class CommandResult
     public static CommandResult Warning(string text) =>
         new(CommandResultType.Warning, [text]);
 
-    public static CommandResult Kira(string text) =>
-        new(CommandResultType.Kira, [text]);
+    public static CommandResult Axia(string text) =>
+        new(CommandResultType.Axia, [text]);
 
-    public static CommandResult Kira(string[] lines) =>
-        new(CommandResultType.Kira, lines);
+    public static CommandResult Axia(string[] lines) =>
+        new(CommandResultType.Axia, lines);
 
     public static CommandResult SystemMsg(string text) =>
         new(CommandResultType.System, [text]);

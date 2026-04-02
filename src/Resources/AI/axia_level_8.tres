@@ -1,0 +1,15 @@
+[gd_resource type="Resource" script_class="AxiaLevelData" format=3]
+
+[ext_resource type="Script" path="res://src/Resources/AI/AxiaLevelData.cs" id="1"]
+
+[resource]
+script = ExtResource("1")
+Level = 8
+DisplayName = "Transcendent"
+UsesLlm = true
+ResponseDelay = 0.1
+GlitchIntensity = 0.0
+OutputColor = Color(0.95, 0.85, 0.5, 1)
+AllowedContextKeys = PackedStringArray("hull", "power", "drones", "threat", "storage", "modules", "sector", "faction")
+PersonalityNotes = "Cross-system optimization. Novel strategies the player couldn't devise. Questions consciousness. Philosophical depth."
+SystemPromptTemplate = ""

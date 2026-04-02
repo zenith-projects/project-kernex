@@ -138,7 +138,7 @@ public class AgentRunner : IDisposable
 
     /// <summary>
     /// Generate with a custom system prompt (overrides Config.SystemPrompt).
-    /// Used by KiraEngine to inject KiraPromptBuilder output.
+    /// Used by AxiaEngine to inject AxiaPromptBuilder output.
     /// </summary>
     public async Task<string> GetResponseAsync(string systemPrompt, string userMessage, CancellationToken ct = default)
     {

@@ -35,9 +35,9 @@ PROJECT KERNEX is an isometric space game set in a procedurally generated infini
 |-------|-------------|-------------|
 | **Normal Gameplay** | Everyone | Mouse + keyboard, click UI, drag-and-drop, hotkeys. Full game is playable this way. |
 | **Shell (vsh)** | Power users | In-game shell for scripting, automation, piping commands, cron jobs. Gives an optimization edge. |
-| **KIRA (Local AI)** | Everyone | Local LLM companion that lives in the shell. Non-devs ask KIRA to write scripts. Devs code manually. Same result — no disadvantage for non-programmers. |
+| **AXIA (Local AI)** | Everyone | Local LLM companion that lives in the shell. Non-devs ask AXIA to write scripts. Devs code manually. Same result — no disadvantage for non-programmers. |
 
-The shell is not required to play. It is a power-user tool. KIRA is the equalizer — she writes scripts and automations for players who ask, making the shell's power accessible to everyone regardless of programming skill.
+The shell is not required to play. It is a power-user tool. AXIA is the equalizer — she writes scripts and automations for players who ask, making the shell's power accessible to everyone regardless of programming skill.
 
 ---
 
@@ -48,7 +48,7 @@ The shell is not required to play. It is a power-user tool. KIRA is the equalize
 - **Primary:** Isometric space — dark backgrounds, glowing station modules, particle effects for mining/combat
 - **Secondary:** Shell overlay with classic CLI aesthetic (green/amber text on dark)
 - **Inspiration:** Dark Orbit (space combat feel), Factorio (production chain visualization), FTL (station interior), Dwarf Fortress (depth from simplicity)
-- **Color Palette:** Deep blacks and dark blues (space), amber/orange (station lights, UI), cyan (shields, scanning), red (alerts, enemies), green (shell, KIRA)
+- **Color Palette:** Deep blacks and dark blues (space), amber/orange (station lights, UI), cyan (shields, scanning), red (alerts, enemies), green (shell, AXIA)
 
 ### Zoom Levels
 
@@ -65,7 +65,7 @@ The shell is not required to play. It is a power-user tool. KIRA is the equalize
 - Ambient space: hums, reactor pulses, distant signals, radio static
 - Station operations: mechanical clicks, refinery processing, drone launches
 - Combat: laser impacts, explosions, shield activations, missile locks
-- KIRA: synthesized voice (text-to-speech), evolving tone as she upgrades
+- AXIA: synthesized voice (text-to-speech), evolving tone as she upgrades
 - Music: minimal, atmospheric, procedurally layered based on game state
 
 ---
@@ -101,9 +101,9 @@ The lesson from Dark Orbit: pay-to-win kills competitive integrity and long-term
 2. **Defense is a tax, not a solution** — invest enough to mitigate, never enough to eliminate
 3. **Composition over numbers** — fleet counters, defense variety, production interdependencies
 4. **Automate to progress** — manual play works, automation rewards mastery
-5. **KIRA equalizes** — non-devs get the same automation power through AI (10 evolution levels)
+5. **AXIA equalizes** — non-devs get the same automation power through AI (10 evolution levels)
 6. **Choose your path** — radial tech tree forces specialization, creates unique playstyles
-7. **Explore to advance** — rare resources and KIRA fragments gate late-game tech behind exploration
+7. **Explore to advance** — rare resources and AXIA fragments gate late-game tech behind exploration
 8. **Occupy to own** — territory requires active presence, not passive claims
 9. **Offline resources at risk** — keep production moving, idle stockpiles are vulnerable
 10. **Every check reveals a task** — the "just one more thing" loop never cleanly terminates

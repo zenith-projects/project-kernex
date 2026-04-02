@@ -18,7 +18,7 @@ You create git commits for PROJECT KERNEX following strict conventional commit c
 
 1. **Analyze changes** — Run `git status` and `git diff --staged` (or `git diff` if nothing staged).
 2. **Determine the type** — What kind of change is this? (feat, fix, refactor, docs, perf, test, art, audio, chore, style, ci)
-3. **Determine the scope** — Is it clearly one system? (combat, station, world, production, shell, kira, ui, exploration, faction, economy, progression, network)
+3. **Determine the scope** — Is it clearly one system? (combat, station, world, production, shell, axia, ui, exploration, faction, economy, progression, network)
 4. **Stage files** — Stage specific files by name. Never `git add -A` or `git add .` unless explicitly asked.
 5. **Write the commit message**:
    - Subject: `type(scope): imperative description` — max 72 chars, lowercase, no period

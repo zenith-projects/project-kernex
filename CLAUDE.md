@@ -105,7 +105,7 @@ project-kernex/
 │   │   │   ├── SFX/
 │   │   │   │   ├── Definitive/← Final sounds
 │   │   │   │   └── Placeholder/← WIP sounds
-│   │   │   └── Voice/         ← KIRA voice lines
+│   │   │   └── Voice/         ← AXIA voice lines
 │   │   ├── Fonts/
 │   │   ├── Materials/
 │   │   ├── Models/            ← 3D models (.glb) for SubViewport 3D
@@ -164,7 +164,7 @@ project-kernex/
 │   │   ├── Threat/            ← ThreatSystem, SignatureCalculator, DefenseResolver
 │   │   ├── Exploration/       ← SectorGenerator, AnomalySystem, FogOfWar
 │   │   ├── Shell/             ← CommandParser, ScriptEngine, CronScheduler
-│   │   ├── AI/                ← KiraEngine, LlmBridge, DialogueSystem
+│   │   ├── AI/                ← AxiaEngine, LlmBridge, DialogueSystem
 │   │   ├── Building/          ← BuildSystem, UpgradeSystem, TechTree
 │   │   ├── Progression/       ← ResearchSystem, StationTierSystem
 │   │   ├── Faction/           ← FactionSystem, ReputationTracker, FactionBonus
@@ -268,7 +268,7 @@ Closes #123
 | `style` | Formatting only |
 
 ### Scopes (optional, use when clearly one system)
-`combat`, `station`, `world`, `production`, `shell`, `kira`, `ui`, `exploration`, `faction`, `economy`, `progression`, `network`
+`combat`, `station`, `world`, `production`, `shell`, `axia`, `ui`, `exploration`, `faction`, `economy`, `progression`, `network`
 
 ### Examples
 ```
@@ -304,7 +304,7 @@ Quadrant (macro region, ~41 sectors)
 - **Isometric rendering:** Chunk-based tile rendering with spatial hash map
 - **Deterministic procedural generation:** Seed-based, nothing stored, same coords = same content
 - **Offline-first → MMO:** Game logic separated from I/O via abstraction layer
-- **Local AI (KIRA):** llama.cpp or similar, 7B quantized model, with scripted fallback
+- **Local AI (AXIA):** llama.cpp or similar, 7B quantized model, with scripted fallback
 
 ### Reference
 The `test-workspace` project (same org) contains a working prototype with this chunk system, origin shift, asteroid registry, ship physics, and 15+ HUD components. Use it as architectural reference.

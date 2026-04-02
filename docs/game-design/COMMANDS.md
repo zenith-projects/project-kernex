@@ -49,7 +49,7 @@
 
 | Command | Description | Example |
 |---------|-------------|---------|
-| `kira` | Talk to KIRA AI | `kira "status report"` |
+| `axia` | Talk to AXIA AI | `axia "status report"` |
 | `comms` | Communications | `comms broadcast --message "..."` |
 | `beacon` | Manage beacons | `beacon deploy --type trade` |
 

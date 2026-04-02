@@ -6,7 +6,7 @@ public enum CommandResultType
     Error,
     Info,
     Warning,
-    Kira,
+    Axia,
     System,
     Clear
 }

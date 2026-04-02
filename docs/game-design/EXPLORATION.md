@@ -15,7 +15,7 @@ Master Seed
   → Galaxy Generator (star positions, types, connections)
     → System Generator (planets, asteroid belts, resource composition)
       → Sector Generator (local detail, hazards, anomalies)
-        → Content Populator (lore, KIRA data, quest hooks)
+        → Content Populator (lore, AXIA data, quest hooks)
 ```
 
 Each level uses the parent's output as its seed, ensuring perfect reproducibility.
@@ -42,14 +42,14 @@ Galaxy
 | Resource Rich | High metallum/crystallis | Pirate miners | Mining outposts |
 | Hazardous | Rare materials | Radiation, debris | Anomalies, void rifts |
 | Derelict Field | Salvage, data | Rogue AI | Derelict ships, data caches |
-| Deep Void | Quantum crystals, dark matter | Unknown entities | Ancient artifacts, KIRA fragments |
+| Deep Void | Quantum crystals, dark matter | Unknown entities | Ancient artifacts, AXIA fragments |
 | Contested | Mixed | High PvP activity | Territory borders, trade routes |
 
 ### Anomalies
 
 Anomalies are procedurally placed but hand-crafted event templates layered on procedural scaffolding:
 
-- **Data Cache:** KIRA upgrade fragments, blueprints, lore
+- **Data Cache:** AXIA upgrade fragments, blueprints, lore
 - **Derelict Ship:** Salvageable resources, equipment, crew logs
 - **Void Rift:** Dangerous but contains rare materials and story events
 - **Signal Source:** Distress beacons, trade opportunities, trap ambushes

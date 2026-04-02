@@ -34,7 +34,7 @@ Each building type exists once per station and is upgraded by levels:
 | 2 | **Station** | First major expansion | Multiple refineries, drone bay, basic defense |
 | 3 | **Complex** | Connected modules | Fleet production, advanced research, trade |
 | 4 | **Hub** | Self-sustaining | Capital ships, deep exploration, territory claims |
-| 5 | **Nexus** | Full automation | Endgame tech, KIRA Stage 4, online features |
+| 5 | **Nexus** | Full automation | Endgame tech, AXIA Stage 4, online features |
 
 ### Module Layout & Defense (from Clash of Clans)
 
