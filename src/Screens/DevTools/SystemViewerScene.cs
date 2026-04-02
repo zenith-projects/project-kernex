@@ -28,6 +28,7 @@ public partial class SystemViewerScene : Control
     private bool _pendingDismiss;
     private const float OrbitScale = 800f;     // pixels between orbits
     private float _starVisualRadius = 200f;    // updated per system
+    private PlanetView _followTarget;          // planet the camera follows
     private readonly System.Collections.Generic.List<(PlanetView view, PlanetData data, float angle)> _orbitingPlanets = new();
 
     public override void _Ready()
@@ -171,7 +172,8 @@ public partial class SystemViewerScene : Control
         AddChild(_tooltip);
 
         // Generate initial system
-        GenerateSystem(42);
+        // Defer generation to avoid lag on scene load
+        CallDeferred(nameof(DeferredFirstGenerate));
     }
 
     public override void _Input(InputEvent @event)
@@ -236,6 +238,8 @@ public partial class SystemViewerScene : Control
         }
     }
 
+    private void DeferredFirstGenerate() => GenerateSystem(42);
+
     private void OnGenerate()
     {
         if (long.TryParse(_seedInput.Text, out var seed))
@@ -255,19 +259,24 @@ public partial class SystemViewerScene : Control
         for (int i = 0; i < _orbitingPlanets.Count; i++)
         {
             var (view, data, angle) = _orbitingPlanets[i];
-            // Kepler's 3rd law: angular velocity ω ∝ d^(-3/2)
-            // Scale factor so innermost planet visibly moves (~1 orbit per 30s at 0.4 AU)
             var omega = 0.15f / Mathf.Pow(Mathf.Max(data.OrbitalDistance, 0.1f), 1.5f);
             var newAngle = angle + (float)delta * omega;
             _orbitingPlanets[i] = (view, data, newAngle);
 
-            // Each planet gets its own orbit ring, spaced evenly outward from the star
             var orbitIndex = i + 1;
             var orbitRadius = _starVisualRadius + orbitIndex * OrbitScale;
-            // Top-down view — circular orbits
             var x = Mathf.Cos(newAngle) * orbitRadius;
             var y = Mathf.Sin(newAngle) * orbitRadius;
             view.Position = new Vector2(x - view.Size.X / 2, y - view.Size.Y / 2);
+        }
+
+        // Camera follows selected planet smoothly
+        if (_followTarget != null && IsInstanceValid(_followTarget))
+        {
+            var targetCenter = _followTarget.Position + _followTarget.Size / 2;
+            var screenCenter = GetViewportRect().Size / 2;
+            var desiredPos = screenCenter - targetCenter * _zoom;
+            _systemLayout.Position = _systemLayout.Position.Lerp(desiredPos, (float)delta * 3.0f);
         }
     }
 
@@ -287,7 +296,7 @@ public partial class SystemViewerScene : Control
         var bodyView = new CelestialBodyView();
         _systemLayout.AddChild(bodyView);
         bodyView.SetData(_currentSystem.CentralBody);
-        bodyView.Clicked += _ => ShowBodyTooltip(bodyView, _currentSystem.CentralBody);
+        bodyView.Clicked += _ => { ShowBodyTooltip(bodyView, _currentSystem.CentralBody); _followTarget = null; };
         // Center the star and calculate its visual radius for orbit spacing
         CallDeferred(nameof(CenterBody), bodyView);
         _starVisualRadius = Mathf.Clamp(
@@ -301,7 +310,7 @@ public partial class SystemViewerScene : Control
             var planetView = new PlanetView();
             _systemLayout.AddChild(planetView);
             planetView.SetData(pData);
-            planetView.Clicked += _ => ShowPlanetTooltip(planetView, pData);
+            planetView.Clicked += _ => { ShowPlanetTooltip(planetView, pData); _followTarget = planetView; };
 
             // Random starting angle (deterministic from seed)
             // Spread planets evenly + random offset so they don't cluster
@@ -389,6 +398,7 @@ public partial class SystemViewerScene : Control
     {
         _tooltip.Visible = false;
         _tooltipTarget = null;
+        _followTarget = null;
     }
 
     private void ShowSystemInfo()

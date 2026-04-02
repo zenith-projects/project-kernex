@@ -38,16 +38,28 @@ float noise3(vec3 p) {
 
 float fbm(vec3 p, int oct) {
     float v = 0.0, a = 0.5, t = 0.0;
+    mat3 rot = mat3(vec3(0.8, 0.6, 0.0), vec3(-0.6, 0.8, 0.0), vec3(0.0, 0.0, 1.0));
     for (int i = 0; i < oct; i++) {
         v += a * noise3(p); t += a;
+        p = rot * p * 2.03 + vec3(1.7, 9.2, 5.3); a *= 0.5;
+    }
+    return v / t;
+}
+
+float ridged(vec3 p, int oct) {
+    float v = 0.0, a = 0.5, t = 0.0, prev = 1.0;
+    for (int i = 0; i < oct; i++) {
+        float n = 1.0 - abs(noise3(p) * 2.0 - 1.0);
+        n = n * n * prev;
+        v += a * n; t += a; prev = n;
         p = p * 2.03 + vec3(1.7, 9.2, 5.3); a *= 0.5;
     }
     return v / t;
 }
 
 float warped(vec3 p) {
-    vec3 q = vec3(fbm(p, 4), fbm(p + vec3(5.2, 1.3, 3.7), 4), 0.0);
-    return fbm(p + 3.0 * q, 5);
+    vec3 q = vec3(fbm(p, 5), fbm(p + vec3(5.2, 1.3, 3.7), 5), fbm(p + vec3(9.1, 4.7, 2.8), 5));
+    return fbm(p + 3.5 * q, 6);
 }
 
 float voronoi(vec3 p) {
@@ -104,105 +116,157 @@ void fragment() {
         col.b += pow(noise3(vec3((lensedUV - cOff) * 20.0, seed)), 15.0) * chrom * 0.2;
     }
 
-    // ==================== ACCRETION DISK ====================
+    // ==================== ACCRETION DISK (cinema quality) ====================
     if (accretion_disk) {
         vec2 dUV = uv * vec2(1.0, 3.5);
         float dDist = length(dUV);
 
-        // Multi-arm spiral
-        float sp1 = fbm(vec3(angle + dDist * 5.0 - TIME * 0.4, dDist * 8.0, seed), 6);
-        float sp2 = fbm(vec3(angle * 2.0 + dDist * 3.0 - TIME * 0.3 + 3.0, dDist * 12.0, seed * 0.7), 5);
+        // Multi-arm spiral with turbulent structure
+        float spiralBase = angle + dDist * 5.0 - TIME * 0.35;
+        float sp1 = fbm(vec3(spiralBase * 2.0, dDist * 8.0, seed), 7);
+        float sp2 = fbm(vec3(spiralBase * 3.0 + 3.0, dDist * 12.0, seed * 0.7), 6);
+        float sp3 = fbm(vec3(spiralBase * 5.0 + 7.0, dDist * 20.0, seed * 1.3), 5); // fine detail
 
-        float mask = smoothstep(0.85, 0.18, dDist) * smoothstep(0.04, 0.13, dDist);
-        float density = mask * (0.3 + sp1 * 0.4 + sp2 * 0.2);
+        // Ring structure within disk (concentric density waves)
+        float rings = sin(dDist * 40.0 + sp1 * 2.0) * 0.5 + 0.5;
+        rings = 0.6 + rings * 0.4;
 
-        // Temperature: blue-white → orange → red
-        float tGrad = pow(smoothstep(0.7, 0.06, dDist), 2.0);
-        vec3 dHot = vec3(0.7, 0.85, 1.0) * 3.0;
-        vec3 dWarm = vec3(1.0, 0.7, 0.2) * 2.0;
-        vec3 dCold = corona_color.rgb * 0.3;
-        vec3 dCol = mix(dCold, mix(dWarm, dHot, tGrad), tGrad);
+        float mask = smoothstep(0.85, 0.15, dDist) * smoothstep(0.03, 0.12, dDist);
+        float density = mask * (0.25 + sp1 * 0.35 + sp2 * 0.2 + sp3 * 0.1) * rings;
 
-        // Doppler beaming: approaching side brighter + blue, receding dimmer + red
-        float doppler = sin(angle - TIME * 0.3);
-        dCol *= 1.0 + doppler * 0.3 * smoothstep(0.3, 0.08, dDist);
-        dCol.b += doppler * 0.1 * tGrad;
-        dCol.r -= doppler * 0.05 * tGrad;
+        // Temperature gradient: blue-white core → yellow → orange → red edge
+        float tGrad = pow(smoothstep(0.7, 0.05, dDist), 1.8);
+        vec3 dWhiteHot = vec3(0.8, 0.9, 1.0) * 3.5;
+        vec3 dBlueHot = vec3(0.5, 0.7, 1.0) * 2.5;
+        vec3 dYellow = vec3(1.0, 0.85, 0.4) * 2.0;
+        vec3 dOrange = vec3(1.0, 0.6, 0.15) * 1.5;
+        vec3 dRed = corona_color.rgb * 0.3;
 
-        // Turbulence
-        float turb = fbm(vec3(dUV * 8.0, TIME * 0.15 + seed), 5);
-        dCol *= 0.7 + turb * 0.6;
+        vec3 dCol = mix(dRed, dOrange, smoothstep(0.0, 0.3, tGrad));
+        dCol = mix(dCol, dYellow, smoothstep(0.3, 0.6, tGrad));
+        dCol = mix(dCol, dBlueHot, smoothstep(0.6, 0.85, tGrad));
+        dCol = mix(dCol, dWhiteHot, smoothstep(0.85, 1.0, tGrad));
+
+        // Doppler beaming (relativistic effect: approaching side brighter + bluer)
+        float orbitalV = 0.4 / max(dDist, 0.05); // faster near center
+        float doppler = sin(angle - TIME * 0.3) * min(orbitalV, 1.0);
+        dCol *= 1.0 + doppler * 0.35;
+        dCol.b += doppler * 0.12 * tGrad;
+        dCol.r -= doppler * 0.06 * tGrad;
+
+        // Multi-scale turbulence
+        float turb1 = fbm(vec3(dUV * 6.0, TIME * 0.12 + seed), 6);
+        float turb2 = fbm(vec3(dUV * 15.0, TIME * 0.2 + seed * 0.5), 4);
+        dCol *= 0.65 + turb1 * 0.35 + turb2 * 0.1;
+
+        // Hot clumps in inner disk
+        float clumps = warped(vec3(dUV * 4.0, TIME * 0.1 + seed));
+        float hotClump = smoothstep(0.6, 0.75, clumps) * smoothstep(0.3, 0.1, dDist);
+        dCol += dWhiteHot * hotClump * 0.15;
 
         col += dCol * density * intensity * 0.5;
         alpha = max(alpha, density * 0.7);
 
-        // Photon ring
-        float pRing = smoothstep(0.12, 0.1, dist) * smoothstep(0.07, 0.09, dist);
-        float pBright = 1.0 + fbm(vec3(angle * 8.0, TIME * 0.5, seed), 3) * 0.4;
-        col += vec3(1.0, 0.95, 0.85) * pRing * 4.0 * intensity * pBright;
-        alpha = max(alpha, pRing);
+        // === Photon ring (innermost stable orbit glow) ===
+        float pRingInner = smoothstep(0.11, 0.09, dist) * smoothstep(0.06, 0.08, dist);
+        float pRingOuter = smoothstep(0.14, 0.12, dist) * smoothstep(0.09, 0.11, dist) * 0.5;
+        float pNoise = 1.0 + fbm(vec3(angle * 10.0, TIME * 0.4, seed), 4) * 0.3;
+        col += vec3(1.0, 0.95, 0.85) * (pRingInner + pRingOuter) * 4.0 * intensity * pNoise;
+        alpha = max(alpha, (pRingInner + pRingOuter));
 
-        // Event horizon
-        float horizon = smoothstep(0.08, 0.05, dist);
+        // === Event horizon (absolute black) ===
+        float horizon = smoothstep(0.07, 0.04, dist);
         col = mix(col, vec3(0.0), horizon);
         alpha = max(alpha, horizon);
 
-        // Relativistic jets (BH & Quasar)
-        float jetAxis = abs(uv.y) / max(abs(uv.x) + 0.001, 0.001);
-        float jetCore = smoothstep(3.0, 12.0, jetAxis) * smoothstep(0.8, 0.1, dist);
-        float jetHalo = smoothstep(1.5, 6.0, jetAxis) * smoothstep(0.9, 0.15, dist) * 0.3;
-        float jetNoise = fbm(vec3(uv * 4.0, TIME * 0.25 + seed), 4);
-        float jet = (jetCore + jetHalo) * (0.6 + jetNoise * 0.4);
+        // === Relativistic jets ===
+        float jetWidth = body_type == 9 ? 0.08 : 0.05;
+        float jetMask = smoothstep(jetWidth, jetWidth * 0.2, abs(uv.x));
+        float jetExtent = smoothstep(0.12, 0.85, abs(uv.y));
+        float jetBase = smoothstep(0.3, 0.12, abs(uv.y));
+        float jetNoise = fbm(vec3(uv.x * 8.0, uv.y * 3.0 - TIME * 0.4 * sign(uv.y), seed), 5);
+        float jetFine = fbm(vec3(uv.x * 20.0, uv.y * 8.0 - TIME * 0.6 * sign(uv.y), seed * 0.5), 4);
 
-        // Jet knots (bright clumps moving along jet)
-        float knots = pow(fbm(vec3(uv.y * 8.0 - TIME * 0.5, uv.x * 2.0, seed), 3), 3.0);
-        jet += knots * jetCore * 0.5;
+        float jet = jetMask * jetExtent * (0.4 + jetNoise * 0.4 + jetFine * 0.15);
+        jet += jetMask * jetBase * 0.5; // brighter at base
 
-        vec3 jetCol = mix(corona_color.rgb, vec3(0.5, 0.6, 1.0), 0.5) * 2.0;
-        // Quasar jets are more prominent
-        float jetInt = body_type == 9 ? 0.35 : 0.2;
+        // Jet cone spreading
+        float cone = smoothstep(0.02, 0.0, abs(uv.x) - abs(uv.y) * 0.1);
+        jet += cone * smoothstep(0.12, 0.6, abs(uv.y)) * 0.15;
+
+        // Knots moving along jet
+        float knots = pow(fbm(vec3(uv.y * 6.0 - TIME * 0.5 * sign(uv.y), uv.x * 3.0, seed * 2.0), 4), 3.0);
+        jet += knots * jetMask * 0.4;
+
+        vec3 jetCol = mix(vec3(0.4, 0.55, 1.0), vec3(0.9, 0.95, 1.0), jetBase);
+        float jetInt = body_type == 9 ? 0.4 : 0.25;
         col += jetCol * jet * intensity * jetInt;
         alpha = max(alpha, jet * 0.4);
     }
 
-    // ==================== CORONA ====================
-    if (dist < 1.0 && dist > starR * 0.8 && starR > 0.0) {
+    // ==================== CORONA (high detail) ====================
+    if (dist < 1.0 && dist > starR * 0.6 && starR > 0.0) {
         vec3 cPos = vec3(uv * 3.0, seed);
+        float coronaDist = (dist - starR) / (1.0 - starR); // 0 at surface, 1 at edge
 
-        // Diffuse corona
-        float c1 = smoothstep(1.0, starR, dist) * fbm(cPos + vec3(TIME * 0.07, 0, 0), 6) * 0.3;
+        // Layer 1: Smooth K-corona (scattered photosphere light)
+        float kCorona = smoothstep(1.0, starR, dist);
+        kCorona *= 0.25 / max(pow(coronaDist + 0.1, 1.5), 0.01); // 1/r^1.5 falloff (realistic)
+        kCorona = min(kCorona, 2.0);
 
-        // Streamers
-        float c2 = smoothstep(0.6, starR, dist) * fbm(vec3(angle * 2.0 + seed, dist * 6.0, TIME * 0.04), 5) * 0.4;
+        // Layer 2: Structured F-corona (dust scattering)
+        float fCorona = smoothstep(0.85, starR + 0.05, dist);
+        float fNoise = fbm(cPos * 2.0 + vec3(TIME * 0.05, 0, 0), 7);
+        fCorona *= fNoise * 0.3;
 
-        // Prominences (arcs extending from surface)
-        float prom = fbm(vec3(angle * 4.0 + seed * 2.0, TIME * 0.1, 0.0), 4);
-        prom = smoothstep(0.78, 0.95, prom) * smoothstep(0.65, starR + 0.05, dist) * smoothstep(starR - 0.02, starR + 0.02, dist);
+        // Layer 3: Coronal streamers (radial structures)
+        float streamerAngle = fbm(vec3(angle * 3.0 + seed, dist * 8.0, TIME * 0.03), 6);
+        float streamerAngle2 = fbm(vec3(angle * 5.0 + seed * 0.7, dist * 12.0, TIME * 0.02), 5);
+        float streamers = smoothstep(0.7, starR, dist) * (streamerAngle * 0.5 + streamerAngle2 * 0.3);
 
-        // CME (rare expanding bubble)
-        float cmePhase = flareEvent(TIME, seed);
-        float cmeAngle = seed * 2.0; // fixed direction per star
-        float cmeDist = smoothstep(0.7, starR + 0.1, dist) * smoothstep(starR, starR + 0.05, dist);
-        float cmeAlign = pow(max(cos(angle - cmeAngle), 0.0), 4.0);
-        float cme = cmeDist * cmeAlign * cmePhase * 0.6;
+        // Layer 4: Coronal loops (magnetic arcs near surface)
+        float loopPhase = sin(angle * 6.0 + seed * 3.0) * 0.5 + 0.5;
+        float loopDist = abs(dist - starR - 0.06 * loopPhase);
+        float loops = smoothstep(0.02, 0.0, loopDist) * smoothstep(starR - 0.01, starR + 0.01, dist);
+        loops *= fbm(vec3(angle * 8.0, TIME * 0.15, seed), 3);
 
-        float corona = (c1 + c2 + prom * 0.8 + cme) * intensity * pulse;
+        // Layer 5: Prominences (bright arcs extending from surface)
+        float prom = fbm(vec3(angle * 4.0 + seed * 2.0, TIME * 0.08, seed * 0.5), 5);
+        prom = smoothstep(0.8, 0.95, prom);
+        float promShape = smoothstep(0.6, starR + 0.04, dist) * smoothstep(starR - 0.01, starR + 0.02, dist);
+        prom *= promShape;
 
-        // Red giant: much larger, redder corona with dust
+        // Layer 6: CME (coronal mass ejection — rare, dramatic)
+        float cmePhase = flareEvent(TIME * 0.7, seed);
+        float cmeDir = seed * 2.5;
+        float cmeSpread = pow(max(cos(angle - cmeDir), 0.0), 3.0);
+        float cmeFront = smoothstep(0.0, 0.15, coronaDist - cmePhase * 0.5) * smoothstep(cmePhase * 0.5 + 0.2, cmePhase * 0.5, coronaDist);
+        float cme = cmeFront * cmeSpread * cmePhase * smoothstep(starR, starR + 0.05, dist);
+        // CME internal structure
+        float cmeNoise = fbm(vec3(angle * 5.0 + TIME * 0.3, dist * 10.0, seed * 3.0), 4);
+        cme *= 0.5 + cmeNoise * 0.5;
+
+        // Combine corona layers
+        float totalCorona = (kCorona * 0.2 + fCorona + streamers + loops * 0.6 + prom * 0.8 + cme * 1.2) * intensity * pulse;
+        totalCorona = min(totalCorona, 3.0);
+
+        // Red giant: much larger corona with dust envelope
         if (body_type == 4) {
-            corona *= 1.5;
-            // Dust envelope
-            float dust = fbm(vec3(uv * 1.5, seed + TIME * 0.01), 5);
-            float dustMask = smoothstep(0.9, starR + 0.1, dist) * 0.2;
-            col += corona_color.rgb * 0.3 * dustMask * (0.5 + dust * 0.5);
-            alpha = max(alpha, dustMask * 0.3);
+            totalCorona *= 1.8;
+            float dust = warped(vec3(uv * 1.2, seed + TIME * 0.008));
+            float dustMask = smoothstep(0.95, starR + 0.05, dist);
+            float dustClumps = fbm(vec3(uv * 3.0, seed + TIME * 0.005), 6);
+            col += corona_color.rgb * 0.25 * dustMask * (0.3 + dust * 0.4 + dustClumps * 0.3);
+            alpha = max(alpha, dustMask * 0.35);
         }
 
-        vec3 cCol = mix(corona_color.rgb * 0.8, core_color.rgb * 1.3, smoothstep(0.5, starR, dist));
-        cCol = mix(cCol, vec3(1.0, 0.95, 0.9), prom * 0.5 + cme * 0.7);
+        // Color: transitions from hot white near surface to cooler corona color
+        vec3 cCol = mix(corona_color.rgb * 0.7, core_color.rgb * 1.4, smoothstep(0.5, starR, dist));
+        cCol = mix(cCol, vec3(1.0, 0.95, 0.88), (loops + prom) * 0.4);
+        cCol = mix(cCol, vec3(1.0, 0.85, 0.7), cme * 0.5);
 
-        col += cCol * corona;
-        alpha = max(alpha, corona * 0.6);
+        col += cCol * totalCorona;
+        alpha = max(alpha, totalCorona * 0.5);
     }
 
     // ==================== STAR SURFACE ====================
@@ -220,19 +284,41 @@ void fragment() {
         // === Per-type surface ===
 
         if (body_type == 0) {
-            // RED DWARF: heavy starspots (10-40%), frequent flares
-            float spots = fbm(sp * 0.4 + seed * 0.3, 5);
-            float spotMask = smoothstep(0.35, 0.5, spots); // 30%+ coverage
-            surfCol = mix(surfCol, surfCol * 0.25, spotMask * 0.7);
+            // RED DWARF: heavy starspots (30-40%), frequent violent flares
 
-            // Frequent bright flares at random positions
-            float flare = flareEvent(TIME * 2.0, seed + sp.x * 10.0);
-            float flarePos = smoothstep(0.7, 0.85, fbm(sp * 2.0 + TIME * 0.5, 3));
-            surfCol += vec3(1.0, 0.9, 0.7) * flare * flarePos * 2.0;
+            // Granulation (tighter cells than sun)
+            float gran = voronoi(sp * 4.5 + TIME * 0.012);
+            float granBright = pow(1.0 - gran, 0.8);
+            surfCol *= 0.85 + granBright * 0.18;
 
-            // Granulation (smaller cells)
-            float gran = voronoi(sp * 4.0 + TIME * 0.015);
-            surfCol *= 0.9 + (1.0 - gran) * 0.12;
+            // Sub-granulation detail
+            float micro = voronoi(sp * 9.0 + TIME * 0.02);
+            surfCol *= 0.95 + (1.0 - micro) * 0.06;
+
+            // Plasma turbulence
+            float turb = fbm(sp * 2.5 + TIME * 0.05, 6);
+            surfCol = mix(surfCol, surfCol * (0.85 + turb * 0.3), 0.3);
+
+            // MASSIVE starspot coverage (30-40%)
+            float spots1 = fbm(sp * 0.35 + seed * 0.3, 6);
+            float spots2 = fbm(sp * 0.7 + seed * 0.7, 5);
+            float spotMask = smoothstep(0.32, 0.48, spots1) + smoothstep(0.4, 0.55, spots2) * 0.5;
+            spotMask = min(spotMask, 1.0);
+
+            // Spot structure with filaments
+            float spotFilament = ridged(sp * 3.0 + seed * 1.5, 4);
+            vec3 spotCol = core_color.rgb * 0.2 * (0.7 + spotFilament * 0.3);
+            surfCol = mix(surfCol, spotCol, spotMask * 0.65);
+
+            // FREQUENT intense flares (M-dwarf flares can double star brightness)
+            float flare1 = flareEvent(TIME * 2.5, seed);
+            float flare2 = flareEvent(TIME * 1.8, seed * 7.0 + 3.0);
+            float flarePos1 = smoothstep(0.65, 0.82, fbm(sp * 1.5 + TIME * 0.3, 4));
+            float flarePos2 = smoothstep(0.7, 0.88, fbm(sp * 2.0 + seed * 5.0 + TIME * 0.4, 3));
+
+            vec3 flareCol = vec3(1.0, 0.85, 0.6);
+            surfCol += flareCol * flare1 * flarePos1 * 2.5;
+            surfCol += flareCol * flare2 * flarePos2 * 1.5;
 
         } else if (body_type == 1) {
             // ORANGE DWARF: moderate spots, calmer
@@ -243,27 +329,64 @@ void fragment() {
             surfCol *= 0.92 + (1.0 - gran) * 0.1;
 
         } else if (body_type == 2) {
-            // YELLOW DWARF (Sun): granulation, spots, faculae
-            float gran = voronoi(sp * 3.0 + TIME * 0.01);
+            // YELLOW DWARF (Sun) — maximum detail
+
+            // === Granulation (convection cells ~1000km) ===
+            float gran = voronoi(sp * 3.5 + TIME * 0.01);
+            float granBright = pow(1.0 - gran, 0.7); // bright cell centers
+            float granLane = smoothstep(0.0, 0.05, gran); // dark intergranular lanes
+            float granDetail = voronoi(sp * 7.0 + TIME * 0.015); // sub-granulation
+
+            // === Supergranulation (larger convection pattern) ===
             float superGran = voronoi(sp * 0.8 + TIME * 0.003);
-            surfCol *= 0.88 + (1.0 - gran) * 0.15;
-            surfCol *= 0.95 + smoothstep(0.0, 0.1, superGran) * 0.05;
+            float superEdge = smoothstep(0.0, 0.08, superGran);
 
-            // Sunspots with penumbra
-            float spotN = fbm(sp * 0.5 + seed * 0.3, 5);
-            float penumbra = smoothstep(0.55, 0.65, spotN);
-            float umbra = smoothstep(0.63, 0.72, spotN);
-            surfCol = mix(surfCol, surfCol * 0.4, penumbra * 0.5);
-            surfCol = mix(surfCol, vec3(0.08, 0.03, 0.01), umbra * 0.6);
+            // === Mesogranulation (intermediate scale) ===
+            float mesoGran = voronoi(sp * 1.8 + TIME * 0.006);
 
-            // Faculae (bright near spots)
-            float fac = smoothstep(0.5, 0.55, spotN) * (1.0 - penumbra);
-            surfCol = mix(surfCol, core_color.rgb * 1.25, fac * 0.2);
+            // Apply granulation layers
+            surfCol *= 0.82 + granBright * 0.18;
+            surfCol *= 0.92 + granLane * 0.08;
+            surfCol *= 0.97 + (1.0 - granDetail) * 0.04;
+            surfCol *= 0.96 + superEdge * 0.04;
+            surfCol *= 0.98 + (1.0 - mesoGran) * 0.03;
 
-            // Solar flare (rare)
+            // === Turbulent plasma flows ===
+            float plasma = fbm(sp * 2.0 + TIME * 0.04, 7);
+            float plasmaFine = fbm(sp * 5.0 + TIME * 0.06, 5);
+            surfCol = mix(surfCol, surfCol * (0.9 + plasma * 0.2), 0.3);
+            surfCol *= 0.96 + plasmaFine * 0.08;
+
+            // === Sunspots (active regions) ===
+            float spotN = fbm(sp * 0.4 + seed * 0.3, 6);
+            float penumbra = smoothstep(0.56, 0.66, spotN);
+            float umbra = smoothstep(0.64, 0.73, spotN);
+            // Penumbral filaments
+            float penFilament = ridged(sp * 4.0 + seed, 4);
+            penumbra *= 0.6 + penFilament * 0.4;
+
+            vec3 penumbraCol = core_color.rgb * 0.45;
+            vec3 umbraCol = vec3(0.06, 0.02, 0.005);
+            surfCol = mix(surfCol, penumbraCol, penumbra * 0.6);
+            surfCol = mix(surfCol, umbraCol, umbra * 0.7);
+
+            // === Faculae (bright regions near active areas) ===
+            float fac = smoothstep(0.48, 0.54, spotN) * (1.0 - penumbra);
+            surfCol = mix(surfCol, core_color.rgb * 1.3, fac * 0.2);
+
+            // Faculae are brighter near limb (Wilson depression effect)
+            fac *= 0.5 + 0.5 * (1.0 - z);
+            surfCol += core_color.rgb * fac * 0.08;
+
+            // === Plage (chromospheric bright regions) ===
+            float plage = fbm(sp * 1.0 + seed * 0.5, 5);
+            plage = smoothstep(0.55, 0.65, plage) * (1.0 - umbra);
+            surfCol = mix(surfCol, core_color.rgb * 1.15, plage * 0.1);
+
+            // === Solar flare (rare bright flash at active region) ===
             float flare = flareEvent(TIME * 0.8, seed);
-            float flarePos = smoothstep(0.7, 0.85, fbm(sp * 1.5 + seed * 3.0, 3));
-            surfCol += vec3(1.0, 0.95, 0.85) * flare * flarePos * 1.5;
+            float flarePos = smoothstep(0.7, 0.85, fbm(sp * 1.5 + seed * 3.0, 4));
+            surfCol += vec3(1.0, 0.97, 0.9) * flare * flarePos * 2.0;
 
         } else if (body_type == 3) {
             // BLUE GIANT: extremely hot, smooth with subtle plasma flows
