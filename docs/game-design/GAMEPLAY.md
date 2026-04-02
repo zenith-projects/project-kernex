@@ -60,6 +60,14 @@ Threats scale with station activity. The more you scan, mine, and refine, the mo
 
 New modules unlock new capabilities, higher-tier production, and access to deeper sectors.
 
+### Perspectives
+
+The core gameplay loop happens primarily in **isometric view** (2.5D top-down). All phases — scan, collect, refine, build, defend, expand — are playable from isometric.
+
+In later phases, players can toggle into a **first-person cockpit view** inside ships for a more immersive navigation and combat experience. The cockpit instruments mirror the isometric HUD — same data, different presentation. The isometric HUD design is inspired by cockpit instrument aesthetics, so both feel cohesive.
+
+Future: **walkable station interiors** in first-person, where modules appear as rooms the player can physically enter and inspect.
+
 ---
 
-*Last updated: March 2026*
+*Last updated: April 2026*

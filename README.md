@@ -2,7 +2,7 @@
 
 > *You are the root user of the void.*
 
-**PROJECT KERNEX** is an isometric space game where you build stations, command fleets, automate production chains, and conquer territory in a procedurally generated infinite universe. An in-game shell lets power users script automation, while the local AI companion **AXIA** writes those scripts for everyone else — so non-programmers get the same power as devs.
+**PROJECT KERNEX** is a hybrid 2.5D/3D space game where you build stations, command fleets, automate production chains, and conquer territory in a procedurally generated infinite universe. Isometric view for exploration and building, first-person cockpit inside ships, and walkable station interiors — blending perspectives to create depth without requiring full 3D where it's not needed. An in-game shell lets power users script automation, while the local AI companion **AXIA** writes those scripts for everyone else — so non-programmers get the same power as devs.
 
 Built with AI assistance. Built by the community.
 
@@ -16,7 +16,7 @@ You awaken as the sole operator of **Station XARA-7**, a derelict outpost on the
 
 | Pillar | Description |
 |--------|-------------|
-| **Isometric Space** | Real-time isometric world. Mine, build, fight, explore with mouse + keyboard + UI. |
+| **Hybrid 2.5D/3D Space** | Isometric world for exploration, mining, combat, and base building. First-person cockpit view inside ships. Walk inside your station (future). Fake 3D where the player can't tell the difference. |
 | **Shell (vsh)** | Optional in-game shell. Script automation, chain commands, schedule cron jobs. Not required — but powerful. |
 | **AXIA (Local AI)** | Local LLM on your machine. 10 evolution levels. Writes scripts for non-devs. The equalizer. |
 | **The Constellation** | PoE-style research web. 16 interconnected clusters, 18 bridges. No locks — unlock everything. |
@@ -117,7 +117,7 @@ git checkout -b feature/your-feature upstream/develop
 | **Engine** | Godot 4.6+ Mono |
 | **Language** | C# (.NET 8+) — GDScript prohibited |
 | **Architecture** | Composition mandatory, Command/Event pattern |
-| **Rendering** | Isometric 2D with chunked coordinates + origin shift |
+| **Rendering** | Hybrid 2.5D/3D — isometric world + first-person cockpit/station interiors. Fake 3D where possible. Chunked coordinates + origin shift |
 | **World Gen** | Seed-based deterministic procedural generation |
 | **AI** | Local LLM (llama.cpp, 7B quantized) + scripted fallback |
 | **CI/CD** | GitHub Actions (10 required checks per PR) |

@@ -49,6 +49,29 @@ Viewport (what the player sees)
 - Despawn/pool entities outside viewport for memory management
 - Multi-zoom levels: Station detail → Sector view → System map → Galaxy map
 
+### Hybrid Rendering Architecture
+
+The game combines isometric 2.5D with first-person 3D perspectives:
+
+```
+Isometric World (primary — initial focus)
+  → Chunk-based tile rendering (spatial hash, viewport culling)
+  → 2.5D sprites, pre-rendered where possible
+  → Object pooling, fake 3D depth via layering
+
+Cockpit View (later phase)
+  → SubViewport with 3D scene (instruments, viewport into space)
+  → Cockpit UI panels share visual language with isometric HUD
+  → AXIA hologram rendered in 3D within cockpit
+  → Fake 3D preferred: pre-rendered cockpit with dynamic overlays
+
+Station Interior (future)
+  → First-person walkable 3D (or pre-rendered corridors with interaction points)
+  → Modules visible as rooms/bays the player can walk through
+```
+
+**Rendering philosophy:** Use the cheapest approach the player can't distinguish from real 3D. Pre-rendered sprites, SubViewport 3D for small areas (cockpit), parallax layers for depth. Full 3D only where the player directly interacts with 3D space.
+
 ### MMO Server Architecture (Future)
 
 ```

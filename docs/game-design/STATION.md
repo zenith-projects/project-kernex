@@ -44,6 +44,12 @@ Module placement matters for defense:
 - **Defense coverage:** Turrets have range and angle — placement creates kill zones and blind spots
 - **The defense puzzle:** Different threat types (boarding, bombardment, EMP, asteroid impact) require different countermeasures. No single layout beats everything.
 
+### Two Perspectives
+
+Station building and management happens in **isometric view** (top-down 2.5D) — the primary interface for placing modules, managing layout, and defending. This is the initial development focus.
+
+In a future phase, players will be able to **walk inside their station in first-person** — seeing modules as rooms and bays, inspecting equipment up close, and interacting with AXIA's holographic interface from within. This adds immersion without replacing the isometric management layer.
+
 ---
 
-*Last updated: March 2026*
+*Last updated: April 2026*

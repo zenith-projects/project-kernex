@@ -3,15 +3,15 @@
 importer="texture"
 type="CompressedTexture2D"
 uid="uid://bw5g1sq0otg8m"
-path="res://.godot/imported/kira-neutral-v2.png-ed4030b57ef9af2b59d5462715c47990.ctex"
+path="res://.godot/imported/axia-neutral-v2.png-1a6fc67200a03dcc895705837139ca64.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://src/Assets/Textures/Kira/kira-neutral-v2.png"
-dest_files=["res://.godot/imported/kira-neutral-v2.png-ed4030b57ef9af2b59d5462715c47990.ctex"]
+source_file="res://src/Assets/Textures/Axia/axia-neutral-v2.png"
+dest_files=["res://.godot/imported/axia-neutral-v2.png-1a6fc67200a03dcc895705837139ca64.ctex"]
 
 [params]
 

@@ -301,7 +301,9 @@ Quadrant (macro region, ~41 sectors)
 - **RigidBody sync after shift** — reassign GlobalPosition to sync PhysicsServer after origin shift
 
 ### Other Decisions
-- **Isometric rendering:** Chunk-based tile rendering with spatial hash map
+- **Hybrid rendering:** Isometric 2.5D (primary) + first-person cockpit (SubViewport 3D) + station interiors (future). Fake 3D preferred where player can't tell the difference.
+- **Isometric world:** Chunk-based tile rendering with spatial hash map
+- **Cockpit view:** First-person inside ships. Instruments mirror isometric HUD. AXIA hologram. SubViewport 3D or pre-rendered.
 - **Deterministic procedural generation:** Seed-based, nothing stored, same coords = same content
 - **Offline-first → MMO:** Game logic separated from I/O via abstraction layer
 - **Local AI (AXIA):** llama.cpp or similar, 7B quantized model, with scripted fallback
