@@ -1,0 +1,6 @@
+[gd_scene format=3]
+
+[ext_resource type="Script" path="res://src/Components/UI/KernexPanel/KernexPanel.cs" id="1"]
+
+[node name="KernexPanel" type="PanelContainer"]
+script = ExtResource("1")

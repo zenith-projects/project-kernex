@@ -1,0 +1,134 @@
+[gd_scene format=3]
+
+[ext_resource type="Script" path="res://src/Screens/MainMenu/MainMenu.cs" id="1"]
+[ext_resource type="Shader" path="res://src/Assets/Themes/Axia/Shaders/ambient_bg.gdshader" id="2"]
+[ext_resource type="Script" path="res://src/Components/UI/KernexButton/KernexButton.cs" id="3"]
+[ext_resource type="Script" path="res://src/Components/UI/KernexLabel/KernexLabel.cs" id="4"]
+[ext_resource type="Script" path="res://src/Components/UI/KernexSeparator/KernexSeparator.cs" id="5"]
+
+[sub_resource type="ShaderMaterial" id="bg_mat"]
+shader = ExtResource("2")
+shader_parameter/color_deep = Color(0.02, 0.02, 0.04, 1)
+shader_parameter/color_nebula1 = Color(0.12, 0.06, 0.02, 1)
+shader_parameter/color_nebula2 = Color(0.02, 0.04, 0.10, 1)
+shader_parameter/speed = 0.06
+shader_parameter/nebula_scale = 2.5
+shader_parameter/star_density = 0.004
+
+[node name="MainMenu" type="Control"]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+script = ExtResource("1")
+
+[node name="Background" type="ColorRect" parent="."]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+material = SubResource("bg_mat")
+
+[node name="ContentLayer" type="CanvasLayer" parent="."]
+
+[node name="CenterContent" type="VBoxContainer" parent="ContentLayer"]
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -200.0
+offset_top = -220.0
+offset_right = 200.0
+offset_bottom = 220.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_constants/separation = 0
+alignment = 1
+
+[node name="LogoSmall" type="Label" parent="ContentLayer/CenterContent"]
+layout_mode = 2
+text = "P R O J E C T"
+horizontal_alignment = 1
+script = ExtResource("4")
+Style = 1
+
+[node name="LogoTitle" type="Label" parent="ContentLayer/CenterContent"]
+layout_mode = 2
+text = "KERNEX"
+horizontal_alignment = 1
+script = ExtResource("4")
+Style = 0
+FontSize = 52
+
+[node name="Tagline" type="Label" parent="ContentLayer/CenterContent"]
+layout_mode = 2
+text = "You are the root user of the void."
+horizontal_alignment = 1
+script = ExtResource("4")
+Style = 3
+
+[node name="Spacer" type="Control" parent="ContentLayer/CenterContent"]
+layout_mode = 2
+custom_minimum_size = Vector2(0, 40)
+
+[node name="ButtonsContainer" type="VBoxContainer" parent="ContentLayer/CenterContent"]
+layout_mode = 2
+theme_override_constants/separation = 8
+alignment = 1
+
+[node name="NewGameButton" type="PanelContainer" parent="ContentLayer/CenterContent/ButtonsContainer"]
+layout_mode = 2
+script = ExtResource("3")
+Text = "NEW GAME"
+
+[node name="ContinueButton" type="PanelContainer" parent="ContentLayer/CenterContent/ButtonsContainer"]
+layout_mode = 2
+script = ExtResource("3")
+Text = "CONTINUE"
+
+[node name="SettingsButton" type="PanelContainer" parent="ContentLayer/CenterContent/ButtonsContainer"]
+layout_mode = 2
+script = ExtResource("3")
+Text = "SETTINGS"
+
+[node name="CreditsButton" type="PanelContainer" parent="ContentLayer/CenterContent/ButtonsContainer"]
+layout_mode = 2
+script = ExtResource("3")
+Text = "CREDITS"
+
+[node name="QuitButton" type="PanelContainer" parent="ContentLayer/CenterContent/ButtonsContainer"]
+layout_mode = 2
+script = ExtResource("3")
+Text = "QUIT"
+
+[node name="BottomBar" type="HBoxContainer" parent="ContentLayer"]
+anchors_preset = 12
+anchor_top = 1.0
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = 20.0
+offset_top = -40.0
+offset_right = -20.0
+grow_horizontal = 2
+grow_vertical = 0
+
+[node name="StationLabel" type="Label" parent="ContentLayer/BottomBar"]
+layout_mode = 2
+script = ExtResource("4")
+Text = "STATION XARA-7"
+Style = 3
+
+[node name="Spacer" type="Control" parent="ContentLayer/BottomBar"]
+layout_mode = 2
+size_flags_horizontal = 3
+
+[node name="VersionLabel" type="Label" parent="ContentLayer/BottomBar"]
+layout_mode = 2
+script = ExtResource("4")
+Text = "v0.1 Alpha"
+Style = 3

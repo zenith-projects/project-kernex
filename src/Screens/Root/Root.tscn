@@ -1,0 +1,8 @@
+[gd_scene format=3]
+
+[ext_resource type="Script" path="res://src/Screens/Root/Root.cs" id="1"]
+[ext_resource type="PackedScene" path="res://src/Screens/MainMenu/MainMenu.tscn" id="2"]
+
+[node name="Root" type="Node"]
+script = ExtResource("1")
+MainMenuScene = ExtResource("2")
