@@ -1,0 +1,6 @@
+[gd_scene format=3]
+
+[ext_resource type="Script" path="res://src/Components/World/PlanetView/PlanetView.cs" id="1"]
+
+[node name="PlanetView" type="TextureRect"]
+script = ExtResource("1")
