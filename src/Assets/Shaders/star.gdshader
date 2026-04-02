@@ -266,56 +266,126 @@ void fragment() {
             surfCol += vec3(1.0, 0.95, 0.85) * flare * flarePos * 1.5;
 
         } else if (body_type == 3) {
-            // BLUE GIANT: smooth, very hot, minimal features
-            float subtle = fbm(sp * 2.0, 5);
-            surfCol *= 0.95 + subtle * 0.1;
-            // Stellar wind brightening at edges (not limb darkening)
-            surfCol *= 1.0 + (1.0 - z) * 0.1;
+            // BLUE GIANT: extremely hot, smooth with subtle plasma flows
+            // Very hot = smooth but with high-energy plasma currents
+            float plasma1 = fbm(sp * 1.5 + TIME * 0.06, 6);
+            float plasma2 = warped(sp * 0.8 + TIME * 0.03);
+            float micro = fbm(sp * 5.0, 4);
+
+            // Almost uniform but with faint convection
+            surfCol *= 0.92 + plasma1 * 0.08 + micro * 0.04;
+            // Hot plasma streaks
+            surfCol = mix(surfCol, surfCol * 1.15, smoothstep(0.6, 0.75, plasma2) * 0.15);
+
+            // Stellar wind: edge brightening (UV emission)
+            float windGlow = pow(1.0 - z, 2.0) * 0.15;
+            surfCol += vec3(0.3, 0.4, 0.8) * windGlow;
+
+            // Rare intense flare (blue-white flash)
+            float flare = flareEvent(TIME * 0.5, seed * 2.0);
+            surfCol += vec3(0.7, 0.8, 1.0) * flare * 0.8;
 
         } else if (body_type == 4) {
-            // RED GIANT: huge convection cells, pulsation
-            float cells = voronoi(sp * 1.0 + TIME * 0.005);
+            // RED GIANT: enormous convection cells, pulsation, mass loss
+            // Giant convection cells (much larger than sun's)
+            float cells = voronoi(sp * 0.7 + TIME * 0.004);
             float cellBright = 1.0 - cells;
-            surfCol *= 0.75 + cellBright * 0.35;
+            float cellEdge = smoothstep(0.0, 0.06, cells); // dark intergranular lanes
 
-            // Pulsation brightness
-            float puls = sin(TIME * 0.15 + seed) * 0.15 + 1.0;
-            surfCol *= puls;
+            // Secondary smaller cells within
+            float subCells = voronoi(sp * 2.0 + TIME * 0.008);
+            float subBright = 1.0 - subCells;
 
-            // Surface turbulence
-            float turb = warped(sp * 0.6 + TIME * 0.008);
-            surfCol = mix(surfCol, corona_color.rgb * 0.8, turb * 0.15);
+            // Surface turbulence (slow churning)
+            float turb1 = warped(sp * 0.5 + TIME * 0.006);
+            float turb2 = fbm(sp * 1.5 + TIME * 0.01, 6);
+
+            surfCol *= 0.65 + cellBright * 0.3 + subBright * 0.08;
+            surfCol *= 0.9 + cellEdge * 0.1;
+
+            // Color variation: hotter (brighter orange) vs cooler (darker red) patches
+            vec3 hotPatch = core_color.rgb * 1.2;
+            vec3 coolPatch = core_color.rgb * 0.6;
+            surfCol = mix(surfCol, mix(coolPatch, hotPatch, turb1), 0.2);
+            surfCol = mix(surfCol, corona_color.rgb * 0.7, turb2 * 0.12);
+
+            // Pulsation: slow rhythmic brightness change
+            float puls = sin(TIME * 0.12 + seed) * 0.12 + 1.0;
+            float puls2 = sin(TIME * 0.07 + seed * 2.0) * 0.05 + 1.0;
+            surfCol *= puls * puls2;
+
+            // Mass loss: surface ejection patches (brighter, expanding)
+            float eject = fbm(sp * 0.4 + TIME * 0.02, 4);
+            surfCol += core_color.rgb * smoothstep(0.7, 0.85, eject) * 0.15;
 
         } else if (body_type == 5) {
-            // WHITE DWARF: smooth, featureless, very bright
-            surfCol = core_color.rgb * 1.2;
-            float subtle = fbm(sp * 3.0, 3);
-            surfCol *= 0.97 + subtle * 0.03;
+            // WHITE DWARF: compact, extremely bright, smooth with subtle shimmer
+            surfCol = core_color.rgb * 1.3;
+            float shimmer = fbm(sp * 4.0 + TIME * 0.1, 4);
+            surfCol *= 0.96 + shimmer * 0.04;
+
+            // Faint surface magnetic pattern
+            float magPattern = voronoi(sp * 3.0 + seed);
+            surfCol *= 0.98 + (1.0 - magPattern) * 0.04;
 
             // Nova flash (rare intense brightening)
-            float nova = flareEvent(TIME * 0.2, seed * 3.0);
-            surfCol += vec3(0.8, 0.85, 1.0) * nova * 3.0;
+            float nova = flareEvent(TIME * 0.15, seed * 3.0);
+            surfCol += vec3(0.8, 0.85, 1.0) * nova * 4.0;
+            // Nova afterglow
+            float afterglow = flareEvent(TIME * 0.15 - 0.3, seed * 3.0) * 0.3;
+            surfCol += vec3(1.0, 0.7, 0.3) * afterglow;
 
         } else if (body_type == 10) {
-            // BROWN DWARF: Jupiter-like banded clouds
+            // BROWN DWARF: Jupiter-like banded atmosphere with storms
             float lat = rN.y;
-            float bandWarp = fbm(sp * vec3(1.0, 0.1, 1.0), 5) * 2.0;
+
+            // Banded cloud structure
+            float bandWarp = fbm(sp * vec3(0.8, 0.08, 0.8), 6) * 2.5;
             float bands = sin(lat * 10.0 + bandWarp) * 0.5 + 0.5;
-            float subBands = sin(lat * 28.0 + bandWarp * 0.6) * 0.5 + 0.5;
+            float subBands = sin(lat * 25.0 + bandWarp * 0.5) * 0.5 + 0.5;
+            float fineBands = sin(lat * 50.0 + bandWarp * 0.3) * 0.5 + 0.5;
 
-            // Methane cloud patches
-            float methane = warped(sp * 1.2 + seed * 0.3);
+            // Zonal flow (horizontal turbulence between bands)
+            float flow = fbm(sp * vec3(3.0, 0.3, 3.0) + seed, 6);
+            float flowFine = fbm(sp * vec3(6.0, 0.5, 6.0), 5);
 
-            surfCol = mix(core_color.rgb * 0.7, corona_color.rgb * 0.5, bands * 0.6 + subBands * 0.2);
-            surfCol = mix(surfCol, surfCol * 0.5, smoothstep(0.6, 0.75, methane) * 0.3);
-            // Very dim
-            surfCol *= 0.4;
+            // Methane/iron cloud patches (patchy opacity)
+            float clouds = warped(sp * 1.0 + seed * 0.3);
+            float cloudDetail = fbm(sp * 3.0 + seed, 5);
+
+            // Storm vortices
+            float storm = warped(sp * 0.6 + seed * 0.5);
+
+            // Color: alternating warm and cool bands
+            vec3 warm = core_color.rgb * 0.8;
+            vec3 cool = corona_color.rgb * 0.6;
+            surfCol = mix(cool, warm, bands * 0.6 + subBands * 0.2 + fineBands * 0.1);
+
+            // Shear turbulence at band edges
+            float bandEdge = abs(fract(lat * 5.0) - 0.5) * 2.0;
+            bandEdge = 1.0 - smoothstep(0.3, 0.5, bandEdge);
+            surfCol = mix(surfCol, surfCol * (0.8 + flow * 0.4), bandEdge * 0.5);
+            surfCol *= 0.9 + flowFine * 0.1;
+
+            // Cloud opacity variation (brighter = seeing through to hot interior)
+            surfCol = mix(surfCol, surfCol * 0.4, smoothstep(0.55, 0.7, clouds) * 0.3);
+            surfCol = mix(surfCol, surfCol * 1.3, smoothstep(0.3, 0.15, clouds) * 0.15);
+
+            // Storm features
+            surfCol = mix(surfCol, cool * 0.5, smoothstep(0.65, 0.8, storm) * 0.2);
+
+            // Dim overall (brown dwarfs are very faint)
+            surfCol *= 0.35;
 
         } else if (body_type == 11) {
-            // PROTOSTELLAR NEBULA: bright warm core
+            // PROTOSTELLAR NEBULA: young hot core with accretion glow
             float turb = warped(sp * 0.5);
+            float accretionHeat = fbm(sp * 1.5 + TIME * 0.02, 5);
             surfCol = mix(core_color.rgb, corona_color.rgb, turb * 0.3);
-            surfCol *= 0.8 + fbm(sp * 2.0, 4) * 0.2;
+            surfCol *= 0.7 + accretionHeat * 0.3;
+            // Hotspot from accretion impact
+            float hotspot = smoothstep(0.6, 0.8, fbm(sp * 2.0 + TIME * 0.05, 4));
+            surfCol += core_color.rgb * hotspot * 0.3;
         }
 
         // Limb darkening: I = 1 - u*(1 - cosθ), u varies by type

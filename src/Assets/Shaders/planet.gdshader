@@ -95,57 +95,52 @@ void fragment() {
     vec2 uv = UV * 2.0 - 1.0;
     float dist = length(uv);
 
-    // Ring rendering — flat elliptical disk around the planet equator
+    // Ring system — simple elliptical projection
     vec3 ringResult = vec3(0.0);
     float ringAlpha = 0.0;
     bool ringInFront = false;
 
     if (has_rings) {
-        // Ring plane in UV space: viewed at angle (tilt controls viewing angle)
-        // The ring is a flat disk in the planet's equatorial plane.
-        // We project it as an ellipse: full width horizontally, squashed vertically.
-        float tiltAngle = ring_tilt * 0.5 + 0.15;
-        float ringX = uv.x;
-        float ringY = (uv.y - uv.x * tiltAngle * 0.2) / tiltAngle; // unsquash to get radial distance
+        // Ring is a flat disk viewed at an angle.
+        // Horizontal = full width, vertical = compressed by tilt.
+        // "Unsquash" Y to get the true radial distance in the ring plane.
+        float squeeze = 0.2 + ring_tilt * 0.3; // how much Y is compressed (0.2 = nearly edge-on, 0.5 = tilted)
+        float rr = length(vec2(uv.x, uv.y / squeeze)); // radial distance in ring plane
 
-        float ringRadial = length(vec2(ringX, ringY)); // distance from center in ring plane
+        // Ring band: starts outside sphere, extends outward
+        float innerR = 0.52;
+        float outerR = 0.52 + ring_scale * 0.42;
+        float mask = smoothstep(innerR, innerR + 0.01, rr) * smoothstep(outerR, outerR - 0.01, rr);
 
-        // Ring extents: inner edge just outside planet sphere, outer depends on ring_scale
-        float innerR = 0.55; // just outside the visible sphere (sphere = dist < 1.0 in UV, but planet face = ~0.5 in ring plane)
-        float outerR = innerR + ring_scale * 0.45;
+        if (mask > 0.01) {
+            // Normalized position within ring (0 = inner, 1 = outer)
+            float ringPos = (rr - innerR) / max(outerR - innerR, 0.001);
 
-        float ringMask = smoothstep(innerR, innerR + 0.02, ringRadial) * smoothstep(outerR, outerR - 0.02, ringRadial);
+            // Concentric bands + Cassini gaps
+            float n1 = noise3(vec3(rr * 50.0 + seed, seed * 0.3, 0.0));
+            float bands = sin(rr * 120.0 + n1 * 3.0) * 0.5 + 0.5;
+            float gap1 = 1.0 - smoothstep(0.28, 0.30, ringPos) * (1.0 - smoothstep(0.32, 0.34, ringPos)); // Cassini division
+            float gap2 = 1.0 - smoothstep(0.6, 0.62, ringPos) * (1.0 - smoothstep(0.64, 0.66, ringPos)); // Encke gap
+            float detail = noise3(vec3(rr * 80.0, atan(uv.y, uv.x) * 4.0 + seed, seed));
 
-        // Only draw ring if in the ring plane (thin vertical slice)
-        float ringThickness = smoothstep(0.03, 0.0, abs(uv.y - uv.x * tiltAngle * 0.2) - tiltAngle * ringRadial * 0.02);
-        // Actually simpler: the ring is infinitely thin, so just check if in the elliptical band
-        // The vertical extent of ring at any X is: Y = tiltAngle * ringY_in_plane, which is the unsquash inverse
+            float opacity = mask * (0.3 + bands * 0.4 + detail * 0.3) * gap1 * gap2;
 
-        if (ringMask > 0.0) {
-            // Concentric bands with Cassini-style gaps
-            float bandNoise = noise3(vec3(ringRadial * 40.0 + seed, seed * 0.3, 0.0));
-            float bands = sin(ringRadial * 100.0 + bandNoise * 4.0) * 0.5 + 0.5;
-            float gaps = smoothstep(0.2, 0.3, bands);
-            float detail = noise3(vec3(ringRadial * 60.0, atan(uv.y, uv.x) * 3.0 + seed, seed * 0.5));
-
-            float opacity = ringMask * gaps * (0.4 + detail * 0.6);
+            // Transparency increases toward outer edge (thins out)
+            opacity *= 1.0 - ringPos * 0.4;
 
             // Lighting
             vec3 L = normalize(vec3(light_direction, 0.6));
-            float lit = max(0.25, L.y * 0.5 + 0.5);
-            // Shadow from planet on ring (ring behind planet is darker)
-            float planetShadow = dist < 0.98 ? 0.3 : 1.0;
+            float lit = max(0.2, dot(vec3(0, 1, 0), L) * 0.4 + 0.6);
 
-            ringResult = ring_color.rgb * lit * (0.6 + detail * 0.4) * planetShadow;
+            ringResult = ring_color.rgb * lit * (0.6 + detail * 0.4);
             ringAlpha = opacity * ring_color.a;
 
-            // Is this ring pixel in front of or behind the planet?
-            // Front: lower half of ring (uv.y < center line of ring)
-            ringInFront = uv.y < uv.x * tiltAngle * 0.2;
+            // Front vs back: ring below equator line is in front of planet
+            ringInFront = uv.y < 0.0;
         }
     }
 
-    // Outside sphere: show ring or discard
+    // Outside sphere
     if (dist > 1.0) {
         if (ringAlpha > 0.01) {
             COLOR = vec4(ringResult, ringAlpha);
@@ -640,12 +635,14 @@ void fragment() {
     // Outer atmospheric haze (visible even slightly beyond sphere edge)
     col += rayleigh + mieColor * mie + termGlow + nightGlow;
 
-    // Ring overlay in front of planet
+    // Ring in front of planet (bottom half passes over sphere)
     if (has_rings && ringAlpha > 0.0 && ringInFront) {
-        // Ring shadow on planet surface
-        col *= 1.0 - ringAlpha * 0.25;
-        // Ring drawn over planet
-        col = mix(col, ringResult, ringAlpha * 0.8);
+        col *= 1.0 - ringAlpha * 0.2; // shadow
+        col = mix(col, ringResult, ringAlpha * 0.85); // overlay
+    }
+    // Ring shadow on planet from back ring (top half casts shadow)
+    if (has_rings && ringAlpha > 0.0 && !ringInFront && dist < 0.99) {
+        col *= 1.0 - ringAlpha * 0.15;
     }
 
     COLOR = vec4(col, smoothstep(1.0, 0.97, dist));
