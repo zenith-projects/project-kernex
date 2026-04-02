@@ -2,9 +2,9 @@
 
 [ext_resource type="Script" path="res://src/Screens/DevTools/KiraTestScene.cs" id="1"]
 [ext_resource type="PackedScene" path="res://src/Components/HUD/KiraPanel/KiraPanel.tscn" id="2"]
-[ext_resource type="Shader" path="res://src/Assets/Shaders/glass_blur.gdshader" id="3"]
-[ext_resource type="Shader" path="res://src/Assets/Shaders/ambient_bg.gdshader" id="4"]
-[ext_resource type="Theme" path="res://src/Assets/Themes/kira_debug_theme.tres" id="5"]
+[ext_resource type="Shader" path="res://src/Assets/Themes/Kira/Shaders/glass_blur.gdshader" id="3"]
+[ext_resource type="Shader" path="res://src/Assets/Themes/Kira/Shaders/ambient_bg.gdshader" id="4"]
+[ext_resource type="Theme" path="res://src/Assets/Themes/Kira/kira_debug_theme.tres" id="5"]
 [ext_resource type="Texture2D" path="res://src/Assets/Textures/Kira/kira-neutral-v2.png" id="6"]
 
 [sub_resource type="ShaderMaterial" id="ambient_mat"]
@@ -82,6 +82,14 @@ theme_override_constants/margin_bottom = 12
 layout_mode = 2
 size_flags_horizontal = 3
 theme_override_constants/separation = 0
+
+; ======== AGENT SELECTOR ========
+
+[node name="AgentSelector" type="OptionButton" parent="ScreenMargin/HSplitContainer/DebugPanel/ScrollContainer/MarginContainer/ControlsLayout"]
+layout_mode = 2
+
+[node name="AgentSeparator" type="HSeparator" parent="ScreenMargin/HSplitContainer/DebugPanel/ScrollContainer/MarginContainer/ControlsLayout"]
+layout_mode = 2
 
 ; ======== KIRA ========
 

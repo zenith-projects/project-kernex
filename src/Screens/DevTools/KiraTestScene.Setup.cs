@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using Godot;
 using ProjectKernex.Core.Enums;
+using ProjectKernex.Resources.AI;
 using ProjectKernex.Systems.AI;
 
 namespace ProjectKernex.Screens.DevTools;
@@ -10,6 +11,9 @@ public partial class KiraTestScene
 {
 	private void GetDebugControls()
 	{
+		// Agent selector
+		_agentSelector = GetNode<OptionButton>(D + "AgentSelector");
+
 		// Model
 		_modelPathInput = GetNode<LineEdit>(D + "ModelPathInput");
 		_loadModelButton = GetNode<Button>(D + "ModelButtons/LoadModelButton");
@@ -117,6 +121,9 @@ public partial class KiraTestScene
 	/// </summary>
 	private void ApplyAccentColors()
 	{
+		// Agent selector tooltip
+		_agentSelector.TooltipText = "Select which AI agent's parameters to view and edit.";
+
 		// Style nodes BEFORE reparenting (paths still valid)
 		string[] secondaryLabels = { "MirostatLabel", "AntiPromptsLabel", "ThreatLabel", "SectorLabel", "FactionLabel", "EmotionRow/EmotionLabel" };
 		foreach (var name in secondaryLabels)
@@ -276,6 +283,13 @@ public partial class KiraTestScene
 
 	private void SetupAllControls()
 	{
+		// Agent selector
+		_agentSelector.AddItem($"{_mainAgentConfig.DisplayName} (Main 7B)", 0);
+		_agentSelector.AddItem($"{_proactiveAgentConfig.DisplayName} (Proactive 3B)", 1);
+		_agentSelector.Selected = 0;
+		_selectedAgent = _kira.MainAgent;
+		_agentSelector.ItemSelected += OnAgentSelected;
+
 		// Model
 		_loadModelButton.Pressed += OnLoadModelPressed;
 		_unloadModelButton.Pressed += OnUnloadModelPressed;
@@ -310,7 +324,7 @@ public partial class KiraTestScene
 		// Prompt
 		_resetPromptButton.Pressed += () =>
 		{
-			_systemPromptEdit.Text = Resources.AI.KiraDebugConfig.DefaultPrompt;
+			_systemPromptEdit.Text = KiraDebugConfig.DefaultPrompt;
 			SaveConfig();
 		};
 		_systemPromptEdit.TextChanged += SaveConfig;
@@ -383,8 +397,26 @@ public partial class KiraTestScene
 	private void SetupKira()
 	{
 		_scriptedProvider = new ScriptedDialogueProvider();
-		_kira = new KiraEngine(_scriptedProvider);
+
+		_mainAgentConfig = new AgentConfig
+		{
+			AgentId = "kira",
+			DisplayName = "KIRA",
+			MemoryEnabled = true,
+		};
+
+		_proactiveAgentConfig = new AgentConfig
+		{
+			AgentId = "kira-proactive",
+			DisplayName = "KIRA (Proactive)",
+			MemoryEnabled = false, // shares parent memory
+		};
+
+		_kira = new KiraEngine(_mainAgentConfig, _scriptedProvider);
 		_kira.SetLevel(KiraLevel.Corrupted);
+
+		// Create proactive sub-agent sharing KIRA's memory
+		_proactiveAgent = _kira.MainAgent.AddSubAgent(_proactiveAgentConfig, shareMemory: true);
 
 		for (int i = 0; i <= 9; i++)
 			LoadLevelData($"res://src/Resources/AI/kira_level_{i}.tres", i);
@@ -435,7 +467,7 @@ public partial class KiraTestScene
 		_mirostatTauSlider.Value = _config.MirostatTau;
 		_mirostatEtaSlider.Value = _config.MirostatEta;
 		_systemPromptEdit.Text = string.IsNullOrWhiteSpace(_config.SystemPrompt)
-			? Resources.AI.KiraDebugConfig.DefaultPrompt
+			? KiraDebugConfig.DefaultPrompt
 			: _config.SystemPrompt;
 		_antiPromptsEdit.Text = string.IsNullOrWhiteSpace(_config.AntiPrompts)
 			? "User:\nOperator:"
