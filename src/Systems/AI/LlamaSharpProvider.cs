@@ -5,6 +5,7 @@ using System.Text;
 using System.Text.RegularExpressions;
 using System.Threading;
 using System.Threading.Tasks;
+using Godot;
 using LLama;
 using LLama.Common;
 using LLama.Sampling;
@@ -57,8 +58,9 @@ public sealed class LlamaSharpProvider : ILlmProvider, IDisposable
             _context = _model.CreateContext(_modelParams);
             return true;
         }
-        catch (Exception)
+        catch (Exception ex)
         {
+            GD.PrintErr($"[LlamaSharp] Failed to load model: {ex.Message}");
             UnloadModel();
             return false;
         }

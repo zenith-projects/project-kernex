@@ -30,10 +30,10 @@
 
 ### Shell (vsh) — Terminal Emulator
 
-- [x] **Shell emulator overlay** — `TerminalOverlay` (CanvasLayer) with `TerminalDisplay` (scrollable RichTextLabel output) + `TerminalInput` (LineEdit with command history via Up/Down arrows). Components follow project composition rules: each is `.tscn` + `.cs` in `src/Components/HUD/`.
-- [x] **Command parser and execution engine** — `CommandParser` (stateless tokenizer with quote support), `CommandRegistry` (name + alias lookup), `ParsedCommand` (value object with positional args + flags), `CommandResult` (factory with typed outputs: Success, Error, Info, Kira, Clear). All pure C# in `src/Systems/Terminal/`.
-- [x] **Core commands** — `help`, `status`, `clear`, `whoami`, `uptime`, `kira`. Each implements `ICommand` interface. `HelpCommand` lists all registered commands. `KiraCommand` bridges to `KiraEngine`. Located in `src/Systems/Terminal/Commands/`.
-- [x] **Terminal test scene** — `TerminalTestScene.tscn` in `src/Screens/DevTools/`, F6-runnable standalone scene with dark background, welcome banner, all commands registered.
+- [x] **Shell emulator overlay** — `ShellOverlay` (CanvasLayer) with `ShellDisplay` (scrollable RichTextLabel output) + `ShellInput` (LineEdit with command history via Up/Down arrows). Components follow project composition rules: each is `.tscn` + `.cs` in `src/Components/HUD/`.
+- [x] **Command parser and execution engine** — `CommandParser` (stateless tokenizer with quote support), `CommandRegistry` (name + alias lookup), `ParsedCommand` (value object with positional args + flags), `CommandResult` (factory with typed outputs: Success, Error, Info, Kira, Clear). All pure C# in `src/Systems/Shell/`.
+- [x] **Core commands** — `help`, `status`, `clear`, `whoami`, `uptime`, `kira`. Each implements `ICommand` interface. `HelpCommand` lists all registered commands. `KiraCommand` bridges to `KiraEngine`. Located in `src/Systems/Shell/Commands/`.
+- [x] **Shell test scene** — `ShellTestScene.tscn` in `src/Screens/DevTools/`, F6-runnable standalone scene with dark background, welcome banner, all commands registered.
 - [ ] Piping system (`|`) and command chaining
 - [ ] Aliases (`alias mine="drone deploy --type mining"`)
 - [ ] Basic `.vsh` scripting (loops, conditionals, variables)
@@ -59,7 +59,7 @@
   - Editable system prompt with anti-prompts
   - Mock game context (hull, power, drones, storage, threat, sector, faction)
   - Config persisted in `user://kira_debug_config.tres` (auto-save on every change)
-  - JetBrains Mono font, dark+gold glassmorphism theme (`kira_debug_theme.tres`), animated nebula background shader
+  - JetBrains Mono font, dark+gold glassmorphism theme (`src/Assets/Themes/Kira/kira_debug_theme.tres`), animated nebula background shader (`src/Assets/Themes/Kira/Shaders/`)
 - [ ] KIRA writes `.vsh` scripts on player request
 - [ ] Hardware detection and automatic fallback (LLM vs scripted)
 

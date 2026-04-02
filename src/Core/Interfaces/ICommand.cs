@@ -1,5 +1,5 @@
 using System.Threading.Tasks;
-using ProjectKernex.Systems.Terminal;
+using ProjectKernex.Systems.Shell;
 
 namespace ProjectKernex.Core.Interfaces;
 

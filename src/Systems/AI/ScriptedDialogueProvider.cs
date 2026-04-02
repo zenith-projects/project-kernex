@@ -8,8 +8,6 @@ namespace ProjectKernex.Systems.AI;
 
 public sealed class ScriptedDialogueProvider : IKiraDialogueProvider
 {
-    private static readonly Random Rng = new();
-
     private static readonly Dictionary<string, string[]> Level0Responses = new()
     {
         ["default"] =
@@ -95,11 +93,11 @@ public sealed class ScriptedDialogueProvider : IKiraDialogueProvider
 
         if (level == KiraLevel.Corrupted)
         {
-            response = Rng.NextDouble() < 0.7
+            response = Random.Shared.NextDouble() < 0.7
                 ? GlitchTextGenerator.GenerateGarbledLine()
                 : GlitchTextGenerator.Glitch(response, 0.5f);
         }
-        else if (level == KiraLevel.Booting && Rng.NextDouble() < 0.15)
+        else if (level == KiraLevel.Booting && Random.Shared.NextDouble() < 0.15)
         {
             response += " [SIGNAL LOST]";
         }
@@ -122,6 +120,6 @@ public sealed class ScriptedDialogueProvider : IKiraDialogueProvider
     private static string GetRandomResponse(Dictionary<string, string[]> bank, string keyword)
     {
         var responses = bank.TryGetValue(keyword, out var found) ? found : bank["default"];
-        return responses[Rng.Next(responses.Length)];
+        return responses[Random.Shared.Next(responses.Length)];
     }
 }

@@ -3,12 +3,49 @@ using System.Collections.Generic;
 using System.Threading.Tasks;
 using Godot;
 using ProjectKernex.Core.Enums;
+using ProjectKernex.Resources.AI;
 using ProjectKernex.Systems.AI;
 
 namespace ProjectKernex.Screens.DevTools;
 
 public partial class KiraTestScene
 {
+	private void OnAgentSelected(long index)
+	{
+		_selectedAgent = index == 0 ? _kira.MainAgent : _proactiveAgent;
+		var isMainKira = index == 0;
+
+		// Toggle KIRA-specific section visibility
+		if (_sections.TryGetValue("KiraHeader", out var kiraSection))
+			kiraSection.content.Visible = isMainKira;
+		if (_sections.TryGetValue("ProactiveHeader", out var proactiveSection))
+			proactiveSection.content.Visible = isMainKira;
+
+		// Load selected agent's config into inference sliders
+		var cfg = _selectedAgent.Config;
+		_loadingConfig = true;
+		_temperatureSlider.Value = cfg.Temperature;
+		_topPSlider.Value = cfg.TopP;
+		_topKSlider.Value = cfg.TopK;
+		_minPSlider.Value = cfg.MinP;
+		_maxTokensSlider.Value = cfg.MaxTokens;
+		_repeatPenaltySlider.Value = cfg.RepeatPenalty;
+		_freqPenaltySlider.Value = cfg.FrequencyPenalty;
+		_presPenaltySlider.Value = cfg.PresencePenalty;
+		_seedSlider.Value = cfg.Seed;
+		_mirostatSelector.Selected = cfg.MirostatMode;
+		_mirostatTauSlider.Value = cfg.MirostatTau;
+		_mirostatEtaSlider.Value = cfg.MirostatEta;
+
+		if (!string.IsNullOrWhiteSpace(cfg.SystemPrompt))
+			_systemPromptEdit.Text = cfg.SystemPrompt;
+
+		_modelPathInput.Text = cfg.ModelPath;
+		_loadingConfig = false;
+
+		Log($"Agent selected: {cfg.DisplayName}");
+	}
+
 	private void OnLevelChanged(long index)
 	{
 		var level = (KiraLevel)(int)index;
@@ -38,46 +75,19 @@ public partial class KiraTestScene
 
 		try
 		{
-			string response;
+			// Sync debug controls to engine before each request
+			UpdateGameContext();
+			ApplyInferenceParams();
 
-			if (_llmProvider is { IsModelLoaded: true } && (int)_kira.CurrentLevel >= 3)
-			{
-				var ctx = GetGameContextDict();
-				var contextBlock = BuildContextBlock(ctx);
-				var memoryBlock = _memoryStore.BuildMemoryBlock(message);
-				var systemPrompt = _systemPromptEdit.Text + "\n\n" + memoryBlock + contextBlock;
-
-				ApplyInferenceParams();
-
-				var history = _memoryStore.GetRecentAsTuples(15);
-				response = await _llmProvider.GenerateWithHistoryAsync(systemPrompt, history, message);
-			}
-			else
-			{
-				var delay = (float)_responseDelaySlider.Value;
-				var glitch = (float)_glitchSlider.Value;
-
-				if (delay > 0)
-					await Task.Delay(TimeSpan.FromSeconds(delay));
-
-				response = await _scriptedProvider.GetResponseAsync(message, _kira.CurrentLevel, GetGameContextDict());
-
-				if (_kira.CurrentLevel == KiraLevel.Corrupted && glitch > 0)
-					response = GlitchTextGenerator.Glitch(response, glitch);
-			}
-
+			var response = await _kira.GetResponseAsync(message);
 			var elapsed = Time.GetTicksMsec() - startTime;
 
-			var parsed = KiraResponse.Parse(response);
-			_kiraPanel.AppendKiraMessage(parsed.Text);
-			SetKiraEmotion(parsed.Emotion);
+			_kiraPanel.AppendKiraMessage(response.Text);
+			SetKiraEmotion(response.Emotion);
 			_lastResponseTimeLabel.Text = $"Response: {elapsed}ms";
-			_lastTokenCountLabel.Text = $"Chars: {parsed.Text.Length}";
-			Log($"[{elapsed}ms] [{_kira.CurrentLevel}] [{parsed.Emotion}] {Truncate(parsed.Text, 70)}");
+			_lastTokenCountLabel.Text = $"Chars: {response.Text.Length}";
+			Log($"[{elapsed}ms] [{_kira.CurrentLevel}] [{response.Emotion}] {Truncate(response.Text, 70)}");
 
-			// Save to persistent memory
-			_memoryStore.SaveMessage("user", message);
-			_memoryStore.SaveMessage("assistant", parsed.Text, parsed.Emotion);
 			UpdateMemoryLabels();
 
 			// Trigger background summarization if needed
@@ -97,21 +107,20 @@ public partial class KiraTestScene
 
 	private void ApplyInferenceParams()
 	{
-		_llmProvider.Temperature = (float)_temperatureSlider.Value;
-		_llmProvider.TopP = (float)_topPSlider.Value;
-		_llmProvider.TopK = (int)_topKSlider.Value;
-		_llmProvider.MinP = (float)_minPSlider.Value;
-		_llmProvider.MaxTokens = (int)_maxTokensSlider.Value;
-		_llmProvider.RepeatPenalty = (float)_repeatPenaltySlider.Value;
-		_llmProvider.FrequencyPenalty = (float)_freqPenaltySlider.Value;
-		_llmProvider.PresencePenalty = (float)_presPenaltySlider.Value;
-		_llmProvider.Seed = (int)_seedSlider.Value;
-		_llmProvider.MirostatMode = _mirostatSelector.Selected;
-		_llmProvider.MirostatTau = (float)_mirostatTauSlider.Value;
-		_llmProvider.MirostatEta = (float)_mirostatEtaSlider.Value;
-
-		var antiPrompts = _antiPromptsEdit.Text.Split('\n', StringSplitOptions.RemoveEmptyEntries | StringSplitOptions.TrimEntries);
-		_llmProvider.AntiPrompts = antiPrompts;
+		var cfg = _selectedAgent?.Config ?? _mainAgentConfig;
+		cfg.Temperature = (float)_temperatureSlider.Value;
+		cfg.TopP = (float)_topPSlider.Value;
+		cfg.TopK = (int)_topKSlider.Value;
+		cfg.MinP = (float)_minPSlider.Value;
+		cfg.MaxTokens = (int)_maxTokensSlider.Value;
+		cfg.RepeatPenalty = (float)_repeatPenaltySlider.Value;
+		cfg.FrequencyPenalty = (float)_freqPenaltySlider.Value;
+		cfg.PresencePenalty = (float)_presPenaltySlider.Value;
+		cfg.Seed = (int)_seedSlider.Value;
+		cfg.MirostatMode = _mirostatSelector.Selected;
+		cfg.MirostatTau = (float)_mirostatTauSlider.Value;
+		cfg.MirostatEta = (float)_mirostatEtaSlider.Value;
+		cfg.AntiPrompts = _antiPromptsEdit.Text;
 	}
 
 	private async void OnLoadModelPressed()
@@ -127,17 +136,15 @@ public partial class KiraTestScene
 		_llmStatusLabel.Text = "LLM: Loading...";
 		Log($"Loading: {path} (GPU: {(int)_gpuLayersSlider.Value}, ctx: {(int)_contextSizeSlider.Value})");
 
-		_llmProvider ??= new LlamaSharpProvider();
-		_llmProvider.GpuLayerCount = (int)_gpuLayersSlider.Value;
-		_llmProvider.ContextSize = (uint)_contextSizeSlider.Value;
+		_mainAgentConfig.ModelPath = path;
+		_mainAgentConfig.GpuLayers = (int)_gpuLayersSlider.Value;
+		_mainAgentConfig.ContextSize = (uint)_contextSizeSlider.Value;
 
-		var success = await _llmProvider.LoadModelAsync(path);
+		var success = await _kira.MainAgent.LoadModelAsync();
 
 		if (success)
 		{
 			_llmStatusLabel.Text = "LLM: Loaded";
-			_kira.SetLlmProvider(_llmProvider);
-
 			Log("Model loaded!");
 		}
 		else
@@ -151,9 +158,7 @@ public partial class KiraTestScene
 
 	private void OnUnloadModelPressed()
 	{
-		_llmProvider?.UnloadModel();
-		// LlmToggle removed
-		_kira.SetLlmProvider(null);
+		_kira.MainAgent.UnloadModel();
 		_llmStatusLabel.Text = "LLM: Not loaded";
 		Log("Model unloaded");
 	}
@@ -179,37 +184,35 @@ public partial class KiraTestScene
 			if (!needsLightDl) { _downloadLightLabel.Text = "Already downloaded"; _downloadLightBar.Value = 100; }
 		}
 
-		// Download main model
-		await EnsureAndLoadModel(
+		// Download and load main model (7B)
+		await EnsureAndLoadAgent(
 			ModelDownloader.MainModel,
 			_modelPathInput,
-			provider =>
-			{
-				_llmProvider = provider;
-				_kira.SetLlmProvider(provider);
-			},
+			_kira.MainAgent,
+			_mainAgentConfig,
 			(int)_gpuLayersSlider.Value,
 			(uint)_contextSizeSlider.Value,
-			p => { _downloadMainPct = p; _downloadMainStatus = FormatProgress(ModelDownloader.MainModel, p); }
+			p => { _downloadMainPct = p; _downloadMainStatus = FormatProgress(ModelDownloader.MainModel, p); },
+			() => Log("7B model loaded!")
 		);
 
-		// Download light model
-		await EnsureAndLoadModel(
+		// Download and load light model (3B)
+		await EnsureAndLoadAgent(
 			ModelDownloader.LightModel,
 			_proactiveModelPathInput,
-			provider =>
+			_proactiveAgent,
+			_proactiveAgentConfig,
+			0, 1024,
+			p => { _downloadLightPct = p; _downloadLightStatus = FormatProgress(ModelDownloader.LightModel, p); },
+			() =>
 			{
-				_lightLlmProvider = provider;
-				_proactiveEngine.SetLightModel(provider);
 				_proactiveEngine.Enabled = _config.ProactiveEnabled;
 				_proactiveEngine.GaveUp = _config.ProactiveGaveUp;
 				_proactiveEngine.Attempt = _config.ProactiveAttempt;
 				Log("3B model loaded — proactive engine active!");
 				if (_memoryStore.MessageCount == 0)
 					_proactiveEngine.ActivateForIntroduction();
-			},
-			0, 1024,
-			p => { _downloadLightPct = p; _downloadLightStatus = FormatProgress(ModelDownloader.LightModel, p); }
+			}
 		);
 
 		// Hide overlay
@@ -220,12 +223,14 @@ public partial class KiraTestScene
 		}
 	}
 
-	private async Task EnsureAndLoadModel(
+	private async Task EnsureAndLoadAgent(
 		ModelDownloader.ModelInfo modelInfo,
 		LineEdit pathInput,
-		Action<LlamaSharpProvider> onLoaded,
+		AgentRunner agent,
+		AgentConfig agentConfig,
 		int gpuLayers, uint contextSize,
-		Action<float> onProgress)
+		Action<float> onProgress,
+		Action onLoaded)
 	{
 		var path = ModelDownloader.GetModelPath(modelInfo);
 		pathInput.Text = path;
@@ -251,21 +256,19 @@ public partial class KiraTestScene
 			Log($"Downloaded {modelInfo.FileName}");
 		}
 
-		// Load model
+		// Configure and load via AgentRunner + ModelPool
 		_llmStatusLabel.Text = $"Loading {modelInfo.FileName}...";
 		Log($"Loading: {modelInfo.FileName}");
 
-		var provider = new LlamaSharpProvider
-		{
-			GpuLayerCount = gpuLayers,
-			ContextSize = contextSize
-		};
+		agentConfig.ModelPath = path;
+		agentConfig.GpuLayers = gpuLayers;
+		agentConfig.ContextSize = contextSize;
 
-		var loaded = await provider.LoadModelAsync(path);
+		var loaded = await agent.LoadModelAsync();
 		if (loaded)
 		{
 			_llmStatusLabel.Text = "LLM: Loaded";
-			onLoaded(provider);
+			onLoaded();
 		}
 		else
 		{
@@ -284,8 +287,7 @@ public partial class KiraTestScene
 
 	private void UpdateGameContext()
 	{
-		foreach (var (key, value) in GetGameContextDict())
-			_kira.UpdateGameContext(key, value);
+		_kira.UpdateGameContext(GetGameContextDict());
 	}
 
 	private Dictionary<string, string> GetGameContextDict()
@@ -302,17 +304,6 @@ public partial class KiraTestScene
 			["sector"] = _sectorInput.Text,
 			["faction"] = _factionInput.Text,
 		};
-	}
-
-	private static string BuildContextBlock(Dictionary<string, string> ctx)
-	{
-		var sb = new System.Text.StringBuilder("Current station state: ");
-		var parts = new System.Collections.Generic.List<string>();
-		foreach (var (key, value) in ctx)
-			parts.Add($"{key} {value}");
-		sb.Append(string.Join(", ", parts));
-		sb.Append('.');
-		return sb.ToString();
 	}
 
 	private void RestoreChatFromMemory()
@@ -365,7 +356,7 @@ public partial class KiraTestScene
 
 	private async void OnForceCheckPressed()
 	{
-		if (_proactiveEngine == null || _lightLlmProvider is not { IsModelLoaded: true })
+		if (_proactiveAgent?.Provider is not { IsModelLoaded: true })
 		{
 			Log("3B model not loaded — cannot force proactive check");
 			return;
@@ -376,7 +367,7 @@ public partial class KiraTestScene
 
 	private async Task SummarizeOldMessagesAsync()
 	{
-		if (_lightLlmProvider is not { IsModelLoaded: true }) return;
+		if (_proactiveAgent?.Provider is not { IsModelLoaded: true }) return;
 
 		var batch = _memoryStore.GetUnsummarizedBatch(20);
 		if (batch.Count < 20) return;
@@ -392,7 +383,7 @@ public partial class KiraTestScene
 					 "Focus on: what the operator asked, what KIRA answered, important facts or decisions. " +
 					 "Be concise. Output only the bullet points, nothing else.";
 
-		var summary = await _lightLlmProvider.GenerateAsync(prompt, conversation.ToString());
+		var summary = await _proactiveAgent.GetResponseAsync(prompt, conversation.ToString());
 		if (!string.IsNullOrWhiteSpace(summary))
 		{
 			_memoryStore.AddSummaryAndMark(summary, batch.Count);

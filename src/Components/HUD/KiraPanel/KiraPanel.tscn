@@ -2,7 +2,7 @@
 
 [ext_resource type="Script" path="res://src/Components/HUD/KiraPanel/KiraPanel.cs" id="1"]
 [ext_resource type="PackedScene" path="res://src/Components/HUD/KiraAvatar/KiraAvatar.tscn" id="2"]
-[ext_resource type="Theme" path="res://src/Assets/Themes/kira_debug_theme.tres" id="3"]
+[ext_resource type="Theme" path="res://src/Assets/Themes/Kira/kira_theme.tres" id="3"]
 
 [node name="KiraPanel" type="PanelContainer"]
 theme = ExtResource("3")
@@ -44,10 +44,14 @@ theme_override_constants/separation = 2
 
 [node name="NameLabel" type="Label" parent="MainLayout/HeaderBar/HeaderMargin/HeaderContent/HeaderInfo"]
 layout_mode = 2
+theme_override_colors/font_color = Color(0.831, 0.659, 0.294, 1)
+theme_override_font_sizes/font_size = 20
 text = "KIRA"
 
 [node name="StatusLabel" type="Label" parent="MainLayout/HeaderBar/HeaderMargin/HeaderContent/HeaderInfo"]
 layout_mode = 2
+theme_override_colors/font_color = Color(0.45, 0.45, 0.48, 1)
+theme_override_font_sizes/font_size = 12
 text = "Level 0 — Corrupted"
 
 [node name="HSeparator" type="HSeparator" parent="MainLayout"]
@@ -77,6 +81,8 @@ selection_enabled = true
 [node name="ThinkingLabel" type="Label" parent="MainLayout"]
 visible = false
 layout_mode = 2
+theme_override_colors/font_color = Color(0.831, 0.659, 0.294, 0.6)
+theme_override_font_sizes/font_size = 12
 text = "KIRA is thinking..."
 horizontal_alignment = 1
 
