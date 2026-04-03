@@ -101,47 +101,46 @@ void fragment() {
     vec2 uv = UV * 2.0 - 1.0;
     float dist = length(uv);
 
-    // Ring system — simple elliptical projection
+    // Ring system — elliptical disk around planet
     vec3 ringResult = vec3(0.0);
     float ringAlpha = 0.0;
     bool ringInFront = false;
+    float sphereR = 0.85; // sphere radius in UV space (planet fills this much of the sprite)
 
     if (has_rings) {
-        // Ring is a flat disk viewed at an angle.
-        // Horizontal = full width, vertical = compressed by tilt.
-        // "Unsquash" Y to get the true radial distance in the ring plane.
-        float squeeze = 0.2 + ring_tilt * 0.3; // how much Y is compressed (0.2 = nearly edge-on, 0.5 = tilted)
-        float rr = length(vec2(uv.x, uv.y / squeeze)); // radial distance in ring plane
+        // The ring is a flat disk in the equatorial plane.
+        // Viewed from slight angle: X = full, Y = squeezed by tilt.
+        float tilt = 0.15 + ring_tilt * 0.35;
+        float rr = length(vec2(uv.x, uv.y / tilt));
 
-        // Ring band: starts outside sphere, extends outward
-        float innerR = 0.52;
-        float outerR = 0.52 + ring_scale * 0.42;
-        float mask = smoothstep(innerR, innerR + 0.01, rr) * smoothstep(outerR, outerR - 0.01, rr);
+        // Ring starts just outside the planet sphere, extends outward
+        float innerR = sphereR + 0.02;
+        float outerR = innerR + ring_scale * (1.0 - innerR - 0.02);
+        float mask = smoothstep(innerR, innerR + 0.008, rr) * smoothstep(outerR, outerR - 0.008, rr);
 
-        if (mask > 0.01) {
-            // Normalized position within ring (0 = inner, 1 = outer)
+        if (mask > 0.005) {
             float ringPos = (rr - innerR) / max(outerR - innerR, 0.001);
 
-            // Concentric bands + Cassini gaps
-            float n1 = noise3(vec3(rr * 50.0 + seed, seed * 0.3, 0.0));
-            float bands = sin(rr * 120.0 + n1 * 3.0) * 0.5 + 0.5;
-            float gap1 = 1.0 - smoothstep(0.28, 0.30, ringPos) * (1.0 - smoothstep(0.32, 0.34, ringPos)); // Cassini division
-            float gap2 = 1.0 - smoothstep(0.6, 0.62, ringPos) * (1.0 - smoothstep(0.64, 0.66, ringPos)); // Encke gap
-            float detail = noise3(vec3(rr * 80.0, atan(uv.y, uv.x) * 4.0 + seed, seed));
+            // Concentric bands with density variation
+            float n1 = noise3(vec3(rr * 60.0 + seed, seed * 0.3, 0.0));
+            float bands = sin(rr * 150.0 + n1 * 3.0) * 0.5 + 0.5;
 
-            float opacity = mask * (0.3 + bands * 0.4 + detail * 0.3) * gap1 * gap2;
+            // Named gaps (Cassini and Encke style)
+            float cassini = 1.0 - smoothstep(0.28, 0.30, ringPos) * (1.0 - smoothstep(0.33, 0.35, ringPos));
+            float encke = 1.0 - smoothstep(0.60, 0.62, ringPos) * (1.0 - smoothstep(0.65, 0.67, ringPos));
 
-            // Transparency increases toward outer edge (thins out)
-            opacity *= 1.0 - ringPos * 0.4;
+            float detail = noise3(vec3(rr * 100.0, atan(uv.y, uv.x) * 5.0 + seed, seed * 0.5));
+            float opacity = mask * (0.25 + bands * 0.4 + detail * 0.25) * cassini * encke;
+            opacity *= 1.0 - ringPos * 0.35; // thinner at outer edge
 
             // Lighting
-            vec3 L = normalize(vec3(light_direction, 0.6));
-            float lit = max(0.2, dot(vec3(0, 1, 0), L) * 0.4 + 0.6);
+            vec3 Lr = normalize(vec3(light_direction.x, light_direction.y, 0.6));
+            float lit = max(0.2, Lr.y * 0.3 + 0.7);
 
-            ringResult = ring_color.rgb * lit * (0.6 + detail * 0.4);
+            ringResult = ring_color.rgb * lit * (0.55 + detail * 0.45);
             ringAlpha = opacity * ring_color.a;
 
-            // Front vs back: ring below equator line is in front of planet
+            // Front: below equator, Back: above equator
             ringInFront = uv.y < 0.0;
         }
     }
@@ -149,7 +148,6 @@ void fragment() {
     // === Outer atmospheric halo (rendered OUTSIDE the sphere) ===
     float atmoHaloAlpha = 0.0;
     vec3 atmoHaloCol = vec3(0.0);
-    float sphereR = 0.88; // sphere occupies 88% of UV, leaving room for atmosphere
     float atmoBand = dist - sphereR;
 
     if (dist > sphereR && dist <= 1.0 && atmosphere_intensity > 0.01) {

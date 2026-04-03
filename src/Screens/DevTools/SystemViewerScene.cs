@@ -29,6 +29,8 @@ public partial class SystemViewerScene : Control
     private const float OrbitScale = 800f;     // pixels between orbits
     private float _starVisualRadius = 200f;    // updated per system
     private PlanetView _followTarget;          // planet the camera follows
+    private bool _orbitalMode = true;          // true = orbital, false = linear
+    private KernexButton _modeToggle;
     private readonly System.Collections.Generic.List<(PlanetView view, PlanetData data, float angle)> _orbitingPlanets = new();
 
     public override void _Ready()
@@ -120,6 +122,12 @@ public partial class SystemViewerScene : Control
         _randomizeButton.SizeFlagsHorizontal = SizeFlags.Fill | SizeFlags.Expand;
         _randomizeButton.Pressed += OnRandomize;
         buttonRow.AddChild(_randomizeButton);
+
+        // Mode toggle
+        _modeToggle = new KernexButton { Text = "MODE: ORBITAL", FontSize = 12 };
+        _modeToggle.SizeFlagsHorizontal = SizeFlags.Fill | SizeFlags.Expand;
+        _modeToggle.Pressed += OnModeToggle;
+        rightLayout.AddChild(_modeToggle);
 
         rightLayout.AddChild(new HSeparator());
 
@@ -255,19 +263,30 @@ public partial class SystemViewerScene : Control
 
     public override void _Process(double delta)
     {
-        // Animate orbits
         for (int i = 0; i < _orbitingPlanets.Count; i++)
         {
             var (view, data, angle) = _orbitingPlanets[i];
-            var omega = 0.15f / Mathf.Pow(Mathf.Max(data.OrbitalDistance, 0.1f), 1.5f);
-            var newAngle = angle + (float)delta * omega;
-            _orbitingPlanets[i] = (view, data, newAngle);
-
             var orbitIndex = i + 1;
             var orbitRadius = _starVisualRadius + orbitIndex * OrbitScale;
-            var x = Mathf.Cos(newAngle) * orbitRadius;
-            var y = Mathf.Sin(newAngle) * orbitRadius;
-            view.Position = new Vector2(x - view.Size.X / 2, y - view.Size.Y / 2);
+
+            if (_orbitalMode)
+            {
+                // Orbital mode: planets orbit the star
+                var omega = 0.15f / Mathf.Pow(Mathf.Max(data.OrbitalDistance, 0.1f), 1.5f);
+                var newAngle = angle + (float)delta * omega;
+                _orbitingPlanets[i] = (view, data, newAngle);
+
+                var x = Mathf.Cos(newAngle) * orbitRadius;
+                var y = Mathf.Sin(newAngle) * orbitRadius;
+                view.Position = new Vector2(x - view.Size.X / 2, y - view.Size.Y / 2);
+            }
+            else
+            {
+                // Linear mode: planets laid out left to right, distances preserved
+                var x = orbitRadius;
+                var y = 0f;
+                view.Position = new Vector2(x - view.Size.X / 2, y - view.Size.Y / 2);
+            }
         }
 
         // Camera follows selected planet smoothly
@@ -278,6 +297,12 @@ public partial class SystemViewerScene : Control
             var desiredPos = screenCenter - targetCenter * _zoom;
             _systemLayout.Position = _systemLayout.Position.Lerp(desiredPos, (float)delta * 3.0f);
         }
+    }
+
+    private void OnModeToggle()
+    {
+        _orbitalMode = !_orbitalMode;
+        _modeToggle.SetText(_orbitalMode ? "MODE: ORBITAL" : "MODE: LINEAR");
     }
 
     private void GenerateSystem(long seed)
