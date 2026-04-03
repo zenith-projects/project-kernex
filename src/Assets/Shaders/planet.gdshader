@@ -176,98 +176,164 @@ void fragment() {
     vec3 col = vec3(0.0);
     float spec = 0.0, emit = 0.0;
 
-    // ==================== ROCKY ====================
+    // ==================== ROCKY (Mars/Moon/Mercury ultra detail) ====================
     if (planet_type == 0) {
-        // Tectonic-scale features (continent shapes)
-        float continent = warped(sp * 0.6);
-        // Regional terrain variation
+        // === Large-scale geological regions ===
+        float continent = warped(sp * 0.5);
+        float region = fbm(sp * 0.8, 6);
+
+        // Maria (ancient lava plains — flat, dark, smooth)
+        float mariaMask = smoothstep(0.55, 0.65, continent) * smoothstep(0.4, 0.55, region);
+
+        // === Terrain layers ===
         float terrain = fbm(sp * 1.5, 7);
-        // Mountain chains (ridged for sharp peaks)
-        float mtn = ridged(sp * 2.0, 7);
-        // Fine surface detail
+        float mtn = ridged(sp * 1.8, 7);
+        float ridges = ridged(sp * 3.0 + seed * 0.5, 6);
         float detail = fbm(sp * 5.0, 6);
-        // Ultra-fine regolith
-        float micro = fbm(sp * 12.0, 4);
-        // Impact craters at multiple scales
-        float largeCrater = voronoi(sp * 1.2 + seed * 0.3);
-        float smallCrater = voronoi(sp * 4.0 + seed * 0.7);
-        float craterDepth = smoothstep(0.02, 0.08, largeCrater) + smoothstep(0.03, 0.1, smallCrater) * 0.5;
+        float micro = fbm(sp * 10.0, 5);
+        float ultraMicro = fbm(sp * 20.0, 3);
 
-        float h = continent * 0.4 + terrain * 0.25 + mtn * 0.2 + detail * 0.1 + micro * 0.05;
+        // === Multi-scale craters ===
+        float craterHuge = voronoi(sp * 0.5 + seed * 0.2);   // basin-scale
+        float craterLarge = voronoi(sp * 1.2 + seed * 0.3);  // large impacts
+        float craterMed = voronoi(sp * 3.0 + seed * 0.5);    // medium
+        float craterSmall = voronoi(sp * 6.0 + seed * 0.8);  // small (zoom detail)
 
-        // Multi-color terrain layers (Mars/Moon inspired)
-        vec3 lowland = primary_color.rgb * 0.7;
-        vec3 plains = mix(primary_color.rgb, secondary_color.rgb, 0.3);
-        vec3 highland = secondary_color.rgb * 1.1;
-        vec3 peak = mix(secondary_color.rgb * 1.2, vec3(0.8, 0.78, 0.75), 0.3);
-        vec3 craterFloor = primary_color.rgb * 0.4;
+        // Crater rim brightening + floor darkening
+        float hugeRim = smoothstep(0.08, 0.13, craterHuge) * (1.0 - smoothstep(0.13, 0.2, craterHuge));
+        float largeRim = smoothstep(0.06, 0.1, craterLarge) * (1.0 - smoothstep(0.1, 0.16, craterLarge));
+        float medRim = smoothstep(0.05, 0.08, craterMed) * (1.0 - smoothstep(0.08, 0.12, craterMed));
+        float hugeFloor = 1.0 - smoothstep(0.02, 0.08, craterHuge);
+        float largeFloor = 1.0 - smoothstep(0.02, 0.06, craterLarge);
 
-        col = mix(lowland, plains, smoothstep(0.25, 0.4, h));
-        col = mix(col, highland, smoothstep(0.45, 0.6, h));
-        col = mix(col, peak, smoothstep(0.7, 0.85, mtn) * 0.45);
+        // Combined elevation
+        float h = continent * 0.3 + terrain * 0.25 + mtn * 0.2 + detail * 0.1 + micro * 0.08 + ultraMicro * 0.03;
+        h -= hugeFloor * 0.15 - largeFloor * 0.1; // craters lower terrain
 
-        // Crater impact areas (darker floor, brighter rim)
-        float craterRim = smoothstep(0.06, 0.1, largeCrater) * (1.0 - smoothstep(0.1, 0.16, largeCrater));
-        col = mix(col, craterFloor, (1.0 - craterDepth) * 0.3);
-        col += col * craterRim * 0.2;
+        // === Color palette ===
+        vec3 mariaCol = primary_color.rgb * 0.5;          // dark lava plains
+        vec3 lowland = primary_color.rgb * 0.75;
+        vec3 midland = mix(primary_color.rgb, secondary_color.rgb, 0.35);
+        vec3 highland = secondary_color.rgb * 1.05;
+        vec3 peak = mix(secondary_color.rgb * 1.15, vec3(0.82, 0.8, 0.77), 0.25);
+        vec3 craterDark = primary_color.rgb * 0.35;
+        vec3 ejecta = mix(primary_color.rgb, vec3(0.6), 0.2) * 0.9; // bright ray material
 
-        // Surface roughness
-        col *= 0.88 + detail * 0.12 + micro * 0.06;
+        // Elevation-based coloring
+        col = mix(lowland, midland, smoothstep(0.25, 0.42, h));
+        col = mix(col, highland, smoothstep(0.45, 0.62, h));
+        col = mix(col, peak, smoothstep(0.7, 0.85, mtn) * 0.4);
 
-        // Polar frost (thin ice deposits at poles)
-        float frost = smoothstep(0.8, 0.95, abs(lat)) * fbm(sp * 6.0 + 50.0, 3);
-        col = mix(col, vec3(0.85, 0.88, 0.92), frost * 0.3);
+        // Maria regions (dark smooth plains)
+        col = mix(col, mariaCol, mariaMask * 0.55);
+
+        // Crater effects
+        col = mix(col, craterDark, hugeFloor * 0.25 + largeFloor * 0.15);
+        col += col * (hugeRim * 0.15 + largeRim * 0.12 + medRim * 0.06);
+
+        // Ejecta rays from large craters (bright radial streaks)
+        float ejectaRay = smoothstep(0.1, 0.15, craterLarge) * smoothstep(0.2, 0.15, craterLarge);
+        float rayPattern = ridged(sp * 5.0 + seed * 2.0, 3);
+        col = mix(col, ejecta, ejectaRay * rayPattern * 0.12);
+
+        // Surface roughness at all zoom levels
+        col *= 0.85 + detail * 0.1 + micro * 0.06 + ultraMicro * 0.03;
+
+        // Regional color variation (oxide deposits, mineral differences)
+        float mineralVar = fbm(sp * 0.6 + seed * 1.5, 4);
+        col = mix(col, col * vec3(1.05, 0.95, 0.9), mineralVar * 0.12);
+
+        // Polar frost
+        float frost = smoothstep(0.78, 0.95, abs(lat)) * fbm(sp * 5.0 + 50.0, 4);
+        col = mix(col, vec3(0.86, 0.89, 0.93), frost * 0.35);
     }
 
-    // ==================== GAS GIANT ====================
+    // ==================== GAS GIANT (Jupiter/Saturn ultra detail) ====================
     else if (planet_type == 1) {
-        // Jupiter/Saturn-style banded atmosphere
+        // === Multi-scale band structure ===
+        // Band warp: turbulence distorts the latitude lines
+        float warp1 = fbm(sp * vec3(0.8, 0.1, 0.8), 7) * 3.5;
+        float warp2 = fbm(sp * vec3(0.4, 0.06, 0.4) + 20.0, 6) * 2.0;
+        float warp3 = fbm(sp * vec3(1.5, 0.2, 1.5) + 40.0, 5) * 1.0;
+        float latW = lat + warp1 * 0.08 + warp2 * 0.04 + warp3 * 0.02;
 
-        // Primary band structure: latitude-based with turbulent warp
-        float bandWarp1 = fbm(sp * vec3(1.0, 0.15, 1.0), 6) * 3.0;
-        float bandWarp2 = fbm(sp * vec3(0.5, 0.1, 0.5) + 20.0, 5) * 1.5;
-        float latWarped = lat + bandWarp1 * 0.08 + bandWarp2 * 0.04;
+        // 4 band frequencies (zones = bright, belts = dark)
+        float major = sin(latW * 8.0) * 0.5 + 0.5;       // 4 major zone pairs
+        float secondary = sin(latW * 18.0 + 0.8) * 0.5 + 0.5; // secondary belts
+        float tertiary = sin(latW * 38.0 + 1.7) * 0.5 + 0.5;  // fine bands
+        float micro = sin(latW * 80.0 + 3.0) * 0.5 + 0.5;     // micro-structure (zoom detail)
 
-        // Multiple band frequencies for realistic layering
-        float band1 = sin(latWarped * 10.0) * 0.5 + 0.5; // major zones
-        float band2 = sin(latWarped * 22.0 + 1.0) * 0.5 + 0.5; // belts
-        float band3 = sin(latWarped * 45.0 + 2.5) * 0.5 + 0.5; // fine structure
+        // === Zonal wind dynamics (each band has different wind speed) ===
+        float zonalFlow = fbm(sp * vec3(3.0, 0.2, 3.0) + seed, 7);
+        float zonalFine = fbm(sp * vec3(6.0, 0.4, 6.0) + seed * 0.5, 6);
+        float zonalMicro = fbm(sp * vec3(12.0, 0.6, 12.0) + seed * 0.3, 4);
 
-        // Zonal wind shear (horizontal turbulence between bands)
-        float shear = fbm(sp * vec3(4.0, 0.3, 4.0) + seed, 7);
-        float shearFine = fbm(sp * vec3(8.0, 0.5, 8.0) + seed * 0.5, 5);
+        // === Color palette ===
+        vec3 zone = primary_color.rgb;                    // bright warm zones
+        vec3 belt = secondary_color.rgb;                  // darker cool belts
+        vec3 hotZone = primary_color.rgb * 1.15;         // brightest equatorial
+        vec3 coolBelt = secondary_color.rgb * 0.6;       // darkest polar belts
+        vec3 mid = mix(primary_color.rgb, secondary_color.rgb, 0.5);
 
-        // Color palette: warm zones, cool belts
-        vec3 zone = primary_color.rgb; // bright warm zones
-        vec3 belt = secondary_color.rgb; // darker cool belts
-        vec3 highlight = mix(primary_color.rgb, vec3(1.0), 0.15);
-        vec3 deep = secondary_color.rgb * 0.5;
+        // Band color mixing
+        float bandVal = major * 0.4 + secondary * 0.3 + tertiary * 0.15 + micro * 0.08;
+        col = mix(coolBelt, zone, bandVal);
+        col = mix(col, hotZone, smoothstep(0.7, 0.9, bandVal) * 0.2);
+        col = mix(col, belt, smoothstep(0.1, 0.25, bandVal) * 0.15);
 
-        float bandMix = band1 * 0.5 + band2 * 0.3 + band3 * 0.2;
-        col = mix(belt, zone, bandMix);
+        // === Inter-band turbulence (Kelvin-Helmholtz instability) ===
+        float bandEdge = abs(fract(latW * 4.0 + 0.25) - 0.5) * 2.0;
+        float turbZone = 1.0 - smoothstep(0.25, 0.45, bandEdge);
 
-        // Shear turbulence at band boundaries
-        float bandEdge = abs(fract(latWarped * 5.0) - 0.5) * 2.0;
-        bandEdge = 1.0 - smoothstep(0.3, 0.5, bandEdge);
-        col = mix(col, col * (0.8 + shear * 0.4), bandEdge * 0.6);
-        col *= 0.92 + shearFine * 0.16;
+        // Chevron-shaped wave patterns at band edges
+        float chevron = fbm(sp * vec3(5.0, 0.3, 5.0) + warp1 * 0.5, 6);
+        col = mix(col, col * (0.8 + chevron * 0.4), turbZone * 0.5);
 
-        // Storm vortices (multiple scales)
-        float storm1 = warped(sp * 0.7 + seed * 0.3);
-        float storm2 = warped(sp * 1.5 + seed * 0.7 + 40.0);
-        col = mix(col, deep, smoothstep(0.6, 0.75, storm1) * 0.2);
-        col = mix(col, highlight, smoothstep(0.65, 0.8, storm2) * 0.1);
+        // Fine zonal flow streaks
+        col *= 0.9 + zonalFlow * 0.08 + zonalFine * 0.04 + zonalMicro * 0.02;
 
-        // Great Spot (persistent anticyclone)
-        vec3 spotPos = normalize(vec3(cos(seed * 0.1) * 0.7, 0.15, sin(seed * 0.1) * 0.7));
+        // === Storm systems (multi-scale) ===
+        // Large anticyclones (Great Red Spot scale)
+        float stormLarge = warped(sp * 0.5 + seed * 0.3);
+        // Medium oval storms
+        float stormMed = warped(sp * 1.2 + seed * 0.7 + 30.0);
+        float stormMedMask = smoothstep(0.62, 0.78, stormMed);
+        // Small convective storms
+        float stormSmall = fbm(sp * 3.0 + seed * 1.3, 5);
+        float stormSmallMask = smoothstep(0.68, 0.82, stormSmall);
+
+        col = mix(col, coolBelt, smoothstep(0.6, 0.75, stormLarge) * 0.15);
+        col = mix(col, mid, stormMedMask * 0.12);
+        // Small white storms (convective plumes)
+        col = mix(col, vec3(0.9, 0.88, 0.82), stormSmallMask * 0.08);
+
+        // === Great Spot (persistent anticyclonic storm) ===
+        vec3 spotPos = normalize(vec3(cos(seed * 0.1) * 0.7, 0.12, sin(seed * 0.1) * 0.7));
         float spotDist = length(rN - spotPos);
-        float spot = smoothstep(0.22, 0.08, spotDist);
-        float spotSwirl = warped(sp * 3.0 + seed * 2.0);
-        vec3 spotCol = mix(primary_color.rgb * 0.6, deep, spotSwirl * 0.5);
-        col = mix(col, spotCol, spot * 0.65);
+        float spotOuter = smoothstep(0.25, 0.15, spotDist);
+        float spotInner = smoothstep(0.15, 0.06, spotDist);
+
+        // Spiral structure inside the spot
+        float spotAngle = atan(rN.y - spotPos.y, dot(rN - spotPos, cross(spotPos, vec3(0, 1, 0))));
+        float spotSpiral = fbm(vec3(spotAngle * 3.0 + spotDist * 8.0, spotDist * 12.0, seed * 2.0), 5);
+
+        vec3 spotEdge = mix(primary_color.rgb * 0.7, belt, 0.5);
+        vec3 spotCore = primary_color.rgb * 0.45;
+        vec3 spotCol = mix(spotEdge, spotCore, spotInner);
+        spotCol = mix(spotCol, spotCol * (0.7 + spotSpiral * 0.6), 0.5);
+
+        col = mix(col, spotCol, spotOuter * 0.7);
+
+        // === Polar aurora/haze ===
+        float polarDist = abs(lat);
+        float polarHaze = smoothstep(0.75, 0.95, polarDist);
+        float polarNoise = fbm(sp * vec3(2.0, 0.5, 2.0) + TIME * 0.005, 4);
+        col = mix(col, coolBelt * 0.7, polarHaze * 0.3);
+        // Aurora glow at high latitudes
+        col += vec3(0.1, 0.15, 0.3) * polarHaze * polarNoise * 0.08;
 
         // Equatorial brightening
-        col *= 0.95 + (1.0 - abs(lat)) * 0.1;
+        col *= 0.94 + (1.0 - abs(lat)) * 0.08;
     }
 
     // ==================== ICE WORLD ====================
