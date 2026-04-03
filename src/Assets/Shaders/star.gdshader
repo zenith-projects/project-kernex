@@ -730,13 +730,50 @@ void fragment() {
         col += core_color.rgb * scattered;
     }
 
-    // ==================== OUTER GLOW ====================
-    if (dist > starR * 0.8 && dist < 1.0 && starR > 0.0 && !accretion_disk) {
-        float glow = smoothstep(1.0, starR, dist) * 0.06 * intensity * pulse;
-        col += core_color.rgb * glow;
-        alpha = max(alpha, glow * 0.4);
+    // ==================== OUTER GLOW (per-type atmosphere/aura) ====================
+    if (dist > starR * 0.5 && dist < 1.0 && starR > 0.0 && !accretion_disk) {
+        float glowDist = (dist - starR) / max(1.0 - starR, 0.01);
+
+        // Primary glow: 1/r falloff (realistic)
+        float glow1 = 0.08 / max(pow(glowDist + 0.2, 2.0), 0.01);
+        glow1 *= smoothstep(1.0, starR + 0.02, dist);
+        glow1 = min(glow1, 1.0);
+
+        // Secondary soft halo
+        float glow2 = smoothstep(1.0, starR, dist) * 0.04;
+
+        // Per-type glow character
+        vec3 glowCol = core_color.rgb;
+        float glowIntensity = 0.06;
+
+        if (body_type == 0) {
+            // Red dwarf: subtle warm glow, flicker
+            glowCol = mix(core_color.rgb, vec3(1.0, 0.4, 0.15), 0.3);
+            glowIntensity = 0.04;
+        } else if (body_type == 3) {
+            // Blue giant: intense UV-blue halo
+            glowCol = mix(core_color.rgb, vec3(0.4, 0.5, 1.0), 0.4);
+            glowIntensity = 0.12;
+        } else if (body_type == 4) {
+            // Red giant: large warm diffuse glow
+            glowCol = mix(core_color.rgb, corona_color.rgb, 0.3);
+            glowIntensity = 0.1;
+        } else if (body_type == 5) {
+            // White dwarf: crisp bright glow
+            glowCol = vec3(0.9, 0.92, 1.0);
+            glowIntensity = 0.08;
+        } else if (body_type == 10) {
+            // Brown dwarf: barely any glow
+            glowIntensity = 0.015;
+        }
+
+        float totalGlow = (glow1 + glow2) * glowIntensity * intensity * pulse;
+        col += glowCol * totalGlow;
+        alpha = max(alpha, totalGlow * 0.5);
     }
 
-    alpha *= smoothstep(1.0, 0.92, dist);
+    // Soft outer edge (wider for large stars)
+    float edgeSoft = body_type == 4 ? 0.85 : 0.92;
+    alpha *= smoothstep(1.0, edgeSoft, dist);
     COLOR = vec4(col, clamp(alpha, 0.0, 1.0));
 }
