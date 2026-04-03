@@ -369,60 +369,103 @@ void fragment() {
         emit = magmaTotal * 0.5 + glowTotal * 0.15 + hotspot * 0.3 + eruption * 0.5;
     }
 
-    // ==================== OCEAN ====================
+    // ==================== OCEAN (Earth-like) ====================
     else if (planet_type == 4) {
-        // Continent mask (domain warped for organic shapes)
-        float landMask = warped(sp * 0.6 + seed * 0.1);
-        float coastLine = smoothstep(0.48, 0.53, landMask);
+        // Multi-scale continent generation
+        float landMask = warped(sp * 0.55 + seed * 0.1);
+        float landDetail = fbm(sp * 1.5 + seed * 0.3, 6);
+        float combinedLand = landMask * 0.7 + landDetail * 0.3;
+        float coastLine = smoothstep(0.48, 0.54, combinedLand);
 
-        // === OCEAN ===
-        float oceanDepth = smoothstep(0.53, 0.3, landMask);
-        float waves = fbm(sp * 10.0 + TIME * 0.015, 4) * 0.08;
-        vec3 deepOcean = primary_color.rgb * 0.35;
-        vec3 midOcean = primary_color.rgb * 0.7;
-        vec3 shallowOcean = primary_color.rgb + vec3(0.0, 0.1, 0.15);
-        vec3 ocean = mix(shallowOcean, mix(midOcean, deepOcean, oceanDepth), oceanDepth);
-        ocean += vec3(waves);
+        // === OCEAN (multi-depth with currents) ===
+        float oceanDepth = smoothstep(0.54, 0.25, combinedLand);
+        float waves = fbm(sp * 12.0 + TIME * 0.012, 5);
+        float swells = fbm(sp * 6.0 + TIME * 0.008, 4);
+        float currents = warped(sp * 2.0 + vec3(TIME * 0.003, 0, 0));
 
-        // === LAND ===
-        float elevation = fbm(sp * 3.0, 7);
-        float mountains = ridged(sp * 2.5, 6);
-        float micro = fbm(sp * 8.0, 4);
+        vec3 abyssal = primary_color.rgb * 0.2;   // deep trenches
+        vec3 deep = primary_color.rgb * 0.4;       // deep ocean
+        vec3 mid = primary_color.rgb * 0.7;        // mid depth
+        vec3 shallow = primary_color.rgb + vec3(0.0, 0.12, 0.18); // shelf
+        vec3 reef = primary_color.rgb * 0.9 + vec3(0.0, 0.15, 0.1); // coral reef
 
-        // Biomes based on latitude and elevation
-        vec3 tropical = vec3(0.08, 0.28, 0.04); // dark green jungle
-        vec3 temperate = vec3(0.15, 0.32, 0.08); // green forest
-        vec3 arid = vec3(0.45, 0.35, 0.18); // dry land
-        vec3 tundra = vec3(0.4, 0.42, 0.38); // cold grey-green
-        vec3 snow = vec3(0.88, 0.9, 0.95);
-        vec3 rock = vec3(0.35, 0.3, 0.25); // bare rock
-        vec3 sand = vec3(0.76, 0.7, 0.5); // beaches
+        vec3 ocean = mix(shallow, mid, smoothstep(0.0, 0.3, oceanDepth));
+        ocean = mix(ocean, deep, smoothstep(0.3, 0.6, oceanDepth));
+        ocean = mix(ocean, abyssal, smoothstep(0.7, 0.95, oceanDepth));
+
+        // Reef near coast
+        float reefZone = smoothstep(0.48, 0.5, combinedLand) * (1.0 - smoothstep(0.5, 0.52, combinedLand));
+        ocean = mix(ocean, reef, reefZone * 0.5);
+
+        // Ocean surface detail
+        ocean += vec3(waves * 0.05 + swells * 0.03);
+        // Current patterns (subtle color variation)
+        ocean = mix(ocean, ocean * (0.9 + currents * 0.2), 0.2);
+
+        // === LAND (detailed biomes) ===
+        float elevation = fbm(sp * 2.5, 7);
+        float mountains = ridged(sp * 2.0, 7);
+        float riverValleys = warped(sp * 1.5 + seed * 0.5);
+        float micro = fbm(sp * 8.0, 5);
+        float ultraMicro = fbm(sp * 16.0, 3);
 
         float absLat = abs(lat);
-        vec3 biome = mix(tropical, temperate, smoothstep(0.1, 0.35, absLat));
-        biome = mix(biome, arid, smoothstep(0.2, 0.45, absLat) * (1.0 - elevation));
-        biome = mix(biome, tundra, smoothstep(0.55, 0.75, absLat));
-        biome = mix(biome, snow, smoothstep(0.78, 0.92, absLat));
+        float moisture = 1.0 - smoothstep(0.15, 0.4, absLat) * (1.0 - elevation * 0.5);
 
-        // Mountains are rocky, high peaks have snow
-        biome = mix(biome, rock, smoothstep(0.55, 0.7, mountains));
-        biome = mix(biome, snow, smoothstep(0.75, 0.88, mountains) * 0.7);
+        // Extended biome palette
+        vec3 rainforest = vec3(0.04, 0.22, 0.02);
+        vec3 tropical = vec3(0.08, 0.28, 0.04);
+        vec3 tempForest = vec3(0.12, 0.3, 0.06);
+        vec3 grassland = vec3(0.25, 0.35, 0.1);
+        vec3 savanna = vec3(0.5, 0.4, 0.15);
+        vec3 arid = vec3(0.55, 0.42, 0.2);
+        vec3 desert = vec3(0.7, 0.6, 0.35);
+        vec3 tundra = vec3(0.38, 0.4, 0.36);
+        vec3 taiga = vec3(0.1, 0.2, 0.08);
+        vec3 snow = vec3(0.9, 0.92, 0.96);
+        vec3 rock = vec3(0.32, 0.28, 0.22);
+        vec3 cliff = vec3(0.4, 0.35, 0.3);
+        vec3 sand = vec3(0.78, 0.72, 0.52);
+        vec3 wetland = vec3(0.15, 0.25, 0.12);
 
-        // Beach transition
-        float beach = smoothstep(0.48, 0.51, landMask) * (1.0 - smoothstep(0.51, 0.55, landMask));
+        // Latitude-based biome selection
+        vec3 biome = mix(rainforest, tropical, smoothstep(0.0, 0.1, absLat));
+        biome = mix(biome, tempForest, smoothstep(0.1, 0.25, absLat));
+        biome = mix(biome, grassland, smoothstep(0.2, 0.35, absLat) * (1.0 - moisture * 0.5));
+        biome = mix(biome, savanna, smoothstep(0.25, 0.4, absLat) * (1.0 - elevation));
+        biome = mix(biome, arid, smoothstep(0.3, 0.45, absLat) * (1.0 - elevation * 0.7));
+        biome = mix(biome, taiga, smoothstep(0.5, 0.65, absLat));
+        biome = mix(biome, tundra, smoothstep(0.65, 0.78, absLat));
+        biome = mix(biome, snow, smoothstep(0.8, 0.93, absLat));
+
+        // Elevation modifiers
+        biome = mix(biome, rock, smoothstep(0.5, 0.65, mountains));
+        biome = mix(biome, cliff, smoothstep(0.6, 0.72, mountains) * 0.5);
+        biome = mix(biome, snow, smoothstep(0.72, 0.85, mountains) * 0.7);
+
+        // River valleys (greener, lower)
+        float riverZone = smoothstep(0.4, 0.5, riverValleys) * (1.0 - smoothstep(0.5, 0.55, riverValleys));
+        biome = mix(biome, wetland, riverZone * 0.4 * (1.0 - absLat));
+
+        // Beach/coast transition
+        float beach = smoothstep(0.48, 0.51, combinedLand) * (1.0 - smoothstep(0.51, 0.56, combinedLand));
         biome = mix(biome, sand, beach * 0.85);
 
-        biome *= 0.9 + micro * 0.2;
+        // Surface detail
+        biome *= 0.88 + micro * 0.12 + ultraMicro * 0.04;
 
         col = mix(ocean, biome, coastLine);
 
-        // Ice caps
+        // Ice caps with variation
         float polar = abs(lat);
-        col = mix(col, snow, smoothstep(0.82, 0.95, polar) * 0.85);
+        float iceEdge = fbm(sp * 4.0 + 60.0, 4);
+        float iceCap = smoothstep(0.78 + iceEdge * 0.08, 0.93, polar);
+        col = mix(col, snow, iceCap * 0.85);
 
-        // Ocean specular reflection
-        float oceanSpec = pow(max(dot(N, H), 0.0), 100.0) * (1.0 - coastLine);
-        spec = oceanSpec * 0.5;
+        // Ocean specular (sun glint on water)
+        float sunGlint = pow(max(dot(N, H), 0.0), 120.0) * (1.0 - coastLine);
+        float glintPattern = fbm(sp * 20.0 + TIME * 0.05, 3);
+        spec = sunGlint * (0.3 + glintPattern * 0.3);
     }
 
     // ==================== DESERT ====================
