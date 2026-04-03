@@ -146,20 +146,62 @@ void fragment() {
         }
     }
 
-    // Outside sphere
+    // === Outer atmospheric halo (rendered OUTSIDE the sphere) ===
+    float atmoHaloAlpha = 0.0;
+    vec3 atmoHaloCol = vec3(0.0);
+    float sphereR = 0.88; // sphere occupies 88% of UV, leaving room for atmosphere
+    float atmoBand = dist - sphereR;
+
+    if (dist > sphereR && dist <= 1.0 && atmosphere_intensity > 0.01) {
+        // Atmospheric shell outside the solid sphere
+        float atmoDepth = 1.0 - smoothstep(0.0, 1.0 - sphereR, atmoBand);
+        atmoDepth = pow(atmoDepth, 2.5);
+
+        // Light direction for atmospheric scattering
+        vec3 Latmo = normalize(vec3(light_direction, 0.6));
+        vec2 normUV = normalize(uv);
+        float atmoNdL = dot(vec3(normUV, 0.0), Latmo);
+        float litFactor = max(0.0, atmoNdL * 0.6 + 0.4);
+
+        // Rayleigh scattering (blue glow on day side)
+        atmoHaloCol = atmosphere_color.rgb * 1.5 * litFactor * atmoDepth * atmosphere_intensity * 2.0;
+
+        // Mie forward scattering (bright halo near star direction)
+        float mieAtmo = pow(max(dot(vec3(normUV, 0.0), Latmo), 0.0), 6.0);
+        atmoHaloCol += mix(atmosphere_color.rgb, vec3(1.0, 0.95, 0.85), 0.4) * mieAtmo * atmoDepth * atmosphere_intensity;
+
+        // Terminator glow
+        float termAtmo = smoothstep(-0.1, 0.15, atmoNdL) * (1.0 - smoothstep(0.15, 0.4, atmoNdL));
+        atmoHaloCol += atmosphere_color.rgb * termAtmo * atmoDepth * atmosphere_intensity * 0.4;
+
+        atmoHaloAlpha = atmoDepth * atmosphere_intensity * 0.8;
+    }
+
+    // Outside sphere+atmosphere: show ring, atmosphere halo, or discard
     if (dist > 1.0) {
         if (ringAlpha > 0.01) {
             COLOR = vec4(ringResult, ringAlpha);
         } else {
             discard;
         }
+    } else if (dist > sphereR) {
+        // Atmosphere halo zone (between sphere edge and UV edge)
+        vec3 haloFinal = atmoHaloCol;
+        float haloAlpha = atmoHaloAlpha;
+        // Blend ring if present
+        if (ringAlpha > 0.01) {
+            haloFinal = mix(haloFinal, ringResult, ringAlpha * 0.7);
+            haloAlpha = max(haloAlpha, ringAlpha);
+        }
+        COLOR = vec4(haloFinal, haloAlpha);
     }
 
     // Planet surface (only inside sphere)
-    if (dist <= 1.0) {
+    if (dist <= sphereR) {
+    float scaledDist = dist / sphereR; // remap to 0-1 within sphere
 
-    float z = sqrt(1.0 - dist * dist);
-    vec3 N = normalize(vec3(uv, z));
+    float z = sqrt(1.0 - scaledDist * scaledDist);
+    vec3 N = normalize(vec3(uv / sphereR, z));
 
     // Rotate sphere
     float a = TIME * rotation_speed;
@@ -336,45 +378,87 @@ void fragment() {
         col *= 0.94 + (1.0 - abs(lat)) * 0.08;
     }
 
-    // ==================== ICE WORLD ====================
+    // ==================== ICE WORLD (Europa/Enceladus ultra detail) ====================
     else if (planet_type == 2) {
-        // Multi-scale ice terrain
-        float base = warped(sp * 0.8);
-        float terrain = fbm(sp * 1.5, 7);
-        float detail = fbm(sp * 4.0, 6);
-        float micro = fbm(sp * 10.0, 4);
+        // === Multi-scale ice terrain ===
+        float continent = warped(sp * 0.5);
+        float terrain = fbm(sp * 1.2, 7);
+        float detail = fbm(sp * 3.5, 6);
+        float micro = fbm(sp * 8.0, 5);
+        float ultraMicro = fbm(sp * 18.0, 3);
 
-        // Tectonic crack system (Europa-style)
-        float cracksMajor = voronoiEdge(sp * 1.5 + seed * 0.3);
-        float cracksMinor = voronoiEdge(sp * 3.0 + seed * 0.7);
-        float thinMajor = 1.0 - smoothstep(0.0, 0.03, cracksMajor);
-        float wideMajor = 1.0 - smoothstep(0.0, 0.12, cracksMajor);
-        float thinMinor = 1.0 - smoothstep(0.0, 0.02, cracksMinor);
+        // === Tectonic crack system (3 scales like Europa) ===
+        // Lineae (major tectonic fractures)
+        float lineaeMajor = voronoiEdge(sp * 1.0 + seed * 0.3);
+        float lineaeMed = voronoiEdge(sp * 2.0 + seed * 0.5);
+        float lineaeMinor = voronoiEdge(sp * 4.0 + seed * 0.8);
+        float lineaeMicro = voronoiEdge(sp * 8.0 + seed * 1.2);
 
-        // Ice color: white-blue with subtle variation
-        vec3 freshIce = vec3(0.88, 0.92, 0.98);
-        vec3 oldIce = primary_color.rgb;
-        vec3 dirtyIce = secondary_color.rgb * 0.8;
-        col = mix(oldIce, freshIce, base * 0.4 + terrain * 0.3);
-        col = mix(col, dirtyIce, detail * 0.15);
-        col *= 0.9 + micro * 0.1;
+        // Edge masks
+        float majorThin = 1.0 - smoothstep(0.0, 0.025, lineaeMajor);
+        float majorWide = 1.0 - smoothstep(0.0, 0.1, lineaeMajor);
+        float medThin = 1.0 - smoothstep(0.0, 0.02, lineaeMed);
+        float medWide = 1.0 - smoothstep(0.0, 0.06, lineaeMed);
+        float minorThin = 1.0 - smoothstep(0.0, 0.015, lineaeMinor);
+        float microThin = 1.0 - smoothstep(0.0, 0.01, lineaeMicro);
 
-        // Polar brightness
-        col = mix(col, freshIce, smoothstep(0.5, 0.95, abs(lat)) * 0.3);
+        // === Ice types ===
+        vec3 freshIce = vec3(0.9, 0.93, 0.98);    // new, bright
+        vec3 oldIce = primary_color.rgb;            // aged, slightly colored
+        vec3 dirtyIce = secondary_color.rgb * 0.75; // contaminated
+        vec3 blueIce = vec3(0.6, 0.75, 0.95);      // compressed, dense
+        vec3 darkStripe = secondary_color.rgb * 0.4; // dark lineae material
 
-        // Ridges along major cracks (pressure ridges)
-        col = mix(col, freshIce * 1.1, wideMajor * 0.2);
+        // Base ice surface
+        col = mix(oldIce, freshIce, continent * 0.3 + terrain * 0.3);
+        col = mix(col, dirtyIce, detail * 0.12);
+        col = mix(col, blueIce, smoothstep(0.55, 0.7, terrain) * 0.15);
+        col *= 0.88 + micro * 0.1 + ultraMicro * 0.03;
 
-        // Subsurface ocean glow (Europa's hidden ocean)
-        vec3 oceanGlow = vec3(0.08, 0.3, 0.85);
-        col = mix(col, oceanGlow, thinMajor * 0.5);
-        col += oceanGlow * thinMinor * 0.15;
-        col += oceanGlow * wideMajor * 0.08;
-        emit = thinMajor * 0.3 + thinMinor * 0.08;
+        // === Chaos terrain (broken, jumbled ice blocks) ===
+        float chaos = warped(sp * 1.5 + seed * 0.7);
+        float chaosMask = smoothstep(0.6, 0.75, chaos);
+        float chaosBlocks = voronoi(sp * 5.0 + seed * 2.0);
+        col = mix(col, mix(dirtyIce, blueIce, chaosBlocks), chaosMask * 0.3);
 
-        // Ice sparkle (micro-reflections)
-        float sparkle = pow(fbm(sp * 15.0, 3), 3.0);
-        spec = sparkle * 0.2 + thinMajor * 0.1;
+        // === Pressure ridges (bright raised ice along cracks) ===
+        col = mix(col, freshIce * 1.1, majorWide * 0.15);
+        col = mix(col, freshIce * 1.05, medWide * 0.08);
+
+        // === Dark lineae material (brownish deposits in cracks) ===
+        col = mix(col, darkStripe, majorThin * 0.25);
+        col = mix(col, darkStripe * 1.2, medThin * 0.12);
+
+        // === Subsurface ocean glow ===
+        // Warm ocean beneath the ice shell, visible through cracks
+        vec3 oceanWarm = vec3(0.05, 0.25, 0.8);
+        vec3 oceanBright = vec3(0.1, 0.45, 0.95);
+
+        // Glow intensity varies by crack width and ice thickness
+        float glowMajor = majorThin * 0.5;
+        float glowMed = medThin * 0.2;
+        float glowMinor = minorThin * 0.08;
+        float glowMicro = microThin * 0.03;
+
+        col = mix(col, oceanBright, glowMajor);
+        col += oceanWarm * (glowMed + glowMinor + glowMicro);
+        emit = glowMajor * 0.35 + glowMed * 0.12 + glowMinor * 0.04 + glowMicro * 0.01;
+
+        // === Cryovolcanic plumes (Enceladus-style geysers) ===
+        float geyserSite = fbm(sp * 0.8 + seed * 3.0, 4);
+        float geyser = smoothstep(0.78, 0.88, geyserSite) * smoothstep(0.7, 0.85, abs(lat));
+        // Bright frost deposits around geyser sites
+        col = mix(col, freshIce * 1.15, geyser * 0.3);
+        emit += geyser * 0.05;
+
+        // === Polar brightness gradient ===
+        float polar = abs(lat);
+        col = mix(col, freshIce, smoothstep(0.5, 0.95, polar) * 0.25);
+
+        // === Ice surface specular ===
+        float iceShine = pow(fbm(sp * 12.0, 3), 3.0);
+        float crackShine = majorThin * 0.15 + medThin * 0.08;
+        spec = iceShine * 0.15 + crackShine;
     }
 
     // ==================== LAVA ====================
@@ -905,7 +989,7 @@ void fragment() {
         col *= 1.0 - ringAlpha * 0.15;
     }
 
-    COLOR = vec4(col, smoothstep(1.0, 0.97, dist));
+    COLOR = vec4(col, smoothstep(1.0, 0.96, scaledDist));
 
-    } // end if (dist <= 1.0)
+    } // end if (dist <= sphereR)
 }

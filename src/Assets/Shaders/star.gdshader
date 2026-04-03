@@ -422,24 +422,39 @@ void fragment() {
             surfCol += vec3(1.0, 0.97, 0.9) * flare * flarePos * 2.0;
 
         } else if (body_type == 3) {
-            // BLUE GIANT: extremely hot, smooth with subtle plasma flows
-            // Very hot = smooth but with high-energy plasma currents
-            float plasma1 = fbm(sp * 1.5 + TIME * 0.06, 6);
-            float plasma2 = warped(sp * 0.8 + TIME * 0.03);
-            float micro = fbm(sp * 5.0, 4);
+            // BLUE GIANT: extremely hot, smooth with plasma waves and stellar wind
 
-            // Almost uniform but with faint convection
-            surfCol *= 0.92 + plasma1 * 0.08 + micro * 0.04;
-            // Hot plasma streaks
-            surfCol = mix(surfCol, surfCol * 1.15, smoothstep(0.6, 0.75, plasma2) * 0.15);
+            // Multi-scale plasma currents (high-energy convection)
+            float plasma1 = fbm(sp * 1.2 + TIME * 0.05, 7);
+            float plasma2 = warped(sp * 0.7 + TIME * 0.025);
+            float plasma3 = fbm(sp * 3.0 + TIME * 0.08, 5);
+            float micro = fbm(sp * 6.0 + TIME * 0.1, 4);
+            float ultraMicro = fbm(sp * 12.0, 3);
 
-            // Stellar wind: edge brightening (UV emission)
-            float windGlow = pow(1.0 - z, 2.0) * 0.15;
-            surfCol += vec3(0.3, 0.4, 0.8) * windGlow;
+            // Surface: very smooth but with subtle hot/cool streaks
+            surfCol *= 0.9 + plasma1 * 0.08 + micro * 0.03 + ultraMicro * 0.01;
 
-            // Rare intense flare (blue-white flash)
-            float flare = flareEvent(TIME * 0.5, seed * 2.0);
-            surfCol += vec3(0.7, 0.8, 1.0) * flare * 0.8;
+            // Plasma wave patterns (rippling across surface)
+            float waves = ridged(sp * vec3(2.0, 0.3, 2.0) + TIME * 0.04, 5);
+            surfCol = mix(surfCol, surfCol * 1.12, smoothstep(0.55, 0.72, waves) * 0.12);
+
+            // Large-scale hot spots (brighter, bluer regions)
+            float hotRegion = warped(sp * 0.4 + seed * 0.3);
+            surfCol = mix(surfCol, surfCol * 1.1 + vec3(0.0, 0.02, 0.05), smoothstep(0.6, 0.75, hotRegion) * 0.15);
+
+            // Stellar wind: edge brightening (UV-blue emission halo)
+            float windGlow = pow(1.0 - z, 1.5) * 0.2;
+            float windNoise = fbm(vec3(N.x * 5.0, N.y * 5.0, TIME * 0.15 + seed), 3);
+            surfCol += vec3(0.2, 0.35, 0.8) * windGlow * (0.7 + windNoise * 0.3);
+
+            // Stellar wind streaks (visible mass loss patterns)
+            float windStreaks = ridged(sp * vec3(1.0, 3.0, 1.0) + TIME * 0.02, 4);
+            surfCol += vec3(0.15, 0.25, 0.6) * smoothstep(0.65, 0.82, windStreaks) * pow(1.0 - z, 1.0) * 0.1;
+
+            // Rare intense flare (blue-white flash — very powerful)
+            float flare = flareEvent(TIME * 0.4, seed * 2.0);
+            float flarePos = smoothstep(0.72, 0.88, fbm(sp * 1.5 + seed * 4.0, 3));
+            surfCol += vec3(0.7, 0.82, 1.0) * flare * flarePos * 1.5;
 
         } else if (body_type == 4) {
             // RED GIANT: enormous convection cells, pulsation, mass loss
@@ -475,21 +490,36 @@ void fragment() {
             surfCol += core_color.rgb * smoothstep(0.7, 0.85, eject) * 0.15;
 
         } else if (body_type == 5) {
-            // WHITE DWARF: compact, extremely bright, smooth with subtle shimmer
-            surfCol = core_color.rgb * 1.3;
-            float shimmer = fbm(sp * 4.0 + TIME * 0.1, 4);
-            surfCol *= 0.96 + shimmer * 0.04;
+            // WHITE DWARF: ultra-compact stellar remnant, incredibly dense and hot
 
-            // Faint surface magnetic pattern
-            float magPattern = voronoi(sp * 3.0 + seed);
-            surfCol *= 0.98 + (1.0 - magPattern) * 0.04;
+            // Surface: nearly featureless but with quantum effects
+            float shimmer = fbm(sp * 5.0 + TIME * 0.15, 5);
+            float deepShimmer = fbm(sp * 10.0 + TIME * 0.2, 4);
 
-            // Nova flash (rare intense brightening)
-            float nova = flareEvent(TIME * 0.15, seed * 3.0);
-            surfCol += vec3(0.8, 0.85, 1.0) * nova * 4.0;
-            // Nova afterglow
-            float afterglow = flareEvent(TIME * 0.15 - 0.3, seed * 3.0) * 0.3;
-            surfCol += vec3(1.0, 0.7, 0.3) * afterglow;
+            // Extremely bright and uniform
+            surfCol = core_color.rgb * 1.4;
+            surfCol *= 0.95 + shimmer * 0.04 + deepShimmer * 0.02;
+
+            // Magnetic field pattern (some white dwarfs have very strong fields)
+            float magField = voronoi(sp * 2.0 + seed);
+            float magDetail = voronoi(sp * 5.0 + seed * 0.7);
+            surfCol *= 0.97 + (1.0 - magField) * 0.03 + (1.0 - magDetail) * 0.01;
+
+            // Polar magnetic bright spots
+            float poleBright1 = smoothstep(0.2, 0.0, length(rN - vec3(0, 1, 0)));
+            float poleBright2 = smoothstep(0.2, 0.0, length(rN + vec3(0, 1, 0)));
+            surfCol += core_color.rgb * (poleBright1 + poleBright2) * 0.08;
+
+            // === Nova flash (thermonuclear runaway — dramatic!) ===
+            float nova = flareEvent(TIME * 0.12, seed * 3.0);
+            // Nova builds up, peaks, then decays with afterglow
+            surfCol += vec3(0.8, 0.88, 1.0) * nova * 5.0;
+            // Nova expanding shell (briefly visible)
+            float novaShell = nova * smoothstep(0.3, 0.42, nD) * smoothstep(0.5, 0.42, nD);
+            surfCol += vec3(1.0, 0.9, 0.7) * novaShell * 2.0;
+            // Afterglow (warm, decaying)
+            float afterglow = flareEvent(TIME * 0.12 - 0.4, seed * 3.0) * 0.4;
+            surfCol += vec3(1.0, 0.65, 0.25) * afterglow;
 
         } else if (body_type == 10) {
             // BROWN DWARF: Jupiter-like banded atmosphere with storms
