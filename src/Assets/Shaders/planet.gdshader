@@ -175,19 +175,24 @@ void fragment() {
         atmoHaloAlpha = atmoDepth * atmosphere_intensity * 0.8;
     }
 
-    // Outside sphere+atmosphere: show ring, atmosphere halo, or discard
+    // Ring occlusion: back ring (uv.y > 0) should be hidden behind the planet
+    bool ringVisible = ringAlpha > 0.01 && ringInFront;
+    // Ring OUTSIDE the planet sphere is always visible (it extends beyond)
+    bool ringOutside = ringAlpha > 0.01 && dist > sphereR;
+
+    // Outside sprite bounds: show front ring or discard
     if (dist > 1.0) {
-        if (ringAlpha > 0.01) {
+        if (ringOutside) {
             COLOR = vec4(ringResult, ringAlpha);
         } else {
             discard;
         }
     } else if (dist > sphereR) {
-        // Atmosphere halo zone (between sphere edge and UV edge)
+        // Atmosphere halo zone
         vec3 haloFinal = atmoHaloCol;
         float haloAlpha = atmoHaloAlpha;
-        // Blend ring if present
-        if (ringAlpha > 0.01) {
+        // Ring outside sphere is always shown (both front and back extend beyond planet)
+        if (ringOutside) {
             haloFinal = mix(haloFinal, ringResult, ringAlpha * 0.7);
             haloAlpha = max(haloAlpha, ringAlpha);
         }
