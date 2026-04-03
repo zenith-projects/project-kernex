@@ -534,58 +534,97 @@ void fragment() {
         spec = sunGlint * (0.3 + glintPattern * 0.3);
     }
 
-    // ==================== DESERT ====================
+    // ==================== DESERT (Arrakis/Mars/Sahara ultra detail) ====================
     else if (planet_type == 5) {
-        // Continent-scale terrain
-        float continent = warped(sp * 0.5 + seed);
-        // Regional terrain
+        // === Geological regions ===
+        float continent = warped(sp * 0.4 + seed);
+        float region = fbm(sp * 0.7 + seed * 0.5, 6);
         float terrain = fbm(sp * 1.2, 7);
 
-        // Dune seas (erg) — massive dune fields with directional patterns
-        float duneWind = fbm(sp * vec3(0.4, 0.08, 0.4), 4);
-        float dunesLarge = ridged(sp * vec3(2.0, 0.3, 2.0) + duneWind * 3.0, 6);
-        float dunesSmall = ridged(sp * vec3(5.0, 0.8, 5.0) + duneWind * 1.5, 5);
-        float dunesMicro = fbm(sp * vec3(12.0, 2.0, 12.0), 4);
-
-        // Rocky terrain (hamada — stone desert)
-        float rocks = voronoi(sp * 1.2 + seed * 0.5);
-        float rockTerrain = ridged(sp * 2.0 + seed, 6);
-        float rockDetail = fbm(sp * 6.0, 5);
-
-        // Canyon systems (wadi)
-        float canyonEdge = voronoiEdge(sp * 0.8 + seed * 0.3);
-        float canyon = 1.0 - smoothstep(0.0, 0.05, canyonEdge);
-
-        // Mix sand vs rock regions
+        // Region types: erg (sand sea), hamada (rock), reg (gravel), salt flat
         float sandRegion = smoothstep(0.35, 0.55, continent);
+        float saltFlat = smoothstep(0.6, 0.7, region) * (1.0 - sandRegion) * 0.5;
 
-        // Sand colors
-        vec3 lightSand = primary_color.rgb * 1.15;
-        vec3 deepSand = primary_color.rgb * 0.85;
-        vec3 goldSand = mix(primary_color.rgb, vec3(1.0, 0.85, 0.5), 0.2);
-        vec3 rockCol = secondary_color.rgb * 0.65;
-        vec3 darkRock = secondary_color.rgb * 0.35;
+        // === Dune systems (multi-scale, directional) ===
+        // Wind direction varies by region
+        float windDir = fbm(sp * vec3(0.3, 0.05, 0.3), 4);
+        vec3 windVec = vec3(cos(windDir * 6.28), 0.0, sin(windDir * 6.28));
 
-        // Sand surface
-        vec3 sandCol = mix(deepSand, lightSand, terrain * 0.4);
-        sandCol = mix(sandCol, goldSand, dunesLarge * 0.2);
-        // Dune self-shadowing (dark troughs between crests)
-        sandCol *= 0.8 + dunesLarge * 0.15 + dunesSmall * 0.08;
-        sandCol *= 0.95 + dunesMicro * 0.1;
+        // Star dunes (large, pyramidal)
+        float starDunes = ridged(sp * vec3(1.5, 0.2, 1.5) + windVec * 2.0, 7);
+        // Linear/seif dunes (elongated ridges)
+        float linearDunes = ridged(sp * vec3(3.0, 0.3, 3.0) + windVec * 3.0, 6);
+        // Barchan dunes (crescent shaped, small)
+        float barchanDunes = ridged(sp * vec3(6.0, 0.6, 6.0) + windVec * 1.5, 5);
+        // Ripples (visible at extreme zoom)
+        float ripples = ridged(sp * vec3(15.0, 1.5, 15.0) + windVec, 4);
+        float microRipples = fbm(sp * vec3(30.0, 3.0, 30.0), 3);
 
-        // Rock surface
+        // === Rocky terrain (hamada, mesas, buttes) ===
+        float rockPlateaus = voronoi(sp * 0.8 + seed * 0.5);
+        float mesas = smoothstep(0.08, 0.12, rockPlateaus);
+        float rockTerrain = ridged(sp * 2.0 + seed, 7);
+        float rockDetail = fbm(sp * 5.0, 6);
+        float rockMicro = fbm(sp * 12.0, 4);
+
+        // === Canyon systems (wadi, valles) ===
+        float canyonEdge = voronoiEdge(sp * 0.6 + seed * 0.3);
+        float canyon = 1.0 - smoothstep(0.0, 0.04, canyonEdge);
+        float canyonWall = smoothstep(0.04, 0.07, canyonEdge) * (1.0 - smoothstep(0.07, 0.12, canyonEdge));
+
+        // === Color palette ===
+        vec3 lightSand = primary_color.rgb * 1.2;
+        vec3 deepSand = primary_color.rgb * 0.8;
+        vec3 goldSand = mix(primary_color.rgb, vec3(1.0, 0.88, 0.55), 0.25);
+        vec3 redSand = mix(primary_color.rgb, vec3(0.7, 0.3, 0.1), 0.2);
+        vec3 rockCol = secondary_color.rgb * 0.6;
+        vec3 darkRock = secondary_color.rgb * 0.3;
+        vec3 mesaTop = secondary_color.rgb * 0.8;
+        vec3 saltCol = vec3(0.85, 0.82, 0.75);
+        vec3 canyonFloor = secondary_color.rgb * 0.2;
+
+        // === Sand surface ===
+        vec3 sandCol = mix(deepSand, lightSand, terrain * 0.3);
+        sandCol = mix(sandCol, goldSand, starDunes * 0.15);
+        sandCol = mix(sandCol, redSand, fbm(sp * 0.5 + seed * 2.0, 3) * 0.15);
+
+        // Dune illumination (crests bright, troughs dark — directional shading)
+        float duneShade = starDunes * 0.12 + linearDunes * 0.08 + barchanDunes * 0.05;
+        float duneShadow = (1.0 - starDunes) * 0.08 + (1.0 - linearDunes) * 0.04;
+        sandCol *= 0.78 + duneShade;
+        sandCol *= 1.0 - duneShadow * 0.3;
+
+        // Fine ripple detail (zoom)
+        sandCol *= 0.95 + ripples * 0.05 + microRipples * 0.02;
+
+        // === Rock surface ===
         vec3 rockSurf = mix(rockCol, darkRock, rockTerrain * 0.3);
-        rockSurf *= 0.85 + rockDetail * 0.15;
+        rockSurf = mix(rockSurf, mesaTop, mesas * 0.3);
+        rockSurf *= 0.82 + rockDetail * 0.15 + rockMicro * 0.05;
 
+        // Layered sediment strata (visible on cliff faces)
+        float strata = sin(terrain * 40.0 + rockTerrain * 10.0) * 0.5 + 0.5;
+        rockSurf = mix(rockSurf, rockSurf * (0.85 + strata * 0.3), canyonWall * 0.4);
+
+        // === Combine regions ===
         col = mix(rockSurf, sandCol, sandRegion);
 
-        // Canyons cut through everything
-        col = mix(col, darkRock, canyon * 0.5);
+        // Salt flats (bright, nearly white, very smooth)
+        col = mix(col, saltCol, saltFlat);
 
-        // Polar frost dusting
-        float polar = smoothstep(0.75, 0.95, abs(lat));
-        float frostNoise = fbm(sp * 5.0 + 80.0, 3);
-        col = mix(col, vec3(0.8, 0.78, 0.72), polar * frostNoise * 0.25);
+        // Canyons
+        col = mix(col, canyonFloor, canyon * 0.55);
+        col = mix(col, rockCol * 1.1, canyonWall * 0.2);
+
+        // === Dust storm haze (occasional, location-based) ===
+        float dustStorm = warped(sp * 0.3 + vec3(TIME * 0.003, 0, 0));
+        float stormMask = smoothstep(0.65, 0.8, dustStorm) * 0.15;
+        col = mix(col, primary_color.rgb * 0.9, stormMask);
+
+        // Polar CO2 frost
+        float polar = smoothstep(0.72, 0.95, abs(lat));
+        float frostPattern = fbm(sp * 4.0 + 80.0, 5);
+        col = mix(col, vec3(0.82, 0.8, 0.75), polar * frostPattern * 0.3);
     }
 
     // ==================== TOXIC (Venus-like) ====================
@@ -662,65 +701,107 @@ void fragment() {
         col = mix(col, col * 0.5, polarVortex * twinEye * 0.2);
     }
 
-    // ==================== CRYSTALLINE ====================
+    // ==================== CRYSTALLINE (alien gem world) ====================
     else if (planet_type == 7) {
-        // Multi-scale crystal structure
-        float facetsLarge = voronoi(sp * 1.5 + seed);
-        float facetsMed = voronoi(sp * 3.0 + seed * 0.7);
-        float edgesLarge = voronoiEdge(sp * 1.5 + seed);
-        float edgesMed = voronoiEdge(sp * 3.0 + seed * 0.7);
+        // === Multi-scale crystal lattice ===
+        float facetsHuge = voronoi(sp * 0.8 + seed);         // continent-scale formations
+        float facetsLarge = voronoi(sp * 1.5 + seed * 0.7);  // major crystals
+        float facetsMed = voronoi(sp * 3.0 + seed * 1.3);    // medium crystals
+        float facetsSmall = voronoi(sp * 6.0 + seed * 2.0);  // fine crystal detail
 
-        float thinEdge = 1.0 - smoothstep(0.0, 0.025, edgesLarge);
-        float medEdge = 1.0 - smoothstep(0.0, 0.06, edgesLarge);
-        float fineEdge = 1.0 - smoothstep(0.0, 0.03, edgesMed);
+        float edgesHuge = voronoiEdge(sp * 0.8 + seed);
+        float edgesLarge = voronoiEdge(sp * 1.5 + seed * 0.7);
+        float edgesMed = voronoiEdge(sp * 3.0 + seed * 1.3);
+        float edgesSmall = voronoiEdge(sp * 6.0 + seed * 2.0);
 
-        // Deep internal crystal matrix
-        float inner = warped(sp * 1.0 + seed * 0.5);
-        float deepInner = fbm(sp * 2.5 + seed, 7);
-        float ultraDeep = fbm(sp * 5.0 + seed * 1.3, 5);
+        // Edge masks at different thresholds
+        float hugeEdge = 1.0 - smoothstep(0.0, 0.04, edgesHuge);
+        float largeEdgeThin = 1.0 - smoothstep(0.0, 0.02, edgesLarge);
+        float largeEdgeWide = 1.0 - smoothstep(0.0, 0.06, edgesLarge);
+        float medEdge = 1.0 - smoothstep(0.0, 0.025, edgesMed);
+        float smallEdge = 1.0 - smoothstep(0.0, 0.015, edgesSmall);
 
-        // Prismatic color: changes with viewing angle (like real crystals)
-        float viewAngle = dot(rN, vec3(0.3, 0.5, 0.7));
-        float hue1 = inner * 0.4 + viewAngle * 0.6;
-        float hue2 = deepInner * 0.5 + viewAngle * 0.3 + 0.33;
-        vec3 prism1 = vec3(
-            0.5 + 0.5 * sin(hue1 * 6.28),
-            0.5 + 0.5 * sin(hue1 * 6.28 + 2.09),
-            0.5 + 0.5 * sin(hue1 * 6.28 + 4.18));
-        vec3 prism2 = vec3(
-            0.5 + 0.5 * sin(hue2 * 6.28 + 1.0),
-            0.5 + 0.5 * sin(hue2 * 6.28 + 3.09),
-            0.5 + 0.5 * sin(hue2 * 6.28 + 5.18));
+        // === Crystal interior (multiple depth layers) ===
+        float shallow = fbm(sp * 1.5 + seed * 0.3, 6);
+        float mid = warped(sp * 1.0 + seed * 0.5);
+        float deep = fbm(sp * 2.5 + seed * 0.8, 7);
+        float veryDeep = fbm(sp * 4.0 + seed * 1.2, 5);
+        float core = warped(sp * 0.5 + seed * 1.5);
 
-        // Base crystal body
-        col = mix(primary_color.rgb * 0.6, secondary_color.rgb * 0.8, facetsLarge * 0.4 + facetsMed * 0.2);
+        // === Prismatic refraction (view-angle dependent color) ===
+        float viewAngle1 = dot(rN, vec3(0.3, 0.5, 0.7));
+        float viewAngle2 = dot(rN, vec3(-0.5, 0.3, 0.6));
+        float viewAngle3 = dot(rN, normalize(vec3(seed * 0.1, 0.4, -0.3)));
 
-        // Prismatic refraction (double layer for depth)
-        col = mix(col, prism1 * 0.7, 0.25 + medEdge * 0.15);
-        col = mix(col, prism2 * 0.6, fineEdge * 0.15);
+        // 3 prismatic color layers (like looking through cut gemstone)
+        float hue1 = shallow * 0.3 + viewAngle1 * 0.7;
+        float hue2 = mid * 0.4 + viewAngle2 * 0.5 + 0.33;
+        float hue3 = deep * 0.3 + viewAngle3 * 0.6 + 0.67;
 
-        // Crystal depth: darker in thick areas, transparent at edges
-        float crystalDepth = 1.0 - facetsLarge * 0.5;
-        col *= 0.5 + crystalDepth * 0.5;
+        vec3 prism1 = vec3(0.5 + 0.5 * sin(hue1 * 6.28),
+                           0.5 + 0.5 * sin(hue1 * 6.28 + 2.09),
+                           0.5 + 0.5 * sin(hue1 * 6.28 + 4.18));
+        vec3 prism2 = vec3(0.5 + 0.5 * sin(hue2 * 6.28 + 1.0),
+                           0.5 + 0.5 * sin(hue2 * 6.28 + 3.09),
+                           0.5 + 0.5 * sin(hue2 * 6.28 + 5.18));
+        vec3 prism3 = vec3(0.5 + 0.5 * sin(hue3 * 6.28 + 0.5),
+                           0.5 + 0.5 * sin(hue3 * 6.28 + 2.59),
+                           0.5 + 0.5 * sin(hue3 * 6.28 + 4.68));
 
-        // Edge highlights (light catching crystal facet boundaries)
-        float edgeLight = thinEdge * pow(max(dot(N, L), 0.0), 0.5);
-        float fineLight = fineEdge * pow(max(dot(N, H), 0.0), 2.0);
-        col += vec3(0.9, 0.95, 1.0) * edgeLight * 0.5;
-        col += prism1 * fineLight * 0.2;
+        // === Build crystal color ===
+        // Base: dark crystalline body
+        col = mix(primary_color.rgb * 0.4, secondary_color.rgb * 0.5, facetsLarge * 0.3 + facetsMed * 0.15);
 
-        // Internal luminescence (crystal glows from within)
-        float glow = smoothstep(0.3, 0.65, deepInner) * (1.0 - facetsLarge * 0.5);
-        float deepGlow = smoothstep(0.5, 0.8, ultraDeep) * 0.5;
-        col += mix(prism1, prism2, 0.5) * (glow * 0.2 + deepGlow * 0.1);
+        // Depth-dependent transparency (thinner crystals → more prismatic)
+        float thickness = facetsHuge * 0.3 + facetsLarge * 0.3 + 0.4;
+        col *= 0.3 + thickness * 0.5;
 
-        // Surface sparkle (facet reflections catching light)
-        float sparkle = pow(max(1.0 - facetsLarge * 2.5, 0.0), 15.0);
-        float sparkleAngle = pow(max(dot(N, H), 0.0), 120.0);
-        float microSparkle = pow(max(1.0 - facetsMed * 3.0, 0.0), 20.0) * pow(max(dot(N, H), 0.0), 60.0);
+        // Layer prismatic colors by depth
+        col = mix(col, prism1 * 0.6, (1.0 - thickness) * 0.3 + largeEdgeWide * 0.1);
+        col = mix(col, prism2 * 0.5, medEdge * 0.15 + shallow * 0.08);
+        col = mix(col, prism3 * 0.4, smallEdge * 0.1 + (1.0 - facetsMed) * 0.05);
 
-        spec = sparkle * sparkleAngle * 0.9 + microSparkle * 0.3;
-        emit = glow * 0.15 + deepGlow * 0.08 + sparkle * 0.04;
+        // === Crystal facet geometry ===
+        // Major fracture lines (bright, catching light)
+        float majorLight = hugeEdge * pow(max(dot(N, L), 0.0), 0.3);
+        float facetLight = largeEdgeThin * pow(max(dot(N, H), 0.0), 1.5);
+        float fineLight = medEdge * pow(max(dot(N, H), 0.0), 3.0);
+        float microLight = smallEdge * pow(max(dot(N, H), 0.0), 5.0);
+
+        col += vec3(0.9, 0.95, 1.0) * majorLight * 0.3;
+        col += prism1 * facetLight * 0.25;
+        col += prism2 * fineLight * 0.15;
+        col += vec3(1.0) * microLight * 0.08;
+
+        // === Internal luminescence (bioluminescence / energy deposits) ===
+        float glowShallow = smoothstep(0.35, 0.6, shallow) * (1.0 - facetsLarge * 0.4);
+        float glowDeep = smoothstep(0.4, 0.7, deep) * (1.0 - facetsMed * 0.3);
+        float glowCore = smoothstep(0.55, 0.8, core) * 0.3;
+
+        vec3 glowColor = mix(prism1, mix(prism2, prism3, 0.5), 0.5);
+        col += glowColor * (glowShallow * 0.15 + glowDeep * 0.1 + glowCore * 0.08);
+
+        // === Surface sparkle (light catching crystal facet tips) ===
+        // Multiple sparkle scales
+        float sp1 = pow(max(1.0 - facetsLarge * 2.5, 0.0), 18.0);
+        float sp2 = pow(max(1.0 - facetsMed * 3.0, 0.0), 22.0);
+        float sp3 = pow(max(1.0 - facetsSmall * 4.0, 0.0), 25.0);
+        float spAngle = pow(max(dot(N, H), 0.0), 150.0);
+        float spAngle2 = pow(max(dot(N, H), 0.0), 80.0);
+
+        float totalSparkle = sp1 * spAngle * 1.0 + sp2 * spAngle2 * 0.4 + sp3 * spAngle * 0.15;
+
+        // Sparkle color: white with prismatic tint
+        vec3 sparkleCol = mix(vec3(1.0), prism1, 0.2);
+        col += sparkleCol * totalSparkle;
+
+        spec = totalSparkle;
+        emit = glowShallow * 0.12 + glowDeep * 0.08 + glowCore * 0.06 + totalSparkle * 0.03;
+
+        // === Geode cavities (dark voids with bright rims) ===
+        float geode = smoothstep(0.85, 0.92, veryDeep);
+        col = mix(col, vec3(0.02), geode * 0.3);
+        col += prism3 * geode * 0.1; // glow from deep inside geode
     }
 
     // ==================== PBR-STYLE LIGHTING ====================
