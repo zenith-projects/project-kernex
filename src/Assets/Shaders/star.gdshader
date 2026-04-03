@@ -239,7 +239,7 @@ void fragment() {
 
     // ==================== CORONA (high detail) ====================
     if (dist < 1.0 && dist > starR * 0.6 && starR > 0.0) {
-        vec3 cPos = vec3(uv * 3.0, seed);
+        vec3 cPos = vec3(uv.x * 3.0, uv.y * 3.0, seed);
         float coronaDist = (dist - starR) / (1.0 - starR); // 0 at surface, 1 at edge
 
         // Layer 1: Smooth K-corona (scattered photosphere light)
@@ -286,9 +286,9 @@ void fragment() {
         // Red giant: much larger corona with dust envelope
         if (body_type == 4) {
             totalCorona *= 1.8;
-            float dust = warped(vec3(uv * 1.2, seed + TIME * 0.008));
+            float dust = warped(vec3(uv.x * 1.2, uv.y * 1.2, seed + TIME * 0.008));
             float dustMask = smoothstep(0.95, starR + 0.05, dist);
-            float dustClumps = fbm(vec3(uv * 3.0, seed + TIME * 0.005), 6);
+            float dustClumps = fbm(vec3(uv.x * 3.0, uv.y * 3.0, seed + TIME * 0.005), 6);
             col += corona_color.rgb * 0.25 * dustMask * (0.3 + dust * 0.4 + dustClumps * 0.3);
             alpha = max(alpha, dustMask * 0.35);
         }
@@ -306,7 +306,7 @@ void fragment() {
     if (dist < starR + 0.02 && starR > 0.0) {
         float nD = dist / starR;
         float z = sqrt(max(0.0, 1.0 - nD * nD));
-        vec3 N = normalize(vec3(uv / starR, z));
+        vec3 N = normalize(vec3(uv.x / starR, uv.y / starR, z));
 
         float rA = TIME * 0.02;
         vec3 rN = vec3(N.x * cos(rA) - N.z * sin(rA), N.y, N.x * sin(rA) + N.z * cos(rA));
@@ -674,13 +674,13 @@ void fragment() {
     // ==================== PROTOSTELLAR NEBULA (high detail) ====================
     if (body_type == 11) {
         // === Dusty envelope (multi-layer nebula cloud) ===
-        float env1 = warped(vec3(uv * 1.0, seed + TIME * 0.003));
-        float env2 = fbm(vec3(uv * 2.0, seed * 0.7 + TIME * 0.004), 7);
-        float env3 = fbm(vec3(uv * 4.0, seed * 1.3 + TIME * 0.002), 5);
+        float env1 = warped(vec3(uv.x * 1.0, uv.y * 1.0, seed + TIME * 0.003));
+        float env2 = fbm(vec3(uv.x * 2.0, uv.y * 2.0, seed * 0.7 + TIME * 0.004), 7);
+        float env3 = fbm(vec3(uv.x * 4.0, uv.y * 4.0, seed * 1.3 + TIME * 0.002), 5);
         float envMask = smoothstep(0.98, 0.2, dist) * smoothstep(0.1, 0.25, dist);
 
         // Clumpy dust structure
-        float dustClumps = ridged(vec3(uv * 1.5 + seed, TIME * 0.002, seed * 0.5), 6);
+        float dustClumps = ridged(vec3(uv.x * 1.5 + seed, uv.y * 1.5 + TIME * 0.002, seed * 0.5), 6);
         float dustDensity = envMask * (env1 * 0.4 + env2 * 0.3 + dustClumps * 0.2 + env3 * 0.1);
 
         // Dust color: warm brown-orange near star, cold dark brown at edges
@@ -746,7 +746,7 @@ void fragment() {
         // HH objects (Herbig-Haro: bright emission knots along jet)
         float hhPos1 = smoothstep(0.02, 0.0, abs(abs(uv.y) - 0.45)) * jetMask;
         float hhPos2 = smoothstep(0.02, 0.0, abs(abs(uv.y) - 0.7)) * jetMask;
-        float hhNoise = fbm(vec3(uv * 5.0, seed * 3.0), 3);
+        float hhNoise = fbm(vec3(uv.x * 5.0, uv.y * 5.0, seed * 3.0), 3);
         float hh = (hhPos1 + hhPos2 * 0.7) * (0.5 + hhNoise * 0.5);
 
         // Jet + HH color: blue-green (ionized hydrogen)

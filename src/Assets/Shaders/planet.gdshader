@@ -201,7 +201,7 @@ void fragment() {
     float scaledDist = dist / sphereR; // remap to 0-1 within sphere
 
     float z = sqrt(1.0 - scaledDist * scaledDist);
-    vec3 N = normalize(vec3(uv / sphereR, z));
+    vec3 N = normalize(vec3(uv.x / sphereR, uv.y / sphereR, z));
 
     // Rotate sphere
     float a = TIME * rotation_speed;
