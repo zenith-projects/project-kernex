@@ -522,37 +522,78 @@ void fragment() {
         col = mix(col, vec3(0.8, 0.78, 0.72), polar * frostNoise * 0.25);
     }
 
-    // ==================== TOXIC ====================
+    // ==================== TOXIC (Venus-like) ====================
     else if (planet_type == 6) {
-        // Thick layered atmosphere (Venus-like)
-        float layer1 = warped(sp * 0.5 + vec3(TIME * 0.006, 0, 0));
-        float layer2 = warped(sp * 0.8 + vec3(0, TIME * 0.004, 0) + 30.0);
-        float layer3 = fbm(sp * 2.0 + TIME * 0.003, 6);
+        // === Multi-altitude atmospheric layers ===
 
-        // Vortex patterns
-        float vortex = fbm(sp * vec3(1.5, 0.3, 1.5) + layer1 * 2.0, 5);
+        // Upper haze (high altitude, fast moving)
+        float upperHaze = warped(sp * 0.4 + vec3(TIME * 0.008, TIME * 0.003, 0));
+        float upperDetail = fbm(sp * 1.5 + vec3(TIME * 0.006, 0, 0), 7);
 
-        // Surface barely visible through atmosphere
-        float surfaceGlimpse = fbm(sp * 3.0 + seed, 5);
-        float surfaceHot = smoothstep(0.6, 0.75, surfaceGlimpse);
+        // Mid cloud deck (main visible layer, sulfuric acid clouds)
+        float midCloud1 = warped(sp * 0.6 + vec3(TIME * 0.005, 0, 0));
+        float midCloud2 = warped(sp * 0.9 + vec3(0, TIME * 0.004, 0) + 30.0);
+        float midDetail = fbm(sp * 2.5 + TIME * 0.003, 6);
 
-        // Atmospheric color layers
-        col = mix(primary_color.rgb, secondary_color.rgb, layer1 * 0.5 + layer2 * 0.3);
-        col = mix(col, primary_color.rgb * 1.2, vortex * 0.2);
-        col = mix(col, secondary_color.rgb * 0.7, layer3 * 0.15);
+        // Lower atmosphere (denser, slower, glimpses of surface)
+        float lowerAtmo = fbm(sp * 1.0 + vec3(TIME * 0.002, 0, 0), 6);
+        float lowerDetail = fbm(sp * 3.5 + seed, 5);
 
-        // Bright acid/chemical streaks
-        float streaks = ridged(sp * vec3(2.0, 0.3, 2.0) + seed, 5);
-        col = mix(col, secondary_color.rgb * 1.8, smoothstep(0.65, 0.8, streaks) * 0.2);
+        // === Atmospheric dynamics ===
 
-        // Hot surface glow beneath clouds
-        col += primary_color.rgb * surfaceHot * 0.1;
-        emit = surfaceHot * 0.06;
+        // Super-rotation (upper atmosphere moves faster than surface)
+        float superRot = fbm(sp * vec3(1.5, 0.2, 1.5) + vec3(TIME * 0.01, 0, 0), 5);
 
-        // Polar vortex
-        float polarVortex = smoothstep(0.7, 0.95, abs(lat));
-        float pvSwirl = fbm(sp * 3.0 + vec3(TIME * 0.01, 0, 0), 4);
-        col = mix(col, col * (0.7 + pvSwirl * 0.6), polarVortex * 0.3);
+        // Vortex/cyclone patterns
+        float vortex1 = warped(sp * 0.7 + midCloud1 * 1.5);
+        float vortex2 = fbm(sp * vec3(2.0, 0.4, 2.0) + superRot * 2.0, 5);
+
+        // Y-shaped UV absorber pattern (discovered on Venus by UV imaging)
+        float yPattern = sin(lat * 3.14159 * 2.0 + superRot * 3.0) * 0.5 + 0.5;
+        yPattern *= fbm(sp * vec3(1.0, 0.15, 1.0), 4);
+
+        // === Color composition ===
+        vec3 upperCol = mix(primary_color.rgb * 0.9, secondary_color.rgb, upperHaze * 0.4);
+        vec3 midCol = mix(primary_color.rgb, secondary_color.rgb, midCloud1 * 0.5 + midCloud2 * 0.3);
+        vec3 lowerCol = primary_color.rgb * 0.7;
+
+        // Layer blend based on depth (upper on top, lower glimpsed through gaps)
+        float upperOpacity = 0.3 + upperHaze * 0.3 + upperDetail * 0.1;
+        col = lowerCol;
+        col = mix(col, midCol, 0.5 + midDetail * 0.3);
+        col = mix(col, upperCol, upperOpacity * 0.4);
+
+        // Vortex dark/bright bands
+        col = mix(col, col * (0.8 + vortex1 * 0.4), 0.3);
+        col = mix(col, col * 0.7, smoothstep(0.6, 0.75, vortex2) * 0.15);
+
+        // Y-pattern (UV absorber — darker bands)
+        col = mix(col, col * 0.75, yPattern * 0.15);
+
+        // Chemical streaks (bright acid reflections)
+        float streaks = ridged(sp * vec3(2.5, 0.3, 2.5) + seed, 6);
+        col = mix(col, secondary_color.rgb * 1.6, smoothstep(0.65, 0.82, streaks) * 0.15);
+
+        // Fine turbulence visible in close zoom
+        float fineTurb = fbm(sp * 5.0 + TIME * 0.004, 5);
+        col *= 0.92 + fineTurb * 0.08;
+
+        // === Surface thermal glow (visible through thin spots) ===
+        float surfaceGlimpse = fbm(sp * 2.0 + seed, 6);
+        float thinSpot = smoothstep(0.7, 0.85, surfaceGlimpse);
+        // Hot surface radiates orange-red through the atmosphere
+        col += vec3(0.8, 0.3, 0.05) * thinSpot * 0.08;
+        emit = thinSpot * 0.05;
+
+        // === Polar double vortex (Venus has twin cyclones at south pole) ===
+        float polarDist = abs(lat) / 1.0;
+        float polarVortex = smoothstep(0.65, 0.95, polarDist);
+        // Twin eye pattern
+        float twinEye = sin(atan(rN.x, rN.z) * 2.0 + seed) * 0.5 + 0.5;
+        float pvSwirl = warped(sp * 2.0 + vec3(TIME * 0.008, 0, 0));
+        float pvDetail = fbm(sp * 4.0 + vec3(TIME * 0.01, 0, 0), 5);
+        col = mix(col, col * (0.6 + pvSwirl * 0.5 + pvDetail * 0.15), polarVortex * 0.4);
+        col = mix(col, col * 0.5, polarVortex * twinEye * 0.2);
     }
 
     // ==================== CRYSTALLINE ====================
