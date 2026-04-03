@@ -99,21 +99,54 @@ void fragment() {
 
     // ==================== GRAVITATIONAL LENSING (BH/Quasar) ====================
     if (body_type == 8 || body_type == 9) {
-        float lensR = body_type == 9 ? 0.12 : 0.08;
-        float lensStr = lensR / max(dist, 0.03);
-        vec2 lensedUV = uv * (1.0 + lensStr * smoothstep(0.4, 0.05, dist));
+        float schwarzschild = body_type == 9 ? 0.07 : 0.05; // event horizon size
+        float einsteinR = schwarzschild * 2.6; // Einstein ring radius
 
-        // Lensed background stars
-        float bg = noise3(vec3(lensedUV * 25.0, seed * 0.1));
-        bg = pow(bg, 18.0) * 0.4;
-        col += vec3(bg) * smoothstep(0.08, 0.25, dist);
-        alpha = max(alpha, bg * 0.6);
+        // Gravitational deflection: light bends toward the mass
+        // Deflection angle ∝ 1/impact_parameter (distance from center)
+        float deflection = schwarzschild * schwarzschild / max(dist * dist, 0.001);
+        vec2 bendDir = normalize(uv);
+        vec2 lensedUV = uv + bendDir * deflection * 0.5;
 
-        // Chromatic aberration
-        float chrom = smoothstep(0.25, 0.06, dist);
-        vec2 cOff = normalize(uv) * chrom * 0.025;
-        col.r += pow(noise3(vec3((lensedUV + cOff) * 20.0, seed)), 15.0) * chrom * 0.2;
-        col.b += pow(noise3(vec3((lensedUV - cOff) * 20.0, seed)), 15.0) * chrom * 0.2;
+        // === Background star field (procedural, distorted by gravity) ===
+        // Multiple star layers for depth
+        float stars1 = noise3(vec3(lensedUV * 20.0, seed * 0.1));
+        float stars2 = noise3(vec3(lensedUV * 40.0, seed * 0.3));
+        float stars3 = noise3(vec3(lensedUV * 80.0, seed * 0.7));
+
+        float starField = pow(stars1, 20.0) * 0.5 + pow(stars2, 25.0) * 0.3 + pow(stars3, 30.0) * 0.15;
+
+        // Stars get stretched tangentially near the BH (gravitational shear)
+        float shear = smoothstep(0.3, 0.08, dist);
+        float tangentStretch = noise3(vec3(angle * 15.0 + dist * 20.0, seed, TIME * 0.02));
+        starField += pow(tangentStretch, 12.0) * shear * 0.3;
+
+        // Star colors (vary by brightness)
+        vec3 starCol = mix(vec3(1.0, 0.9, 0.7), vec3(0.7, 0.8, 1.0), stars1);
+        col += starCol * starField * smoothstep(schwarzschild, schwarzschild * 3.0, dist);
+        alpha = max(alpha, starField * 0.6);
+
+        // === Einstein ring (bright ring of lensed light) ===
+        float ringDist = abs(dist - einsteinR);
+        float eRing = smoothstep(0.025, 0.0, ringDist);
+        // Ring is not uniform — varies with angle due to source position
+        float ringVar = 0.5 + 0.5 * sin(angle * 3.0 + seed * 5.0);
+        eRing *= 0.3 + ringVar * 0.7;
+        col += vec3(0.9, 0.85, 0.75) * eRing * 1.5 * intensity;
+        alpha = max(alpha, eRing * 0.7);
+
+        // === Chromatic aberration (wavelength-dependent bending) ===
+        float chromStr = smoothstep(0.25, 0.05, dist);
+        vec2 chromOff = bendDir * chromStr * 0.03;
+        // Red bends less, blue bends more (realistic dispersion)
+        float chromR = pow(noise3(vec3((lensedUV - chromOff * 0.5) * 25.0, seed)), 18.0);
+        float chromG = pow(noise3(vec3(lensedUV * 25.0, seed + 1.0)), 18.0);
+        float chromB = pow(noise3(vec3((lensedUV + chromOff) * 25.0, seed + 2.0)), 18.0);
+        col += vec3(chromR * 0.15, chromG * 0.1, chromB * 0.2) * chromStr;
+
+        // === Space-time distortion visual (subtle warping effect) ===
+        float warpVis = smoothstep(0.3, 0.06, dist) * 0.05;
+        col += vec3(0.1, 0.12, 0.2) * warpVis;
     }
 
     // ==================== ACCRETION DISK (cinema quality) ====================
@@ -608,34 +641,93 @@ void fragment() {
         alpha = max(alpha, coreGlow * 0.5);
     }
 
-    // ==================== PROTOSTELLAR NEBULA EXTRAS ====================
+    // ==================== PROTOSTELLAR NEBULA (high detail) ====================
     if (body_type == 11) {
-        // Dusty envelope
-        float dustEnv = fbm(vec3(uv * 1.5, seed + TIME * 0.005), 5);
-        float envMask = smoothstep(0.95, 0.3, dist) * smoothstep(0.2, 0.35, dist);
-        col += corona_color.rgb * 0.15 * envMask * (0.4 + dustEnv * 0.6);
-        alpha = max(alpha, envMask * 0.25);
+        // === Dusty envelope (multi-layer nebula cloud) ===
+        float env1 = warped(vec3(uv * 1.0, seed + TIME * 0.003));
+        float env2 = fbm(vec3(uv * 2.0, seed * 0.7 + TIME * 0.004), 7);
+        float env3 = fbm(vec3(uv * 4.0, seed * 1.3 + TIME * 0.002), 5);
+        float envMask = smoothstep(0.98, 0.2, dist) * smoothstep(0.1, 0.25, dist);
 
-        // Bipolar outflow jets (blue-green, perpendicular to disk)
-        float jetY = abs(uv.y) / max(abs(uv.x) + 0.01, 0.01);
-        float jet = smoothstep(2.0, 6.0, jetY) * smoothstep(0.9, 0.2, dist);
-        float jetN = fbm(vec3(uv * 3.0, TIME * 0.2 + seed), 4);
-        jet *= 0.4 + jetN * 0.6;
+        // Clumpy dust structure
+        float dustClumps = ridged(vec3(uv * 1.5 + seed, TIME * 0.002, seed * 0.5), 6);
+        float dustDensity = envMask * (env1 * 0.4 + env2 * 0.3 + dustClumps * 0.2 + env3 * 0.1);
 
-        // HH objects (bright knots along jet)
-        float knot = pow(fbm(vec3(uv.y * 6.0 - TIME * 0.3, uv.x, seed * 2.0), 3), 4.0);
-        jet += knot * smoothstep(2.0, 6.0, jetY) * 0.5;
+        // Dust color: warm brown-orange near star, cold dark brown at edges
+        vec3 warmDust = corona_color.rgb * 0.5;
+        vec3 coldDust = corona_color.rgb * 0.15;
+        vec3 dustCol = mix(coldDust, warmDust, smoothstep(0.6, 0.2, dist));
+        dustCol *= 0.5 + env2 * 0.5;
 
-        vec3 jetCol = vec3(0.2, 0.6, 0.8);
-        col += jetCol * jet * 0.3;
-        alpha = max(alpha, jet * 0.3);
+        // Infrared emission glow from warm dust
+        float irGlow = smoothstep(0.5, 0.2, dist) * dustDensity;
+        dustCol += vec3(0.4, 0.15, 0.05) * irGlow * 0.3;
 
-        // Proto-disk (thin horizontal structure)
-        float diskY = abs(uv.y);
-        float diskMask = smoothstep(0.08, 0.02, diskY) * smoothstep(0.15, 0.5, abs(uv.x));
-        float diskN = fbm(vec3(uv.x * 5.0 + TIME * 0.05, uv.y * 20.0, seed), 4);
-        col += vec3(0.5, 0.3, 0.15) * diskMask * (0.3 + diskN * 0.7) * 0.4;
-        alpha = max(alpha, diskMask * 0.3);
+        col += dustCol * dustDensity * 0.5;
+        alpha = max(alpha, dustDensity * 0.4);
+
+        // === Circumstellar disk (protoplanetary) ===
+        // Viewed slightly inclined — thin horizontal band
+        float diskSqueeze = 6.0; // how thin the disk appears
+        float diskR = length(vec2(uv.x, uv.y * diskSqueeze));
+        float diskMask = smoothstep(0.8, 0.12, abs(uv.x)) * smoothstep(0.8, 0.08, diskR) * smoothstep(0.05, 0.1, diskR);
+
+        // Disk structure: spiral arms, gaps, density waves
+        float diskAngle = atan(uv.y * diskSqueeze, uv.x);
+        float diskSpiral = fbm(vec3(diskAngle * 2.0 + diskR * 5.0 + TIME * 0.05, diskR * 10.0, seed), 6);
+        float diskDetail = fbm(vec3(uv.x * 10.0 + TIME * 0.03, uv.y * 30.0, seed * 0.5), 5);
+        float diskGaps = sin(diskR * 30.0 + diskSpiral * 2.0) * 0.5 + 0.5;
+        diskGaps = 0.5 + diskGaps * 0.5;
+
+        float diskDensity = diskMask * (0.3 + diskSpiral * 0.4 + diskDetail * 0.2) * diskGaps;
+
+        // Disk color: hot inner (white-yellow), cool outer (brown-red)
+        float diskTemp = smoothstep(0.5, 0.05, abs(uv.x));
+        vec3 diskHot = vec3(1.0, 0.85, 0.5);
+        vec3 diskWarm = vec3(0.6, 0.35, 0.12);
+        vec3 diskCold = vec3(0.25, 0.12, 0.05);
+        vec3 diskCol = mix(diskCold, mix(diskWarm, diskHot, diskTemp), diskTemp);
+        diskCol *= 0.5 + diskDetail * 0.5;
+
+        col += diskCol * diskDensity * 0.6;
+        alpha = max(alpha, diskDensity * 0.5);
+
+        // Disk silhouette (dark lane when seen edge-on)
+        float darkLane = smoothstep(0.015, 0.005, abs(uv.y)) * smoothstep(0.1, 0.4, abs(uv.x));
+        col *= 1.0 - darkLane * 0.5;
+
+        // === Bipolar outflow jets (H-alpha emission) ===
+        float jetWidth = 0.05;
+        float jetMask = smoothstep(jetWidth, jetWidth * 0.15, abs(uv.x));
+        float jetExtent = smoothstep(0.1, 0.85, abs(uv.y));
+        float jetBase = smoothstep(0.25, 0.08, abs(uv.y));
+
+        // Jet turbulence (different per side)
+        float jetN1 = fbm(vec3(uv.x * 12.0, uv.y * 4.0 - TIME * 0.3, seed), 5);
+        float jetN2 = fbm(vec3(uv.x * 8.0, uv.y * 3.0 - TIME * 0.25, seed * 2.0), 4);
+
+        float jet = jetMask * jetExtent * (0.3 + jetN1 * 0.4 + jetN2 * 0.2);
+        jet += jetMask * jetBase * 0.5; // bright at base
+
+        // Jet cone (slightly widens with distance)
+        float cone = smoothstep(0.015, 0.0, abs(uv.x) - abs(uv.y) * 0.06);
+        jet += cone * smoothstep(0.1, 0.5, abs(uv.y)) * 0.15;
+
+        // HH objects (Herbig-Haro: bright emission knots along jet)
+        float hhPos1 = smoothstep(0.02, 0.0, abs(abs(uv.y) - 0.45)) * jetMask;
+        float hhPos2 = smoothstep(0.02, 0.0, abs(abs(uv.y) - 0.7)) * jetMask;
+        float hhNoise = fbm(vec3(uv * 5.0, seed * 3.0), 3);
+        float hh = (hhPos1 + hhPos2 * 0.7) * (0.5 + hhNoise * 0.5);
+
+        // Jet + HH color: blue-green (ionized hydrogen)
+        vec3 jetCol = vec3(0.15, 0.5, 0.75);
+        vec3 hhCol = vec3(0.3, 0.8, 0.6);
+        col += jetCol * jet * 0.4 + hhCol * hh * 0.5;
+        alpha = max(alpha, jet * 0.4 + hh * 0.4);
+
+        // === Reflection nebula (scattered starlight in dust) ===
+        float scattered = smoothstep(0.7, 0.3, dist) * env1 * 0.08;
+        col += core_color.rgb * scattered;
     }
 
     // ==================== OUTER GLOW ====================

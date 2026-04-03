@@ -91,6 +91,12 @@ float voronoiEdge(vec3 p) {
     return d2 - d1; // thin at edges, thick at centers
 }
 
+float flareEvent(float time, float seedVal) {
+    float t = time * 0.3 + seedVal;
+    float cycle = fract(t * 0.1);
+    return pow(max(sin(cycle * 6.28) * 3.0 - 2.0, 0.0), 4.0);
+}
+
 void fragment() {
     vec2 uv = UV * 2.0 - 1.0;
     float dist = length(uv);
@@ -307,37 +313,60 @@ void fragment() {
 
     // ==================== LAVA ====================
     else if (planet_type == 3) {
-        // Tectonic plates (voronoi)
-        float plates = voronoi(sp * 1.5 + TIME * 0.003);
-        float plateEdge = voronoiEdge(sp * 1.5 + TIME * 0.003);
+        // Multi-scale tectonic plate system
+        float platesLarge = voronoi(sp * 1.0 + TIME * 0.002);
+        float platesMed = voronoi(sp * 2.0 + TIME * 0.003);
+        float edgeLarge = voronoiEdge(sp * 1.0 + TIME * 0.002);
+        float edgeMed = voronoiEdge(sp * 2.0 + TIME * 0.003);
 
-        // Crust texture on plates
-        float crust = fbm(sp * 3.0, 6);
-        float crustDetail = fbm(sp * 8.0, 4);
+        // Crust layers
+        float crustBase = fbm(sp * 2.0, 7);
+        float crustDetail = fbm(sp * 5.0, 6);
+        float crustMicro = fbm(sp * 12.0, 4);
 
-        // Magma rivers at plate boundaries
-        float magma = 1.0 - smoothstep(0.0, 0.06, plateEdge);
-        float magmaGlow = 1.0 - smoothstep(0.0, 0.15, plateEdge);
+        // Magma rivers: major between big plates, minor between sub-plates
+        float magmaMajor = 1.0 - smoothstep(0.0, 0.04, edgeLarge);
+        float magmaMinor = 1.0 - smoothstep(0.0, 0.03, edgeMed);
+        float magmaGlowMajor = 1.0 - smoothstep(0.0, 0.12, edgeLarge);
+        float magmaGlowMinor = 1.0 - smoothstep(0.0, 0.08, edgeMed);
 
-        // Hotspots (volcanic eruptions)
-        float hotspot = fbm(sp * 2.0 + TIME * 0.008, 5);
-        hotspot = smoothstep(0.62, 0.72, hotspot);
+        // Magma flow animation (slow movement in veins)
+        float flowAnim = fbm(sp * 3.0 + vec3(TIME * 0.01, TIME * 0.008, 0), 5);
 
-        // Dark rocky crust
-        col = primary_color.rgb * (0.15 + crust * 0.35);
-        col *= 0.9 + crustDetail * 0.2;
+        // Volcanic hotspots (caldera-like bright spots)
+        float hotspot = fbm(sp * 1.5 + TIME * 0.006, 6);
+        hotspot = smoothstep(0.6, 0.72, hotspot);
+        float eruption = flareEvent(TIME * 1.5, seed + sp.x * 5.0) * hotspot;
 
-        // Magma color gradient: deep red → orange → yellow at hottest
-        vec3 magmaDeep = vec3(0.6, 0.05, 0.0);
-        vec3 magmaMid = secondary_color.rgb * 1.5;
-        vec3 magmaHot = vec3(1.0, 0.8, 0.2);
+        // Cooling lava texture on plates (ridged for AA lava)
+        float coolingRidges = ridged(sp * 4.0 + seed, 5);
 
-        col = mix(col, magmaDeep, magmaGlow * 0.5);
-        col = mix(col, magmaMid, magma * 0.7);
-        col = mix(col, magmaHot, magma * hotspot);
-        col = mix(col, magmaHot * 1.5, hotspot * 0.4);
+        // Dark rocky crust with texture
+        col = primary_color.rgb * (0.1 + crustBase * 0.25);
+        col *= 0.85 + crustDetail * 0.15 + crustMicro * 0.05;
+        // Cooling ridges on crust surface
+        col = mix(col, col * 0.6, coolingRidges * 0.15);
 
-        emit = magma * 0.6 + magmaGlow * 0.2 + hotspot * 0.4;
+        // Magma color: 4-step gradient from deep to white-hot
+        vec3 magmaDeep = vec3(0.45, 0.02, 0.0);
+        vec3 magmaMid = vec3(0.9, 0.25, 0.0);
+        vec3 magmaOrange = secondary_color.rgb * 1.8;
+        vec3 magmaHot = vec3(1.0, 0.85, 0.3);
+        vec3 magmaWhite = vec3(1.0, 0.95, 0.7);
+
+        float magmaTotal = min(magmaMajor + magmaMinor * 0.6, 1.0);
+        float glowTotal = min(magmaGlowMajor + magmaGlowMinor * 0.4, 1.0);
+
+        // Apply glow first (wide area warming)
+        col = mix(col, magmaDeep, glowTotal * 0.4);
+        // Then bright magma veins
+        vec3 veinCol = mix(magmaMid, magmaOrange, flowAnim);
+        col = mix(col, veinCol, magmaTotal * 0.7);
+        // Hotspot centers are white-hot
+        col = mix(col, magmaHot, hotspot * 0.5);
+        col = mix(col, magmaWhite, eruption * 0.6);
+
+        emit = magmaTotal * 0.5 + glowTotal * 0.15 + hotspot * 0.3 + eruption * 0.5;
     }
 
     // ==================== OCEAN ====================
